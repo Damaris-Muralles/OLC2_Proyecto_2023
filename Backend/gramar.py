@@ -1,61 +1,63 @@
-reservadas = {
-    'usar' : 'USAR',
-    'create' : 'CREATE',
-    'data base' : 'DATABASE',
-    'alter' : 'ALTER',
-    'table' : 'TABLE',
-    'drop' : 'DROP',
-    'truncate' : 'TRUNCATE',
-    'select' : 'SELECT',
-    'update' : 'UPDATE',
-    'delete' : 'DELETE',
-    'insert' : 'INSERT',
-    'function' : 'FUNCTION',    
-    'procedure' : 'PROCEDURE',
-    'declare' : 'DECLARE',
-    'add'  : 'ADD', 
-    'set' : 'SET',
-    'exc' : 'EXC',
-    'begin' : 'BEGIN',
-    'from' : 'FROM',
-    'where' : 'WHERE',
-    'end' : 'END',
-    'case' : 'CASE',
-    'cast' : 'CAST',
-    'suma' : 'SUMA',
-    'contar' : 'CONTAR',
-    'if' : 'IF',
-    'as' : 'AS',
-    'return' : 'RETURN',
-    'key' : 'KEY',
-    'primary' : 'PRIMARY',
-    'foreing' : 'FOREIGN',
-    'references' : 'REFERENCES',
-    'null' : 'NULL',
-    'not' : 'NOT',
-    'nvarchar' : 'NVARCHAR',
-    'nchar' : 'NCHAR',
-    'int' : 'INT',
-    'decimal' : 'DECIMAL',
-    'bit' : 'BIT',
-    'date' : 'DATE',
-    'datetime' : 'DATETIME',
-    'concatena' : 'CONCATENA',
-    'hoy' : 'HOY',
-    'substraer' : 'SUBSTRAER',
-}
 
-tokens  = [ 
+
+tokens  =  [ 
+    # reservadas
+    'USAR',
+    'CREATE',
+    'DATABASE',
+    'ALTER',
+    'TABLE',
+    'DROP',
+    'TRUNCATE',
+    'SELECT',
+    'UPDATE',
+    'DELETE',
+    'INSERT',
+    'FUNCTION',
+    'PROCEDURE',
+    'DECLARE',
+    'ADD',
+    'SET',
+    'EXC',
+    'BEGIN',
+    'FROM',
+    'WHERE',
+    'END',
+    'CASE',
+    'CAST',
+    'SUMA',
+    'CONTAR',
+    'IF',
+    'AS',
+    'RETURN',
+    'KEY',
+    'PRIMARY',
+    'FOREIGN',
+    'REFERENCES',
+    'NULL',
+    'NOT',
+    'NVARCHAR',
+    'NCHAR',
+    'INT',
+    'DECIMAL',
+    'BIT',
+    'DATE',
+    'DATETIME',
+    'CONCATENA',
+    'HOY',
+    'SUBSTRAER',
+    
+    # simbolos     
     'PARIZQ',
     'PARDER',
     'COMA',
+    'PTCOMA',
+    
+    # operadores
     'MAS',
     'MENOS',
     'POR',
-    'DIVIDIDO',
-    'ENTERO',
-    'DECIMALES',
-    'PTCOMA',
+    'DIVIDIDO',    
     'AND',
     'OR',
     'NEGACION',
@@ -65,15 +67,63 @@ tokens  = [
     'MENORQUE',
     'MAYORIGUAL',
     'MENORIGUAL',
+    
+    # expresiones regulares
+    'ENTERO',
+    'DECIMALES',
     'IDENTIFICADOR',
     'CADENA',
     'FECHA',
     'FECHAHORA',
     'IDENT'
 
-] + list(reservadas.values())
+] 
 
 # Tokens
+t_USAR      = r'usar'
+t_CREATE    = r'create'
+t_DATABASE  = r'database'
+t_ALTER     = r'alter'
+t_TABLE     = r'table'
+t_DROP      = r'drop'
+t_TRUNCATE  = r'truncate'
+t_SELECT    = r'select'
+t_UPDATE    = r'update'
+t_DELETE    = r'delete'
+t_INSERT    = r'insert'
+t_FUNCTION  = r'function'
+t_PROCEDURE = r'procedure'
+t_DECLARE   = r'declare'
+t_ADD       = r'add'
+t_SET       = r'set'
+t_EXC       = r'exc'
+t_BEGIN     = r'begin'
+t_FROM      = r'from'
+t_WHERE     = r'where'
+t_END       = r'end'
+t_CASE      = r'case'
+t_CAST      = r'cast'
+t_SUMA      = r'suma'
+t_CONTAR    = r'contar'
+t_IF        = r'if'
+t_AS        = r'as'
+t_RETURN    = r'return'
+t_KEY       = r'key'
+t_PRIMARY   = r'primary'
+t_FOREIGN   = r'foreing'
+t_REFERENCES= r'references'
+t_NULL      = r'null'
+t_NOT       = r'not'
+t_NVARCHAR  = r'nvarchar'
+t_NCHAR     = r'nchar'
+t_INT       = r'int'
+t_DECIMAL   = r'decimal'
+t_BIT       = r'bit'
+t_DATE      = r'date'
+t_DATETIME  = r'datetime'
+t_CONCATENA = r'concatena'
+t_HOY       = r'hoy'
+t_SUBSTRAER = r'substraer'
 t_PARIZQ    = r'\('
 t_PARDER    = r'\)'
 t_MAS       = r'\+'
@@ -127,10 +177,10 @@ def t_CADENA(t):
     r'(\'[^\']*\'|\"[^\"]*\")'
     t.value = t.value[1:-1] # remuevo las comillas
     return t
-
-def t_IDENT(t):
+"""def t_IDENT(t):
     r'([a-zA-ZÑñ]|("_"[a-zA-ZÑñ]))([a-zA-ZÑñ]|[0-9]|"_")*'
-    return t
+    return t"""
+
 
 # Caracteres ignorados
 t_ignore = " \t"
@@ -148,16 +198,15 @@ def t_error(t):
 import ply.lex as lex
 lexer = lex.lex()
 
-
-
-
-import ply.yacc as yacc
-parser = yacc.yacc()
-
-def parse(input) :
-    global lexer
-    input = input.replace("\r","")
-    lexer = lex.lex()
-    return parser.parse(input)
+data="""if 1 == 1
+end
++
+intol
+database"""
+lexer.input(data)
+while True:
+    tok = lexer.token()
+    if not tok: break
+    print(tok)
 
 
