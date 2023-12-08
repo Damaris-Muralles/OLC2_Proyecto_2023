@@ -1,7 +1,52 @@
 
-
-tokens  =  [ 
-    # reservadas
+# Lista de palabras reservadas
+reservadas = {
+    'usar' : 'USAR',
+    'create' : 'CREATE',
+    'database' : 'DATABASE',
+    'alter' : 'ALTER',
+    'table' : 'TABLE',
+    'drop' : 'DROP',
+    'truncate' : 'TRUNCATE',
+    'select' : 'SELECT',
+    'update' : 'UPDATE',
+    'delete' : 'DELETE',
+    'insert' : 'INSERT',
+    'function' : 'FUNCTION',    
+    'procedure' : 'PROCEDURE',
+    'declare' : 'DECLARE',
+    'add'  : 'ADD', 
+    'set' : 'SET',
+    'exc' : 'EXC',
+    'begin' : 'BEGIN',
+    'from' : 'FROM',
+    'where' : 'WHERE',
+    'end' : 'END',
+    'case' : 'CASE',
+    'cast' : 'CAST',
+    'suma' : 'SUMA',
+    'contar' : 'CONTAR',
+    'if' : 'IF',
+    'as' : 'AS',
+    'return' : 'RETURN',
+    'key' : 'KEY',
+    'primary' : 'PRIMARY',
+    'foreing' : 'FOREIGN',
+    'references' : 'REFERENCES',
+    'null' : 'NULL',
+    'not' : 'NOT',
+    'nvarchar' : 'NVARCHAR',
+    'nchar' : 'NCHAR',
+    'int' : 'INT',
+    'decimal' : 'DECIMAL',
+    'bit' : 'BIT',
+    'date' : 'DATE',
+    'datetime' : 'DATETIME',
+    'concatena' : 'CONCATENA',
+    'hoy' : 'HOY',
+    'substraer' : 'SUBSTRAER',
+}
+""" # reservadas
     'USAR',
     'CREATE',
     'DATABASE',
@@ -46,7 +91,11 @@ tokens  =  [
     'CONCATENA',
     'HOY',
     'SUBSTRAER',
-    
+"""
+   
+
+tokens  =  [
+   
     # simbolos     
     'PARIZQ',
     'PARDER',
@@ -77,9 +126,10 @@ tokens  =  [
     'FECHAHORA',
     'IDENT'
 
-] 
+] + list(reservadas.values())
 
 # Tokens
+"""
 t_USAR      = r'usar'
 t_CREATE    = r'create'
 t_DATABASE  = r'database'
@@ -124,6 +174,7 @@ t_DATETIME  = r'datetime'
 t_CONCATENA = r'concatena'
 t_HOY       = r'hoy'
 t_SUBSTRAER = r'substraer'
+"""
 t_PARIZQ    = r'\('
 t_PARDER    = r'\)'
 t_MAS       = r'\+'
@@ -177,9 +228,10 @@ def t_CADENA(t):
     r'(\'[^\']*\'|\"[^\"]*\")'
     t.value = t.value[1:-1] # remuevo las comillas
     return t
-"""def t_IDENT(t):
+def t_IDENT(t):
     r'([a-zA-ZÑñ]|("_"[a-zA-ZÑñ]))([a-zA-ZÑñ]|[0-9]|"_")*'
-    return t"""
+    t.type = reservadas.get(t.value.lower(),'IDENT')
+    return t
 
 
 # Caracteres ignorados
@@ -194,10 +246,11 @@ def t_error(t):
     print("Illegal character '%s'" % t.value[0])
     t.lexer.skip(1)
     
-# Construyendo el analizador léxico
+# Construyendo el analizador lexico
 import ply.lex as lex
 lexer = lex.lex()
 
+'''
 data="""if 1 == 1
 end
 +
@@ -208,5 +261,89 @@ while True:
     tok = lexer.token()
     if not tok: break
     print(tok)
+'''
 
 
+
+
+# Asociación de operadores y precedencia
+precedence = (
+    ('left','CONCAT'),
+    ('left','MAS','MENOS'),
+    ('left','POR','DIVIDIDO'),
+    ('right','UMENOS'),
+    )
+
+import instrucciones as instruccionApi
+
+
+def p_init(t) :
+    'init            : instrucciones'
+    t[0] = t[1]
+
+def p_instrucciones_lista(t) :
+    'instrucciones    : instrucciones instruccion'
+    t[1].append(t[2])
+    t[0] = t[1]
+
+
+def p_instrucciones_instruccion(t) :
+    'instrucciones    : instruccion '
+    t[0] = [t[1]]
+    
+
+def p_instruccion(t) :
+    '''instruccion      : create_instr
+                        | alter_instr
+                        | drop_instr
+                        | truncate_instr
+                        | select_instr
+                        | update_instr
+                        | delete_instr
+                        | insert_instr
+                        | use_instr
+                    '''
+    t[0] = t[1]
+
+def p_select_instr(t) :
+    'select_instr     : SELECT listacampos FROM listatablas PTCOMA'
+    t[0] = instruccionApi.Select(t[2], t[4], None)
+def p_select_instr_where(t) :
+    'select_instr     : SELECT listacampos FROM listatablas WHERE condiciones PTCOMA'
+    
+    t[0] = instruccionApi.Select(t[2], t[4], t[6])
+
+def p_listacampos(t) :
+    'listacampos      : listacampos COMA campo'
+    t[1].append(t[3])
+    t[0] = t[1]
+def p_listacampos_campo(t) :
+    'listacampos      : campo'
+    t[0] = [t[1]]
+    
+def p_campo(t) :
+    '''campo            : IDENTIFICADOR'''
+    t[0] = t[1]
+
+def p_listatablas(t) :
+    'listatablas      : listatablas COMA tablas'
+    t[1].append(t[3])
+    t[0] = t[1]
+def p_listatablas_tablas(t) :
+    'listatablas      : tablas'
+    t[0] = [t[1]]
+def p_tablas(t) :
+    '''tablas           : IDENTIFICADOR'''
+    t[0] = t[1]
+
+
+def p_error(t):
+    print(t)
+    print("Error sintáctico en '%s'" % t.value)
+
+import ply.yacc as yacc
+parser = yacc.yacc()
+
+
+def parse(input) :
+    return parser.parse(input)

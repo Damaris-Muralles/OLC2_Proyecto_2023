@@ -1,0 +1,34 @@
+--------seleccionar base de datos-----------
+USEBASE ::= use ident puntocoma
+
+-------elegir tipo de dato-----------------
+TIPO_DATO ::= int | decimal | bit| date | datetime | varchar | char
+
+
+***************DDL***********************
+--------atributos que pueden llevar las columnas creadas------------------
+ATRIBUTO_COLUMN ::= not null | null | primary key | foreing key | epsilon
+
+------crear tabla---------- (falta foreing key)
+CREARTABLA ::= create table ident parena DEFIN_COLUM parenc puntocoma
+
+---------definir columnas de la tabla----------------
+DEFIN_COLUMN ::= ident TIPO_DATO ATRIBUTO_COLUMN coma 
+                | ident TIPO_DATO ATRIBUTO_COLUMN
+
+--------------alter table----------------
+ALTERTABLE ::= alter table ident add column DEFIN_COLUMN puntocoma 
+                |alter table ident drop column ident puntocoma
+
+
+--------------drop table-----------------
+DROPTALE ::= drop table ident puntocoma
+
+--------------truncate datos-----------------
+TRUNCATETABLE ::= truncate table ident puntocoma
+
+
+*****************DML**********************
+
+
+SELECT ::= select OPCIONES_SELECT from LISTA_TABLAS where EXPRESION puntocoma
