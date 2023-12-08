@@ -1,3 +1,7 @@
+import ply.lex as lex
+import ply.yacc as yacc
+
+# Lista de palabras reservadas
 reservadas = {
     'usar' : 'USAR',
     'create' : 'CREATE',
@@ -69,11 +73,10 @@ tokens  = [
     'CADENA',
     'FECHA',
     'FECHAHORA',
-    'IDENT'
-
+    'IDENT',
 ] + list(reservadas.values())
 
-# Tokens
+# Expresiones regulares para tokens simples
 t_PARIZQ    = r'\('
 t_PARDER    = r'\)'
 t_MAS       = r'\+'
@@ -92,6 +95,7 @@ t_MENORQUE  = r'<'
 t_MAYORIGUAL= r'>='
 t_MENORIGUAL= r'<='
 
+# Definición de las funciones para los tokens más complejos
 def t_FECHAHORA(t):
     r'\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}'
     return t
@@ -118,14 +122,13 @@ def t_ENTERO(t):
         t.value = 0
     return t
 
-
 def t_IDENTIFICADOR(t):
     r'[@]([a-zA-ZÑñ]|("_"[a-zA-ZÑñ]))([a-zA-ZÑñ]|[0-9]|"_")*'
     return t
 
 def t_CADENA(t):
     r'(\'[^\']*\'|\"[^\"]*\")'
-    t.value = t.value[1:-1] # remuevo las comillas
+    t.value = t.value[1:-1]  # Remover las comillas
     return t
 
 def t_IDENT(t):
@@ -135,29 +138,43 @@ def t_IDENT(t):
 # Caracteres ignorados
 t_ignore = " \t"
 
-
+# Nueva línea
 def t_newline(t):
     r'\n+'
     t.lexer.lineno += t.value.count("\n")
-    
+
+# Error léxico
 def t_error(t):
-    print("Illegal character '%s'" % t.value[0])
+    print(f"Illegal character '{t.value[0]}'")
     t.lexer.skip(1)
-    
-# Construyendo el analizador léxico
-import ply.lex as lex
+
+# Construir el analizador léxico
 lexer = lex.lex()
 
+# Asociación de operadores y precedencia
+precedence = (
+    ('left','MAS','MENOS'),
+    ('left','POR','DIVIDIDO'),
+    ('right','UMENOS'),
+)
 
+
+def p_instrucciones_lista(t):
+    '''instrucciones : instruccion instrucciones
+                     | instruccion'''
+
+
+def p_instruccion_crear(t):
+    '''instruccion : crear'''
+
+def p_error(t):
+    print("Error sintáctico en '%s'" % t.value)
 
 
 import ply.yacc as yacc
 parser = yacc.yacc()
 
-def parse(input) :
-    global lexer
-    input = input.replace("\r","")
-    lexer = lex.lex()
-    return parser.parse(input)
-
-
+f = open("./entrada.txt", "r")
+input = f.read()
+print(input)
+parser.parse(input)
