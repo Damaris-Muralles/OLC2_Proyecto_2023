@@ -18,7 +18,8 @@ reservadas = {
     'case' : 'CASE',
 
     # adicioneales
-    'database' : 'DATABASE',
+    'data' : 'DATA',
+    'base' : 'BASE',
     'table' : 'TABLE',
     'declare' : 'DECLARE',
     'add'  : 'ADD', 
@@ -214,7 +215,9 @@ def p_instrucciones_instruccion(t) :
 
 
 def p_instruccion(t) :
-    '''instruccion      : create_instr  
+    '''instruccion      : use_database
+                        | createtab_instr
+                        | createbase_instr  
                         | alter_instr
                         | truncate_instr
                         | drop_instr
@@ -222,75 +225,6 @@ def p_instruccion(t) :
     '''
     t[0] = t[1]
  
-
-
-
-# SINTAXIS PARA CREATE TABLE
-def p_create_table_instr(t) :
-    'create_instr     : CREATE TABLE IDENT PARIZQ listacolumnas PARDER PTCOMA'
-    t[0] = CreateTable(t[3], t[5])
-
-def p_listacolumnas(t) :
-    ''' listacolumnas   : listacolumnas columna
-                        | columna'''
-    if len(t) ==3:
-        t[0] = t[1]
-        t[1].append(t[2])
-    else:
-        t[0] = [t[1]]
-
-def p_columna(t):
-    '''
-    columna    : IDENT tipodato atributo COMA
-                | IDENT tipodato atributo 
-                | IDENT tipodato COMA
-                | IDENT tipodato
-    '''
-    if len(t)==5:
-        t[0] = ColumnaTable(t[1],t[2],t[3])
-    else:
-        t[0] = ColumnaTable(t[1],t[2],None)
-
-
-
-#ATRIBUTOS DE LA COLUMNA
-def p_atributo(t):
-    '''
-
-    atributo   : PRIMARY KEY
-                | REFERENCES IDENT PARIZQ IDENT PARDER
-                | NULL
-                | NOT NULL
-    '''
-    if len(t)==3:
-        t[0] = Atributo(t[1],None, None)
-    elif len(t)==6:
-        t[0] = Atributo(t[1],t[2],t[4])
-    else:
-        t[0] = Atributo(t[1],None,None)
-
-# SINTAXIS PARA ALTER TABLE
-
-def p_alter_table_instr(t) :
-    ''' alter_instr     : ALTER TABLE IDENT ADD COLUMN IDENT tipodato PTCOMA
-                        | ALTER TABLE IDENT DROP COLUMN IDENT PTCOMA
-    '''
-    if len(t) == 9:
-        t[0] = AlterAgregar(t[3], t[6], t[7])
-    else:
-        t[0] = AlterDrop (t[3], t[6])                   
-
-# SINTAXIS PARA TRUNCATE
-def p_truncate_instr(t):
-    'truncate_instr : TRUNCATE TABLE IDENT PTCOMA'
-    t[0] = TruncateTable(t[3])
-
-# SINTAXIS DROP
-
-def p_drop_instr(t):
-    '''drop_instr : DROP TABLE IDENT PTCOMA
-    '''
-    t[0] = DropTable(t[3])
 
 #TIPOS DE DATOS
 def p_tipodato(t):
@@ -315,8 +249,83 @@ def p_tipodato(t):
     elif len(t)==7:
         t[0] = TipoDato(t[1],t[3],t[5])
 
+# SINTAXIS PARA USAR BASE DE DATOS
+def p_use_database(t):
+    'use_database : USAR IDENT PTCOMA'
+    t[0] = UseDatabase(t[2])
 
-    
+# SINTAXIS PARA CREAR BASE DE DATOS
+def p_createbase_instr(t):
+    'createbase_instr : CREATE DATA BASE IDENT PTCOMA'
+    t[0] = CreateDatabase(t[3])
+
+# SINTAXIS PARA CREATE TABLE
+def p_create_table_instr(t) :
+    'createtab_instr     : CREATE TABLE IDENT PARIZQ listacolumnas PARDER PTCOMA'
+    t[0] = CreateTable(t[3], t[5])
+
+def p_listacolumnas(t) :
+    ''' listacolumnas   : listacolumnas columna
+                        | columna'''
+    if len(t) ==3:
+        t[0] = t[1]
+        t[1].append(t[2])
+    else:
+        t[0] = [t[1]]
+
+def p_columna(t):
+    '''
+    columna    : IDENT tipodato atributo COMA
+                | IDENT tipodato atributo 
+                | IDENT tipodato COMA
+                | IDENT tipodato
+    '''
+    if len(t)==5:
+        t[0] = ColumnaTable(t[1],t[2],t[3])
+    else:
+        t[0] = ColumnaTable(t[1],t[2],None)
+
+# atributos de la columna
+def p_atributo(t):
+    '''
+
+    atributo   : PRIMARY KEY
+                | REFERENCES IDENT PARIZQ IDENT PARDER
+                | NULL
+                | NOT NULL
+    '''
+    if len(t)==3:
+        t[0] = Atributo(t[1],None, None)
+    elif len(t)==6:
+        t[0] = Atributo(t[1],t[2],t[4])
+    else:
+        t[0] = Atributo(t[1],None,None)
+
+
+
+# SINTAXIS PARA ALTER TABLE
+
+def p_alter_table_instr(t) :
+    ''' alter_instr     : ALTER TABLE IDENT ADD COLUMN IDENT tipodato PTCOMA
+                        | ALTER TABLE IDENT DROP COLUMN IDENT PTCOMA
+    '''
+    if len(t) == 9:
+        t[0] = AlterAgregar(t[3], t[6], t[7])
+    else:
+        t[0] = AlterDrop (t[3], t[6])                   
+
+# SINTAXIS PARA TRUNCATE
+def p_truncate_instr(t):
+    'truncate_instr : TRUNCATE TABLE IDENT PTCOMA'
+    t[0] = TruncateTable(t[3])
+
+# SINTAXIS DROP
+
+def p_drop_instr(t):
+    '''drop_instr : DROP TABLE IDENT PTCOMA
+    '''
+    t[0] = DropTable(t[3])
+
 
 
 def p_error(t):

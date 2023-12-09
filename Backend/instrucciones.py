@@ -2,39 +2,50 @@
 
 
 # funciones para encapsular las instrucciones
+def UseDatabase(id):
+  return {
+    "tipo" : "USE_DATABASE",
+    "idbase" : id
+  }
+  
+def CreateDatabase(id):
+  return {
+    "tipo" : "CREATE_DATABASE",
+    "idbase" : id
+  }
 
 def CreateTable(id_, columnas_):
   return {
-    "tipo" : "CREATETABLE",
-    "id" : id_,
+    "tipo" : "CREATE_TABLE",
+    "idtabla" : id_,
     "columnas" : columnas_
   }
 
 def AlterAgregar(tabla, columna , tipodato):
   return {
-    "tipo" : "AgregarColumna",
-    "tabla" : tabla,
-    "columna" : columna,
+    "tipo" : "ADD_COLUMNA",
+    "idtabla" : tabla,
+    "idcolumna" : columna,
     "tipodato" : tipodato
   }
 
 def AlterDrop(tabla, columna):
   return {
-    "tipo" : "DropColumna",
-    "tabla" : tabla,
-    "columna" : columna
+    "tipo" : "DROP_COLUMNA",
+    "idtabla" : tabla,
+    "idcolumna" : columna
   }
 
 def TruncateTable(tabla):
   return{
-    "tipo": "TruncateTable",
-    "tabla":tabla
+    "tipo": "TRUNCATE_TABLE",
+    "idtabla":tabla
   }
 
 def DropTable(tabla):
   return{
-    "tipo": "DropTable",
-    "tabla":tabla
+    "tipo": "DROP_TABLE",
+    "idtabla":tabla
   }
 
 
@@ -42,27 +53,26 @@ def DropTable(tabla):
 # funciones para encapsular expresiones y datos
 def ColumnaTable(id, tdato, atributo):
   return {
-    "tipo" : "columnaTable",
-    "id" : id,
+    "tipo" : "COLUMNA_TABLE",
+    "idcolumna" : id,
     "tipodato" :tdato,
     "atributo" :atributo
   }
 
 def TipoDato(tipo, longitud, cantidad):
   return {
-    "tipo" : "tipoDato",
+    "tipo" : "TIPO_DATO",
     "tipodato" :tipo,
     "longitud" :longitud,
     "cantidad" :cantidad
   }
 
-
 def Atributo(nombre, id1, id2):
   return {
-    "tipo" : "atributo",
-    "nombre" :nombre,
-    "id1" :id1,
-    "id2" :id2
+    "tipo" : "ATRIBUTO_COLUMN",
+    "atributo" :nombre,
+    "idtabla" :id1,
+    "idcolumna" :id2
   }
 
 
