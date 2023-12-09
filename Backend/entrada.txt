@@ -1,5 +1,27 @@
-Evaluar[1+1];
-Evaluar[1+1*2];
-Evaluar[-(1+1*6/3-5+7)];
-Evaluar[-(1+1*6/3-5+1*-2)];
-Evaluar[-(1.6+1.45)];
+
+# SINTAXIS PARA SELECT
+
+def p_listacampos(t) :
+    'listacampos      : listacampos COMA campo'
+    t[1].append(t[3])
+    t[0] = t[1]
+def p_listacampos_campo(t) :
+    'listacampos      : campo'
+    t[0] = [t[1]]
+    
+def p_campo(t) :
+    '''campo            : IDENTIFICADOR'''
+    t[0] = t[1]
+
+def p_listatablas(t) :
+    'listatablas      : listatablas COMA tablas'
+    t[1].append(t[3])
+    t[0] = t[1]
+def p_listatablas_tablas(t) :
+    'listatablas      : tablas'
+    t[0] = [t[1]]
+def p_tablas(t) :
+    '''tablas           : IDENTIFICADOR'''
+    t[0] = t[1]
+    
+

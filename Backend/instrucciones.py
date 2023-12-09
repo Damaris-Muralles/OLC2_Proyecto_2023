@@ -1,52 +1,62 @@
 
+
+
+# funciones para encapsular las instrucciones
+
 def CreateTable(id_, columnas_):
-    return {
-      "id" : id_,
-      "columnas" : columnas_,
-      "tipo" : "createTable"
-    }
+  return {
+    "tipo" : "CREATETABLE",
+    "id" : id_,
+    "columnas" : columnas_
+  }
+
+def AlterAgregar(id_, accion):
+  return {
+    "tipo" : "AgregarColumna",
+    "id" : id_,
+    "accion" : accion
+  }
+
+def AlterDrop(id_, accion):
+  return {
+    "tipo" : "DropColumna",
+    "id" : id_,
+    "accion" : accion
+  }
+
+def TruncateTable(id_):
+  return{
+    "tipo": "TruncateTable",
+    "id":id_,
+      
+  }
 
 
+
+# funciones para encapsular expresiones y datos
 def ColumnaTable(id, tdato, atributo):
-    return {
-      "id" : id,
-      "tdato" :tdato,
-      "atributo" :atributo,
-      "tipo" : "columnaTable"
-    }
+  return {
+    "tipo" : "columnaTable",
+    "id" : id,
+    "tipodato" :tdato,
+    "atributo" :atributo
+  }
 
-def Texto(texto, numero):
-    return {
-      "texto" :texto,
-      "numero" :numero,
-     "tipo" : "texto"
-    }
+def TipoDato(tipo, longitud, cantidad):
+  return {
+    "tipo" : "dato",
+    "tipodato" :tipo,
+    "longitud" :longitud,
+    "cantidad" :cantidad
+  }
 
 
 def Atributo(nombre, id1, id2):
-    return {
-      "nombre" :nombre,
-      "id1" :id1,
-      "id2" :id2,
-      "tipo" : "atributo"
-    }
+  return {
+    "tipo" : "atributo",
+    "nombre" :nombre,
+    "id1" :id1,
+    "id2" :id2
+  }
 
-def AlterAgregar(id_, accion):
-    return {
-      "id" : id_,
-      "accion" : accion,
-      "tipo" : "AgregarColumna"
-    }
 
-def AlterDrop(id_, accion):
-    return {
-      "id" : id_,
-      "accion" : accion,
-      "tipo" : "DropColumna"
-    }
-
-def TruncateTable(id_):
-    return{
-        "id":id_,
-        "tipo": "TruncateTable"
-    }

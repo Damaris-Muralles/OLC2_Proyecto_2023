@@ -2,11 +2,10 @@
 from instrucciones import *
 # Lista de palabras reservadas
 reservadas = {
-    'usar' : 'USAR',
+    # instrucciones
     'create' : 'CREATE',
-    'database' : 'DATABASE',
     'alter' : 'ALTER',
-    'table' : 'TABLE',
+    'usar' : 'USAR',
     'drop' : 'DROP',
     'truncate' : 'TRUNCATE',
     'select' : 'SELECT',
@@ -15,6 +14,12 @@ reservadas = {
     'insert' : 'INSERT',
     'function' : 'FUNCTION',    
     'procedure' : 'PROCEDURE',
+    'if' : 'IF',
+    'case' : 'CASE',
+
+    # adicioneales
+    'database' : 'DATABASE',
+    'table' : 'TABLE',
     'declare' : 'DECLARE',
     'add'  : 'ADD', 
     'set' : 'SET',
@@ -23,78 +28,36 @@ reservadas = {
     'from' : 'FROM',
     'where' : 'WHERE',
     'end' : 'END',
-    'case' : 'CASE',
-    'cast' : 'CAST',
-    'suma' : 'SUMA',
-    'contar' : 'CONTAR',
-    'if' : 'IF',
     'as' : 'AS',
-    'return' : 'RETURN',
     'key' : 'KEY',
     'primary' : 'PRIMARY',
     'foreing' : 'FOREIGN',
     'references' : 'REFERENCES',
+    'column'   : 'COLUMN',
+
+    # funciones
+    'cast' : 'CAST',
+    'suma' : 'SUMA',
+    'contar' : 'CONTAR',
+    'return' : 'RETURN',
+    'concatena' : 'CONCATENA',
+    'hoy' : 'HOY',
+    'substraer' : 'SUBSTRAER',
+    
+    # tipos de datos
     'null' : 'NULL',
     'not' : 'NOT',
     'varchar' : 'VARCHAR',
     'char' : 'CHAR',
     'int' : 'INT',
+    'integer' : 'INTEGER',
     'decimal' : 'DECIMAL',
     'bit' : 'BIT',
     'date' : 'DATE',
-    'datetime' : 'DATETIME',
-    'concatena' : 'CONCATENA',
-    'hoy' : 'HOY',
-    'substraer' : 'SUBSTRAER',
-    'column'   : 'COLUMN'
-}
-""" # reservadas
-    'USAR',
-    'CREATE',
-    'DATABASE',
-    'ALTER',
-    'TABLE',
-    'DROP',
-    'TRUNCATE',
-    'SELECT',
-    'UPDATE',
-    'DELETE',
-    'INSERT',
-    'FUNCTION',
-    'PROCEDURE',
-    'DECLARE',
-    'ADD',
-    'SET',
-    'EXC',
-    'BEGIN',
-    'FROM',
-    'WHERE',
-    'END',
-    'CASE',
-    'CAST',
-    'SUMA',
-    'CONTAR',
-    'IF',
-    'AS',
-    'RETURN',
-    'KEY',
-    'PRIMARY',
-    'FOREIGN',
-    'REFERENCES',
-    'NULL',
-    'NOT',
-    'VARCHAR',
-    'CHAR',
-    'INT',
-    'DECIMAL',
-    'BIT',
-    'DATE',
-    'DATETIME',
-    'CONCATENA',
-    'HOY',
-    'SUBSTRAER',
-"""
+    'datetime' : 'DATETIME'
    
+    
+}
 
 tokens  =  [
    
@@ -131,52 +94,6 @@ tokens  =  [
 ] + list(reservadas.values())
 
 # Tokens
-"""
-t_USAR      = r'usar'
-t_CREATE    = r'create'
-t_DATABASE  = r'database'
-t_ALTER     = r'alter'
-t_TABLE     = r'table'
-t_DROP      = r'drop'
-t_TRUNCATE  = r'truncate'
-t_SELECT    = r'select'
-t_UPDATE    = r'update'
-t_DELETE    = r'delete'
-t_INSERT    = r'insert'
-t_FUNCTION  = r'function'
-t_PROCEDURE = r'procedure'
-t_DECLARE   = r'declare'
-t_ADD       = r'add'
-t_SET       = r'set'
-t_EXC       = r'exc'
-t_BEGIN     = r'begin'
-t_FROM      = r'from'
-t_WHERE     = r'where'
-t_END       = r'end'
-t_CASE      = r'case'
-t_CAST      = r'cast'
-t_SUMA      = r'suma'
-t_CONTAR    = r'contar'
-t_IF        = r'if'
-t_AS        = r'as'
-t_RETURN    = r'return'
-t_KEY       = r'key'
-t_PRIMARY   = r'primary'
-t_FOREIGN   = r'foreing'
-t_REFERENCES= r'references'
-t_NULL      = r'null'
-t_NOT       = r'not'
-t_NVARCHAR  = r'nvarchar'
-t_NCHAR     = r'nchar'
-t_INT       = r'int'
-t_DECIMAL   = r'decimal'
-t_BIT       = r'bit'
-t_DATE      = r'date'
-t_DATETIME  = r'datetime'
-t_CONCATENA = r'concatena'
-t_HOY       = r'hoy'
-t_SUBSTRAER = r'substraer'
-"""
 t_PARIZQ    = r'\('
 t_PARDER    = r'\)'
 t_MAS       = r'\+'
@@ -195,6 +112,7 @@ t_MENORQUE  = r'<'
 t_MAYORIGUAL= r'>='
 t_MENORIGUAL= r'<='
 
+# Expresiones regulares
 def t_FECHAHORA(t):
     r'\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}'
     return t
@@ -221,7 +139,6 @@ def t_ENTERO(t):
         t.value = 0
     return t
 
-
 def t_IDENTIFICADOR(t):
     r'[@]([a-zA-ZÑñ]|("_"[a-zA-ZÑñ]))([a-zA-ZÑñ]|[0-9]|"_")*'
     return t
@@ -230,6 +147,7 @@ def t_CADENA(t):
     r'(\'[^\']*\'|\"[^\"]*\")'
     t.value = t.value[1:-1] # remuevo las comillas
     return t
+
 def t_IDENT(t):
     r'[a-zA-Z_][a-zA-Z_0-9]*'
     t.type = reservadas.get(t.value.lower(),'IDENT')
@@ -238,7 +156,6 @@ def t_IDENT(t):
 
 # Caracteres ignorados
 t_ignore = " \t"
-
 
 def t_newline(t):
     r'\n+'
@@ -252,6 +169,8 @@ def t_error(t):
 import ply.lex as lex
 lexer = lex.lex()
 
+
+# prueba del analizador lexico
 '''
 data="""if 1 == 1
 end
@@ -266,8 +185,6 @@ while True:
 '''
 
 
-
-
 # Asociación de operadores y precedencia
 """
 precedence = (
@@ -277,8 +194,7 @@ precedence = (
     ('right','UMENOS'),
     )"""
 
-import instrucciones as instruccionApi
-
+# Definición de la gramática
 
 def p_init(t) :
     'init            : instrucciones'
@@ -301,19 +217,16 @@ def p_instruccion(t) :
     '''instruccion      : create_instr  
                         | alter_instr
                         | truncate_instr
-                    '''
+    '''
     t[0] = t[1]
  
 
-# SINTAXIS USAR BASE DE DATOS
 
 
 # SINTAXIS PARA CREATE TABLE
 def p_create_table_instr(t) :
     'create_instr     : CREATE TABLE IDENT PARIZQ listacolumnas PARDER PTCOMA'
     t[0] = CreateTable(t[3], t[5])
-
-
 
 def p_listacolumnas(t) :
     ''' listacolumnas   : listacolumnas columna
@@ -336,30 +249,7 @@ def p_columna(t):
     else:
         t[0] = ColumnaTable(t[1],t[2],None)
 
-#TIPOS DE DATOS
 
-def p_tipodato(t):
-    '''
-    tipodato   : INT
-                | DECIMAL
-                | BIT
-                | DATE
-                | DATETIME
-                | texto
-    '''
-    t[0] = t[1]
-
-def p_texto(t):
-    '''
-    texto   : VARCHAR PARIZQ ENTERO PARDER
-            | CHAR PARIZQ ENTERO PARDER
-            | VARCHAR
-            | CHAR
-    '''
-    if len(t)==2:
-        t[0] = Texto(t[1],None)
-    else:
-        t[0] = Texto(t[1],t[3])
 
 #ATRIBUTOS DE LA COLUMNA
 def p_atributo(t):
@@ -393,30 +283,30 @@ def p_truncate_instr(t):
     'truncate_instr : TRUNCATE TABLE IDENT PTCOMA'
     t[0] = TruncateTable(t[3])
 
-# SINTAXIS PARA SELECT
+#TIPOS DE DATOS
+def p_tipodato(t):
+    '''
+    tipodato   : DECIMAL PARIZQ ENTERO COMA ENTERO PARDER
+                | INT
+                | INTEGER
+                | DECIMAL
+                | BIT
+                | DATE
+                | DATETIME
+                | VARCHAR PARIZQ ENTERO PARDER
+                | CHAR PARIZQ ENTERO PARDER
+                | VARCHAR
+                | CHAR
+                
+    '''
+    if len(t)==2:
+        t[0] = TipoDato(t[1],None,None)
+    elif len(t)==5:
+        t[0] = TipoDato(t[1],t[3],None)
+    elif len(t)==7:
+        t[0] = TipoDato(t[1],t[3],t[5])
 
-def p_listacampos(t) :
-    'listacampos      : listacampos COMA campo'
-    t[1].append(t[3])
-    t[0] = t[1]
-def p_listacampos_campo(t) :
-    'listacampos      : campo'
-    t[0] = [t[1]]
-    
-def p_campo(t) :
-    '''campo            : IDENTIFICADOR'''
-    t[0] = t[1]
 
-def p_listatablas(t) :
-    'listatablas      : listatablas COMA tablas'
-    t[1].append(t[3])
-    t[0] = t[1]
-def p_listatablas_tablas(t) :
-    'listatablas      : tablas'
-    t[0] = [t[1]]
-def p_tablas(t) :
-    '''tablas           : IDENTIFICADOR'''
-    t[0] = t[1]
     
 
 
@@ -424,6 +314,11 @@ def p_error(t):
     print(t)
     print("Error sintactico en '%s'" % t.value)
 
+
+
+
+
+# Construyendo el analizador sintactico
 import ply.yacc as yacc
 parser = yacc.yacc()
 
@@ -431,7 +326,7 @@ parser = yacc.yacc()
 input = """CREATE TABLE products (
  productno int,
  name varchar,
- price decimal
+ price decimal(8,2)
 );
 
 CREATE TABLE tbfactura (
