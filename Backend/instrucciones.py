@@ -49,6 +49,16 @@ def DropTable(tabla):
   }
 
 
+def FuncionNativa(tipo,param1,param2,param3,param4):
+  return {
+    "tipo" : "FUNCION_NATIVA",
+    "tipofuncion" : tipo,
+    "param1" : param1,
+    "param2" : param2,
+    "param3" : param3,
+    "param4" : param4
+  }
+
 
 # funciones para encapsular expresiones y datos
 def ColumnaTable(id, tdato, atributo):

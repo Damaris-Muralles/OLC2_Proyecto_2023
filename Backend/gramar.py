@@ -127,7 +127,7 @@ def t_DECIMALES(t):
     try:
         t.value = float(t.value)
     except ValueError:
-        print("Floaat value too large %d", t.value)
+        print("El valor float es muy largo %d", t.value)
         t.value = 0
     return t
 
@@ -136,12 +136,12 @@ def t_ENTERO(t):
     try:
         t.value = int(t.value)
     except ValueError:
-        print("Integer value too large %d", t.value)
+        print("El valor del entero es muy largo %d", t.value)
         t.value = 0
     return t
 
 def t_IDENTIFICADOR(t):
-    r'[@]([a-zA-ZÑñ]|("_"[a-zA-ZÑñ]))([a-zA-ZÑñ]|[0-9]|"_")*'
+    r'[@]([a-zA-Z_][a-zA-Z_0-9])*'
     return t
 
 def t_CADENA(t):
@@ -163,7 +163,7 @@ def t_newline(t):
     t.lexer.lineno += t.value.count("\n")
     
 def t_error(t):
-    print("Illegal character '%s'" % t.value[0])
+    print("Error lexico: Caracter '%s' no es valido" % t.value[0])
     t.lexer.skip(1)
     
 # Construyendo el analizador lexico
@@ -221,6 +221,7 @@ def p_instruccion(t) :
                         | alter_instr
                         | truncate_instr
                         | drop_instr
+                        | function_instr
 
     '''
     t[0] = t[1]
@@ -326,7 +327,22 @@ def p_drop_instr(t):
     '''
     t[0] = DropTable(t[3])
 
-
+# SINTAXIS PARA FUNCIONES DEL SISTEMA NATIVAS
+def p_function_instr(t):
+    '''function_instr : SELECT CONCATENA PARIZQ CADENA COMA CADENA PARDER PTCOMA
+                        | SELECT SUBSTRAER PARIZQ CADENA COMA ENTERO COMA ENTERO PARDER PTCOMA
+                        | SELECT HOY PARIZQ PARDER PTCOMA
+                        | SELECT CONTAR PARIZQ IDENT PARDER PTCOMA
+                        | SELECT SUMA PARIZQ IDENT PARDER PTCOMA
+                        | SELECT CAST PARIZQ IDENT AS tipodato PARDER PTCOMA'''
+    if len(t)==7:
+        t[0] = FuncionNativa(t[2],t[4],None,None)
+    elif len(t)==9:
+        t[0] = FuncionNativa(t[2],t[4],t[6],None)
+    elif len(t)==12:
+        t[0] = FuncionNativa(t[2],t[4],t[6],t[8])
+    else:
+        t[0] = FuncionNativa(t[2],None,None,None)
 
 def p_error(t):
     print(t)
