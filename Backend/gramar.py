@@ -1,4 +1,5 @@
 
+from instrucciones import *
 # Lista de palabras reservadas
 reservadas = {
     'usar' : 'USAR',
@@ -35,8 +36,8 @@ reservadas = {
     'references' : 'REFERENCES',
     'null' : 'NULL',
     'not' : 'NOT',
-    'nvarchar' : 'NVARCHAR',
-    'nchar' : 'NCHAR',
+    'varchar' : 'VARCHAR',
+    'char' : 'CHAR',
     'int' : 'INT',
     'decimal' : 'DECIMAL',
     'bit' : 'BIT',
@@ -45,6 +46,7 @@ reservadas = {
     'concatena' : 'CONCATENA',
     'hoy' : 'HOY',
     'substraer' : 'SUBSTRAER',
+    'column'   : 'COLUMN'
 }
 """ # reservadas
     'USAR',
@@ -81,8 +83,8 @@ reservadas = {
     'REFERENCES',
     'NULL',
     'NOT',
-    'NVARCHAR',
-    'NCHAR',
+    'VARCHAR',
+    'CHAR',
     'INT',
     'DECIMAL',
     'BIT',
@@ -229,7 +231,7 @@ def t_CADENA(t):
     t.value = t.value[1:-1] # remuevo las comillas
     return t
 def t_IDENT(t):
-    r'([a-zA-ZÑñ]|("_"[a-zA-ZÑñ]))([a-zA-ZÑñ]|[0-9]|"_")*'
+    r'[a-zA-Z_][a-zA-Z_0-9]*'
     t.type = reservadas.get(t.value.lower(),'IDENT')
     return t
 
@@ -267,12 +269,13 @@ while True:
 
 
 # Asociación de operadores y precedencia
+"""
 precedence = (
     ('left','CONCAT'),
     ('left','MAS','MENOS'),
     ('left','POR','DIVIDIDO'),
     ('right','UMENOS'),
-    )
+    )"""
 
 import instrucciones as instruccionApi
 
@@ -280,11 +283,12 @@ import instrucciones as instruccionApi
 def p_init(t) :
     'init            : instrucciones'
     t[0] = t[1]
+   
 
 def p_instrucciones_lista(t) :
     'instrucciones    : instrucciones instruccion'
-    t[1].append(t[2])
     t[0] = t[1]
+    t[1].append(t[2])
 
 
 def p_instrucciones_instruccion(t) :
@@ -292,26 +296,104 @@ def p_instrucciones_instruccion(t) :
     t[0] = [t[1]]
     
 
+
 def p_instruccion(t) :
-    '''instruccion      : create_instr
+    '''instruccion      : create_instr  
                         | alter_instr
-                        | drop_instr
                         | truncate_instr
-                        | select_instr
-                        | update_instr
-                        | delete_instr
-                        | insert_instr
-                        | use_instr
                     '''
     t[0] = t[1]
+ 
 
-def p_select_instr(t) :
-    'select_instr     : SELECT listacampos FROM listatablas PTCOMA'
-    t[0] = instruccionApi.Select(t[2], t[4], None)
-def p_select_instr_where(t) :
-    'select_instr     : SELECT listacampos FROM listatablas WHERE condiciones PTCOMA'
-    
-    t[0] = instruccionApi.Select(t[2], t[4], t[6])
+# SINTAXIS USAR BASE DE DATOS
+
+
+# SINTAXIS PARA CREATE TABLE
+def p_create_table_instr(t) :
+    'create_instr     : CREATE TABLE IDENT PARIZQ listacolumnas PARDER PTCOMA'
+    t[0] = CreateTable(t[3], t[5])
+
+
+
+def p_listacolumnas(t) :
+    ''' listacolumnas   : listacolumnas columna
+                        | columna'''
+    if len(t) ==3:
+        t[0] = t[1]
+        t[1].append(t[2])
+    else:
+        t[0] = [t[1]]
+
+def p_columna(t):
+    '''
+    columna    : IDENT tipodato atributo COMA
+                | IDENT tipodato atributo 
+                | IDENT tipodato COMA
+                | IDENT tipodato
+    '''
+    if len(t)==5:
+        t[0] = ColumnaTable(t[1],t[2],t[3])
+    else:
+        t[0] = ColumnaTable(t[1],t[2],None)
+
+#TIPOS DE DATOS
+
+def p_tipodato(t):
+    '''
+    tipodato   : INT
+                | DECIMAL
+                | BIT
+                | DATE
+                | DATETIME
+                | texto
+    '''
+    t[0] = t[1]
+
+def p_texto(t):
+    '''
+    texto   : VARCHAR PARIZQ ENTERO PARDER
+            | CHAR PARIZQ ENTERO PARDER
+            | VARCHAR
+            | CHAR
+    '''
+    if len(t)==2:
+        t[0] = Texto(t[1],None)
+    else:
+        t[0] = Texto(t[1],t[3])
+
+#ATRIBUTOS DE LA COLUMNA
+def p_atributo(t):
+    '''
+
+    atributo   : PRIMARY KEY
+                | REFERENCES IDENT PARIZQ IDENT PARDER
+                | NULL
+                | NOT NULL
+    '''
+    if len(t)==3:
+        t[0] = Atributo(t[1],None, None)
+    elif len(t)==6:
+        t[0] = Atributo(t[1],t[2],t[4])
+    else:
+        t[0] = Atributo(t[1],None,None)
+
+# SINTAXIS PARA ALTER TABLE
+
+def p_alter_table_instr(t) :
+    ''' alter_instr     : ALTER TABLE IDENT ADD COLUMN IDENT tipodato PTCOMA
+                        | ALTER TABLE IDENT DROP COLUMN IDENT PTCOMA
+    '''
+    if t[4] == 'ADD':
+        t[0] = AlterAgregar(t[3], t[4], t[6], t[7])
+    else:
+        t[0] = AlterDrop (t[3], t[4], t[6], None)                   
+
+# SINTAXIS PARA TRUNCATE
+def p_truncate_instr(t):
+    'truncate_instr : TRUNCATE TABLE IDENT PTCOMA'
+    t[0] = TruncateTable(t[3])
+
+# SINTAXIS PARA SELECT
 
 def p_listacampos(t) :
     'listacampos      : listacampos COMA campo'
@@ -335,15 +417,32 @@ def p_listatablas_tablas(t) :
 def p_tablas(t) :
     '''tablas           : IDENTIFICADOR'''
     t[0] = t[1]
+    
 
 
 def p_error(t):
     print(t)
-    print("Error sintáctico en '%s'" % t.value)
+    print("Error sintactico en '%s'" % t.value)
 
 import ply.yacc as yacc
 parser = yacc.yacc()
 
 
-def parse(input) :
-    return parser.parse(input)
+input = """CREATE TABLE products (
+ productno int,
+ name varchar,
+ price decimal
+);
+
+CREATE TABLE tbfactura (
+Idfactura int PRIMARY KEY,
+Fechafactura date not null,
+Nit varchar not null,
+Nombrecliente varchar(50) not null,
+Referencia varchar(10)
+);
+"""
+
+result = parser.parse(input.lower())
+print(result)
+

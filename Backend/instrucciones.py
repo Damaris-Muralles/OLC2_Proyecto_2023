@@ -1,97 +1,52 @@
-class Instruccion:
-    '''This is an abstract class'''
 
-class Inst_If(Instruccion) : 
-
-    def __init__(self, expLogica, instrucciones = []) :
-        self.expLogica = expLogica
-        self.instrucciones = instrucciones
-
-class Select(Instruccion) :
-
-    def __init__(self, campos, tablas, where = None) :
-        self.campos = campos
-        self.tablas = tablas
-        self.where = where
-        
+def CreateTable(id_, columnas_):
+    return {
+      "id" : id_,
+      "columnas" : columnas_,
+      "tipo" : "createTable"
+    }
 
 
+def ColumnaTable(id, tdato, atributo):
+    return {
+      "id" : id,
+      "tdato" :tdato,
+      "atributo" :atributo,
+      "tipo" : "columnaTable"
+    }
 
-from enum import Enum
-
-class OPERACION_ARITMETICA(Enum) :
-    MAS = 1
-    MENOS = 2
-    POR = 3
-    DIVIDIDO = 4
-
-class OPERACION_LOGICA(Enum) :
-    MAYOR_QUE = 1
-    MENOR_QUE = 2
-    IGUAL = 3
-    DIFERENTE = 4
-
-
-
-class ExpresionNumerica:
-    '''
-        Esta clase representa una expresión numérica
-    '''
-    
-class ExpresionBinaria(ExpresionNumerica) :
-    
-    def __init__(self, exp1, exp2, operador) :
-        self.exp1 = exp1
-        self.exp2 = exp2
-        self.operador = operador
-
-class ExpresionNegativo(ExpresionNumerica) :
- 
-    def __init__(self, exp) :
-        self.exp = exp
-
-class ExpresionNumero(ExpresionNumerica) :
-   
-    def __init__(self, val = 0) :
-        self.val = val
-
-class ExpresionIdentificador(ExpresionNumerica) :
-
-    def __init__(self, id = "") :
-        self.id = id
+def Texto(texto, numero):
+    return {
+      "texto" :texto,
+      "numero" :numero,
+     "tipo" : "texto"
+    }
 
 
+def Atributo(nombre, id1, id2):
+    return {
+      "nombre" :nombre,
+      "id1" :id1,
+      "id2" :id2,
+      "tipo" : "atributo"
+    }
 
+def AlterAgregar(id_, accion):
+    return {
+      "id" : id_,
+      "accion" : accion,
+      "tipo" : "AgregarColumna"
+    }
 
-class ExpresionCadena :
-    '''
-        Esta clase representa una Expresion de tipo cadena.
-    '''
+def AlterDrop(id_, accion):
+    return {
+      "id" : id_,
+      "accion" : accion,
+      "tipo" : "DropColumna"
+    }
 
-class ExpresionConcatenar(ExpresionCadena) :
-   
-
-    def __init__(self, exp1, exp2) :
-        self.exp1 = exp1
-        self.exp2 = exp2
-
-class ExpresionDobleComilla(ExpresionCadena) :
-
-
-    def __init__(self, val) :
-        self.val = val
-
-class ExpresionCadenaNumerico(ExpresionCadena) :
-  
-    def __init__(self, exp) :
-        self.exp = exp
-
-
-
-
-class ExpresionLogica() :
-  
-    def __init__(self, exp1, exp2, operador) :
-        self.exp1 = exp1
-        self.exp2 = exp2
-        self.operador = operador
+def TruncateTable(id_):
+    return{
+        "id":id_,
+        "tipo": "TruncateTable"
+    }
