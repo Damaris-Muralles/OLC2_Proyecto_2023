@@ -217,6 +217,8 @@ def p_instruccion(t) :
     '''instruccion      : create_instr  
                         | alter_instr
                         | truncate_instr
+                        | drop_instr
+
     '''
     t[0] = t[1]
  
@@ -273,15 +275,22 @@ def p_alter_table_instr(t) :
     ''' alter_instr     : ALTER TABLE IDENT ADD COLUMN IDENT tipodato PTCOMA
                         | ALTER TABLE IDENT DROP COLUMN IDENT PTCOMA
     '''
-    if t[4] == 'ADD':
-        t[0] = AlterAgregar(t[3], t[4], t[6], t[7])
+    if len(t) == 9:
+        t[0] = AlterAgregar(t[3], t[6], t[7])
     else:
-        t[0] = AlterDrop (t[3], t[4], t[6], None)                   
+        t[0] = AlterDrop (t[3], t[6])                   
 
 # SINTAXIS PARA TRUNCATE
 def p_truncate_instr(t):
     'truncate_instr : TRUNCATE TABLE IDENT PTCOMA'
     t[0] = TruncateTable(t[3])
+
+# SINTAXIS DROP
+
+def p_drop_instr(t):
+    '''drop_instr : DROP TABLE IDENT PTCOMA
+    '''
+    t[0] = DropTable(t[3])
 
 #TIPOS DE DATOS
 def p_tipodato(t):
@@ -336,8 +345,23 @@ Nit varchar not null,
 Nombrecliente varchar(50) not null,
 Referencia varchar(10)
 );
+
+Alter table tbfactura add column formapago int;
+Alter table tbfactura add column tipotarjeta int;
+
+Truncate table tbfactura;
+Truncate table tbdetallefactura;
+
+Alter table tbfactura drop column tipotarjeta;
+
+DROP TABLE tbproducts;
+
 """
 
 result = parser.parse(input.lower())
-print(result)
+#print(result)
 
+#recorrer la matriz y diccionario
+for a in result:
+    print(a)
+    print("=====================================")

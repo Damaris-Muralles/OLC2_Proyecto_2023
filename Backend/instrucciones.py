@@ -10,25 +10,31 @@ def CreateTable(id_, columnas_):
     "columnas" : columnas_
   }
 
-def AlterAgregar(id_, accion):
+def AlterAgregar(tabla, columna , tipodato):
   return {
     "tipo" : "AgregarColumna",
-    "id" : id_,
-    "accion" : accion
+    "tabla" : tabla,
+    "columna" : columna,
+    "tipodato" : tipodato
   }
 
-def AlterDrop(id_, accion):
+def AlterDrop(tabla, columna):
   return {
     "tipo" : "DropColumna",
-    "id" : id_,
-    "accion" : accion
+    "tabla" : tabla,
+    "columna" : columna
   }
 
-def TruncateTable(id_):
+def TruncateTable(tabla):
   return{
     "tipo": "TruncateTable",
-    "id":id_,
-      
+    "tabla":tabla
+  }
+
+def DropTable(tabla):
+  return{
+    "tipo": "DropTable",
+    "tabla":tabla
   }
 
 
@@ -44,7 +50,7 @@ def ColumnaTable(id, tdato, atributo):
 
 def TipoDato(tipo, longitud, cantidad):
   return {
-    "tipo" : "dato",
+    "tipo" : "tipoDato",
     "tipodato" :tipo,
     "longitud" :longitud,
     "cantidad" :cantidad
