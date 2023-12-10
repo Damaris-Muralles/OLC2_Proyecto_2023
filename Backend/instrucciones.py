@@ -78,6 +78,19 @@ def InsertTable(tabla,columnas , valores):
     "valores":valores
   }
 
+def Case(tipo,expresion,when,else_):
+  return{
+    "tipo": "CASE",
+    "sentencias":tipo  
+  }
+
+def Sentencia(tipo,expresion,resultado):
+  return{
+    "tipo": "SENTENCIA",
+    "tipo":tipo,
+    "condicion":expresion,
+    "resultado":resultado
+  }
 
 def Llaves( punto, idtabla, idcolumna):
   return{

@@ -12,7 +12,6 @@ reservadas = {
     'update' : 'UPDATE',
     'delete' : 'DELETE',
     'insert' : 'INSERT',
-    'into' : 'INTO',
     'function' : 'FUNCTION',    
     'procedure' : 'PROCEDURE',
     'if' : 'IF',
@@ -21,13 +20,16 @@ reservadas = {
     # adicioneales
     'data' : 'DATA',
     'base' : 'BASE',
+    'into' : 'INTO',
     'table' : 'TABLE',
     'declare' : 'DECLARE',
     'add'  : 'ADD', 
     'set' : 'SET',
     'exc' : 'EXC',
     'begin' : 'BEGIN',
-
+    'when' : 'WHEN',
+    'then' : 'THEN',
+    'else' : 'ELSE',
     'from' : 'FROM',
     'where' : 'WHERE',
     'end' : 'END',
@@ -250,6 +252,7 @@ def p_instruccion(t) :
                         | create_procedure
                         | create_funcion
                         | retornar
+                        | case_instr
 
 
     '''
@@ -334,7 +337,6 @@ def p_atributo(t):
 
 
 # SINTAXIS PARA ALTER TABLE
-
 def p_alter_table_instr(t) :
     ''' alter_instr     : ALTER TABLE IDENT ADD COLUMN IDENT tipodato PTCOMA
                         | ALTER TABLE IDENT DROP COLUMN IDENT PTCOMA
@@ -344,13 +346,12 @@ def p_alter_table_instr(t) :
     else:
         t[0] = AlterDrop(t[3], t[6])                   
 
-# SINTAXIS PARA TRUNCATE
+# SINTAXIS PARA TRUNCATE TABLE
 def p_truncate_instr(t):
     'truncate_instr : TRUNCATE TABLE IDENT PTCOMA'
     t[0] = TruncateTable(t[3])
 
-# SINTAXIS DROP
-
+# SINTAXIS DROP TABLE
 def p_drop_instr(t):
     '''drop_instr : DROP TABLE IDENT PTCOMA
     '''
@@ -371,6 +372,7 @@ def p_hoy(t):
     '''hoyy : HOY PARIZQ PARDER'''
     t[0] = Hoy()
 
+# SINTAXIS PARA CONTAR
 def p_contar(t):
     '''contarr : CONTAR PARIZQ POR PARDER'''
     t[0] = Contar()
@@ -391,19 +393,19 @@ def p_variable_operar(t):
                         | IDENTIFICADOR'''
     t[0] = t[1]
     
-# SINTAXIS UPDATE
-
+# SINTAXIS PARAUPDATE
 def p_update_instr(t):
     '''update_instr : UPDATE IDENT SET expresiones WHERE expresiones PTCOMA
                     '''
     t[0] = UpdateTable(t[2], t[4], t[6])
 
-# SINTAXIS DELETE
+# SINTAXIS PARA DELETE
 def p_delete_instr(t):
     '''delete_instr : DELETE FROM IDENT WHERE expresiones PTCOMA
                     '''
     t[0] = DeleteTable(t[3], t[5])
-    
+
+# SINTAXIS PARA SELECT
 def p_select(t):
     '''select_instr :   SELECT tablaselect FROM tablaselect PTCOMA 
                 | SELECT tablaselect FROM tablaselect WHERE expresiones PTCOMA
@@ -430,8 +432,7 @@ def p_tablas(t):
     '''
     t[0] = t[1]
 
-#INSERT
-
+# SINTAXIS PARA INSERT
 def p_insert(t):
     '''insert_instr : INSERT INTO IDENT VALUES PARIZQ tablaselect PARDER PTCOMA
                     | INSERT INTO IDENT PARIZQ tablaselect PARDER VALUES PARIZQ tablaselect PARDER PTCOMA
@@ -442,7 +443,6 @@ def p_insert(t):
         t[0] = InsertTable(t[3],t[5],t[9])
 
 # SINTAXIS PARA DECLARACION DE VARIABLES
-
 def p_declaracion(t):
     '''declaracionvariable : DECLARE IDENTIFICADOR tipodato PTCOMA
                             | DECLARE IDENTIFICADOR tipodato IGUALSIMPLE expresiones PTCOMA
@@ -453,7 +453,6 @@ def p_declaracion(t):
         t[0] = DeclararVariable(t[2],t[3],t[5])
 
 # SINTAXIS PARA ASIGNACION DE VARIABLES
-
 def p_asignacion(t):
     '''asignacionvariable : SET IDENTIFICADOR IGUALSIMPLE expresiones PTCOMA
     '''
@@ -465,7 +464,6 @@ def p_if(t):
     t[0] = sslIf(t[3],t[5])
 
 # SINTAXIS CREAR PROCEDURE 
-
 def p_create_procedure(t):
     '''create_procedure : CREATE PROCEDURE IDENT PARIZQ listparam PARDER AS BEGIN instrucciones END PTCOMA
                         | CREATE PROCEDURE IDENT PARIZQ PARDER AS BEGIN instrucciones END PTCOMA
@@ -474,6 +472,7 @@ def p_create_procedure(t):
         t[0] = sslprocedure(t[3],t[5],t[9])
     else:
         t[0] = sslprocedure(t[3],None,t[8])
+
 # SINTAXIS FUNCIONES
 def p_funciones(t):
     ''' create_funcion : CREATE FUNCTION IDENT PARIZQ listparam PARDER RETURN tipodato AS BEGIN instrucciones END PTCOMA
@@ -495,7 +494,6 @@ def p_listparam(t):
     else:
         t[0] = [t[1]]
 
-
 def p_param(t):
     '''param : IDENTIFICADOR tipodato COMA
                | IDENTIFICADOR tipodato 
@@ -505,6 +503,29 @@ def p_param(t):
     else:
         t[0] = Parametro(t[1],t[2])
 
+# SINTAXIS PARA CASE
+def p_case_instr(t):
+    '''case_instr : CASE sentencias END PTCOMA'''
+    t[0] = Case(t[2])
+
+def p_sentencias(t):
+    '''sentencias : sentencias sentencia
+                    | sentencia
+    '''
+    if len(t)==3:
+        t[0] = t[1]
+        t[1].append(t[2])
+    else:
+        t[0] = [t[1]]
+
+def p_sentencia(t):
+    '''sentencia : WHEN expresiones THEN expresiones
+                    | ELSE expresiones
+    '''
+    if len(t)==4:
+        t[0] = Sentencia(t[1],t[2],t[3])
+    else:
+        t[0] = Sentencia(t[1],None,t[2])
 
 # EXPRESIONES
 def p_expresiones(t):
@@ -561,9 +582,11 @@ def p_func_sistema(t):
     '''
     t[0] = t[1]
 
+# SINTAXIS PARA RETORNAR
 def p_retornarr(t):
     '''retornar : RETURN expresiones PTCOMA'''
     t[0] = Retornar(t[2])
+
 
 def p_error(t):
     print(t)
