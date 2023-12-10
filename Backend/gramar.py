@@ -12,6 +12,7 @@ reservadas = {
     'update' : 'UPDATE',
     'delete' : 'DELETE',
     'insert' : 'INSERT',
+    'into' : 'INTO',
     'function' : 'FUNCTION',    
     'procedure' : 'PROCEDURE',
     'if' : 'IF',
@@ -26,11 +27,13 @@ reservadas = {
     'set' : 'SET',
     'exc' : 'EXC',
     'begin' : 'BEGIN',
+
     'from' : 'FROM',
     'where' : 'WHERE',
     'end' : 'END',
     'as' : 'AS',
     'key' : 'KEY',
+    'values' : 'VALUES',
     'primary' : 'PRIMARY',
     'foreing' : 'FOREIGN',
     'references' : 'REFERENCES',
@@ -66,6 +69,7 @@ tokens  =  [
     'PARIZQ',
     'PARDER',
     'COMA',
+    'PUNTO',
     'PTCOMA',
     
     # operadores
@@ -102,6 +106,7 @@ t_MENOS     = r'-'
 t_POR       = r'\*'
 t_DIVIDIDO  = r'/'
 t_COMA      = r','
+t_PUNTO     = r'\.'
 t_PTCOMA    = r';'
 t_AND       = r'&&'
 t_OR        = r'\|\|'
@@ -115,11 +120,11 @@ t_MENORIGUAL= r'<='
 
 # Expresiones regulares
 def t_FECHAHORA(t):
-    r'\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}'
+    r'\d{2}-\d{2}-\d{4}\s\d{2}:\d{2}:\d{2}'
     return t
 
 def t_FECHA(t):
-    r'\d{4}-\d{2}-\d{2}'
+    r'\d{2}-\d{2}-\d{4}'
     return t
 
 def t_DECIMALES(t):
@@ -187,13 +192,15 @@ while True:
 
 
 # Asociación de operadores y precedencia
-"""
 precedence = (
-    ('left','CONCAT'),
-    ('left','MAS','MENOS'),
-    ('left','POR','DIVIDIDO'),
-    ('right','UMENOS'),
-    )"""
+    ('right', 'NEGACION'), 
+    ('left', 'MAS', 'MENOS'),
+    ('left', 'POR', 'DIVIDIDO'),
+    ('nonassoc', 'PARDER', 'PARIZQ'),
+    ('left', 'IGUAL', 'DIFERENTE', 'MAYORQUE','MENORQUE', 'MENORIGUAL', 'MAYORIGUAL'),
+    ('right', 'OR'),
+    ('right', 'AND'),
+    )
 
 # Definición de la gramática
 
@@ -221,11 +228,14 @@ def p_instruccion(t) :
                         | alter_instr
                         | truncate_instr
                         | drop_instr
-                        | function_instr
+                        | delete_instr
+                        | update_instr
+                        | select_instr
+                        | insert_instr
 
     '''
     t[0] = t[1]
- 
+
 
 #TIPOS DE DATOS
 def p_tipodato(t):
@@ -313,7 +323,7 @@ def p_alter_table_instr(t) :
     if len(t) == 9:
         t[0] = AlterAgregar(t[3], t[6], t[7])
     else:
-        t[0] = AlterDrop (t[3], t[6])                   
+        t[0] = AlterDrop(t[3], t[6])                   
 
 # SINTAXIS PARA TRUNCATE
 def p_truncate_instr(t):
@@ -327,22 +337,160 @@ def p_drop_instr(t):
     '''
     t[0] = DropTable(t[3])
 
-# SINTAXIS PARA FUNCIONES DEL SISTEMA NATIVAS
-def p_function_instr(t):
-    '''function_instr : SELECT CONCATENA PARIZQ CADENA COMA CADENA PARDER PTCOMA
-                        | SELECT SUBSTRAER PARIZQ CADENA COMA ENTERO COMA ENTERO PARDER PTCOMA
-                        | SELECT HOY PARIZQ PARDER PTCOMA
-                        | SELECT CONTAR PARIZQ IDENT PARDER PTCOMA
-                        | SELECT SUMA PARIZQ IDENT PARDER PTCOMA
-                        | SELECT CAST PARIZQ IDENT AS tipodato PARDER PTCOMA'''
-    if len(t)==7:
-        t[0] = FuncionNativa(t[2],t[4],None,None)
-    elif len(t)==9:
-        t[0] = FuncionNativa(t[2],t[4],t[6],None)
-    elif len(t)==12:
-        t[0] = FuncionNativa(t[2],t[4],t[6],t[8])
+# SINTAXIS CONCATENAR
+def p_concater(t):
+    '''concater : CONCATENA PARIZQ CADENA COMA CADENA PARDER '''
+    t[0] = Concatena(t[3], t[5])
+
+# SITAXIS SUBSTRAER
+def p_substraer(t):
+    '''subtrae : SUBSTRAER PARIZQ CADENA COMA ENTERO COMA ENTERO PARDER '''
+    t[0] = Substraer(t[3], t[5], t[7])
+
+# SINTAXIS PARA HOY
+def p_hoy(t):
+    '''hoyy : HOY PARIZQ PARDER'''
+    t[0] = Hoy()
+
+def p_contar(t):
+    '''contarr : CONTAR PARIZQ POR PARDER'''
+    t[0] = Contar()
+
+# SINTAXIS PARA SUMA
+def p_suma(t):
+    '''sumaa : SUMA PARIZQ IDENT PARDER
+            | SUMA PARIZQ ENTERO PARDER'''
+    t[0] = Suma(t[3])
+
+# SINTAXIS PARA CAST
+def p_cast(t):
+    '''castt : CAST PARIZQ variable_operar AS tipodato PARDER '''
+    t[0] = Cast(t[3], t[5])
+
+def p_variable_operar(t):
+    '''variable_operar : IDENT
+                        | IDENTIFICADOR'''
+    t[0] = t[1]
+    
+# SINTAXIS UPDATE
+
+def p_update_instr(t):
+    '''update_instr : UPDATE IDENT SET expresiones WHERE expresiones PTCOMA
+                    '''
+    t[0] = UpdateTable(t[2], t[4], t[6])
+
+# SINTAXIS DELETE
+def p_delete_instr(t):
+    '''delete_instr : DELETE FROM IDENT WHERE expresiones PTCOMA
+                    '''
+    t[0] = DeleteTable(t[3], t[5])
+    
+def p_select(t):
+    '''select_instr :   SELECT tablaselect FROM tablaselect PTCOMA 
+                | SELECT tablaselect FROM tablaselect WHERE expresiones PTCOMA
+    '''
+    if len(t)==6:
+        t[0] = SelectTable(t[2],t[4],None)
     else:
-        t[0] = FuncionNativa(t[2],None,None,None)
+        t[0] = SelectTable(t[2],t[4],t[6])
+
+def  p_tablaselect(t):
+    '''tablaselect : tablaselect tablas
+                    | tablas
+    '''
+    if len(t) == 3:
+        t[0] = t[1]
+        t[1].append(t[2])
+    else:
+        t[0] = [t[1]]
+
+def p_tablas(t):
+    '''tablas : POR
+    | expresiones COMA
+    | expresiones
+    '''
+    t[0] = t[1]
+
+#INSERT
+
+def p_insert(t):
+    '''insert_instr : INSERT INTO IDENT VALUES PARIZQ tablaselect PARDER PTCOMA
+                    | INSERT INTO IDENT PARIZQ tablaselect PARDER VALUES PARIZQ tablaselect PARDER PTCOMA
+    '''
+    if len(t)==9:
+        t[0] = InsertTable(t[3],None,t[6])
+    else:
+        t[0] = InsertTable(t[3],t[5],t[9])
+
+# SINTAXIS PARA IF
+def p_if(t):
+    '''if_instr : IF expresiones begin_instr
+                | IF expresiones begin_instr else_instr
+                | IF expresiones begin_instr elseif_instr
+                | IF expresiones begin_instr elseif_instr else_instr
+    '''
+    if len(t)==4:
+        t[0] = If(t[2],t[3],None,None)
+    elif len(t)==5:
+        t[0] = If(t[2],t[3],None,t[4])
+    elif len(t)==6:
+        t[0] = If(t[2],t[3],t[4],None)
+    else:
+        t[0] = If(t[2],t[3],t[4],t[5])
+# EXPRESIONES
+def p_expresiones(t):
+    '''expresiones : FECHAHORA
+                    | FECHA
+                    | expresiones AND expresiones
+                    | expresiones OR expresiones
+                    | expresiones IGUAL expresiones
+                    | expresiones DIFERENTE expresiones
+                    | expresiones MAYORQUE expresiones
+                    | expresiones MENORQUE expresiones 
+                    | expresiones MAYORIGUAL expresiones
+                    | expresiones MENORIGUAL expresiones
+                    | expresiones MAS expresiones
+                    | expresiones MENOS expresiones
+                    | expresiones POR expresiones
+                    | expresiones DIVIDIDO expresiones
+                    | PARIZQ expresiones PARDER
+                    | NEGACION expresiones
+                    | llaves
+                    | ENTERO
+                    | DECIMALES
+                    | CADENA
+                    | IDENTIFICADOR
+                    | IDENT
+                    | NULL
+                    | func_sistema
+                   
+                '''
+    if t[1] == '(':
+        print("es parentesis")
+        t[0] = t[2]
+    elif len(t)==3:
+        print("es negacion")
+        t[0] = Expresion(t[2],t[1],None)
+    elif len(t)==4: 
+        
+        print("es expresion")
+        t[0] = Expresion(t[1],t[2],t[3])
+    elif len(t)==2:
+        t[0] = t[1]
+
+def p_llaves(t):
+    '''llaves : IDENT PUNTO IDENT'''
+    t[0] = Llaves(t[2],t[1],t[3])
+  
+def p_func_sistema(t):
+    '''func_sistema : contarr
+                    | sumaa
+                    | hoyy
+                    | subtrae
+                    | concater
+                    | castt
+    '''
+    t[0] = t[1]
 
 def p_error(t):
     print(t)
@@ -357,29 +505,15 @@ import ply.yacc as yacc
 parser = yacc.yacc()
 
 
-input = """CREATE TABLE products (
- productno int,
- name varchar,
- price decimal(8,2)
-);
+input = """
 
-CREATE TABLE tbfactura (
-Idfactura int PRIMARY KEY,
-Fechafactura date not null,
-Nit varchar not null,
-Nombrecliente varchar(50) not null,
-Referencia varchar(10)
-);
 
-Alter table tbfactura add column formapago int;
-Alter table tbfactura add column tipotarjeta int;
 
-Truncate table tbfactura;
-Truncate table tbdetallefactura;
+INSERT INTO Damaris VALUES(1,"casa",3);
 
-Alter table tbfactura drop column tipotarjeta;
+INSERT INTO Sebatian (columa1, columna2, columna3) VALUES (1,"soyuntexto", 34-01-1922);
 
-DROP TABLE tbproducts;
+
 
 """
 

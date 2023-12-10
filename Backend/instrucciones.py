@@ -48,6 +48,44 @@ def DropTable(tabla):
     "idtabla":tabla
   }
 
+def UpdateTable(tabla, set, where):
+  return{
+    "tipo": "UPDATE_TABLE",
+    "idtabla":tabla,
+    "set":set,
+    "where":where
+  }
+
+def DeleteTable(tabla, where):
+  return{
+    "tipo": "DELETE_TABLE",
+    "idtabla":tabla,
+    "where":where
+  }
+
+def SelectTable(columnas, tablas, where):
+  return{
+    "tipo": "SELECT_TABLE",
+    "columna":columnas,
+    "tablas":tablas,
+    "where":where
+  }
+def InsertTable(tabla,columnas , valores):
+  return{
+    "tipo": "INSERT_TABLE",
+    "idtabla":tabla,
+    "columnas":columnas,
+    "valores":valores
+  }
+
+
+def Llaves( punto, idtabla, idcolumna):
+  return{
+    "tipo": "Llave",
+    "punto":punto,
+    "idtabla":idtabla,
+    "idcolumna":idcolumna
+  }
 
 def FuncionNativa(tipo,param1,param2,param3,param4):
   return {
@@ -86,3 +124,48 @@ def Atributo(nombre, id1, id2):
   }
 
 
+#Funciones Sistema
+def Concatena(cadena1, cadena2):
+  return {
+    "tipo" : "CONCATENA",
+    "cadena1" : cadena1,
+    "cadena2" : cadena2
+  }
+
+def Substraer(cadena, inicio, fin):
+  return {
+    "tipo" : "SUBSTRAER",
+    "cadena" : cadena,
+    "inicio" : inicio,
+    "fin" : fin
+  }
+
+def Hoy():
+  return {
+    "tipo" : "HOY"
+  }
+
+def Contar():
+  return {
+    "tipo" : "CONTAR"
+  }
+def Suma(columna):
+  return {
+    "tipo" : "SUMA",
+    "columna" : columna
+  }
+
+def Cast(columna, tipo):
+  return {
+    "tipo" : "CAST",
+    "columna" : columna,
+    "tipo" : tipo
+  }
+
+def Expresion(exp1, operador, exp2):
+  return {
+    "tipo" : "EXPRESION",
+    "exp1" : exp1,
+    "exp2" : exp2,
+    "operador" : operador
+  }
