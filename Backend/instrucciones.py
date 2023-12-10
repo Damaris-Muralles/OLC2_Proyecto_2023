@@ -1,16 +1,43 @@
-
+# enums para las instrucciones
+from enum import Enum
+# enump para tipo instruccion
+class TIPO_INSTRUCCION(Enum):
+  USE_DATABASE = 1
+  CREATE_DATABASE = 2
+  CREATE_TABLE = 3
+  ADD_COLUMNA = 4
+  DROP_COLUMNA = 5
+  TRUNCATE_TABLE = 6
+  DROP_TABLE = 7
+  UPDATE_TABLE = 8
+  DELETE_TABLE = 9
+  SELECT_TABLE = 10
+  INSERT_TABLE = 11
+  CASE = 12
+  SENTENCIA = 13
+  LLAVE = 14
+  FUNCION_NATIVA = 15
+  IF = 16
+  DECLARAR_VARIABLE = 17
+  ASIGNACION_VARIABLE = 18
+  PARAMETRO = 19
+  PROCEDURE = 20
+  FUNCTION = 21
+  RETORNAR = 22
+# enump para tipo dato
+# enump para tipo operacion
 
 
 # funciones para encapsular las instrucciones
 def UseDatabase(id):
   return {
-    "tipo" : "USE_DATABASE",
+    "tipo" : TIPO_INSTRUCCION.USE_DATABASE,
     "idbase" : id
   }
   
 def CreateDatabase(id):
   return {
-    "tipo" : "CREATE_DATABASE",
+    "tipo" : TIPO_INSTRUCCION.CREATE_DATABASE,
     "idbase" : id
   }
 
@@ -94,7 +121,7 @@ def Sentencia(tipo,expresion,resultado):
 
 def Llaves( punto, idtabla, idcolumna):
   return{
-    "tipo": "Llave",
+    "tipo": "LLAVE",
     "punto":punto,
     "idtabla":idtabla,
     "idcolumna":idcolumna

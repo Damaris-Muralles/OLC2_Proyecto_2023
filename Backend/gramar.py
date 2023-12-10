@@ -290,7 +290,7 @@ def p_use_database(t):
 # SINTAXIS PARA CREAR BASE DE DATOS
 def p_createbase_instr(t):
     'createbase_instr : CREATE DATA BASE IDENT PTCOMA'
-    t[0] = CreateDatabase(t[3])
+    t[0] = CreateDatabase(t[4])
 
 # SINTAXIS PARA CREATE TABLE
 def p_create_table_instr(t) :
@@ -556,14 +556,10 @@ def p_expresiones(t):
                    
                 '''
     if t[1] == '(':
-        print("es parentesis")
         t[0] = t[2]
     elif len(t)==3:
-        print("es negacion")
         t[0] = Expresion(t[2],t[1],None)
     elif len(t)==4: 
-        
-        print("es expresion")
         t[0] = Expresion(t[1],t[2],t[3])
     elif len(t)==2:
         t[0] = t[1]
@@ -600,8 +596,14 @@ def p_error(t):
 import ply.yacc as yacc
 parser = yacc.yacc()
 
+def parse(input) :
+    return parser.parse(input)
 
-input = """
+
+
+
+"""
+input = 
 
 CREATE FUNCTION Retornasuma(@ProductID int)
 RETURN int
@@ -628,10 +630,10 @@ END;
 
 """
 
-result = parser.parse(input.lower())
-#print(result)
+#result = parser.parse(input.lower())
+
 
 #recorrer la matriz y diccionario
-for a in result:
-    print(a)
-    print("=====================================")
+#for a in result:
+ #   print(a)
+  #  print("=====================================")

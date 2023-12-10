@@ -1,0 +1,65 @@
+<?xml version="1.0" ?>
+<basesdedatos>
+  <basedatos>
+    <nombre>Base de datos 1</nombre>
+    <tablas>
+      <tabla>
+        <nombre>tabla1</nombre>
+        <columnas>
+          <columna>
+            <nombre>columna1</nombre>
+            <tipo>int</tipo>
+            <atributo>not null</atributo>
+            <llave>primary key</llave>
+            <referencia>null</referencia>
+            <campos>
+              <campo>campo1</campo>
+              <campo>campo2</campo>
+              <campo>campo3</campo>
+            </campos>
+          </columna>
+          <columna>
+            <nombre>columna2</nombre>
+            <tipo>varchar</tipo>
+            <atributo>not null</atributo>
+            <llave>foreign key</llave>
+            <referencia>table1</referencia>
+            <campos>
+              <campo>campo1</campo>
+              <campo>campo2</campo>
+              <campo>campo3</campo>
+            </campos>
+          </columna>
+          <columna>
+            <nombre>columna3</nombre>
+            <tipo>varchar</tipo>
+            <atributo>not null</atributo>
+            <llave>foreign key</llave>
+            <referencia>table2</referencia>
+            <campos>
+              <campo>campo1</campo>
+              <campo>campo2</campo>
+              <campo>campo3</campo>
+            </campos>
+          </columna>
+        </columnas>
+      </tabla>
+    </tablas>
+    <funciones>
+      <funcion>funcion1</funcion>
+      <funcion>funcion2</funcion>
+      <funcion>funcion3</funcion>
+    </funciones>
+    <procedimientos>
+      <procedimiento>procedimiento1</procedimiento>
+      <procedimiento>procedimiento2</procedimiento>
+      <procedimiento>procedimiento3</procedimiento>
+    </procedimientos>
+  </basedatos>
+  <basedatos>
+    <nombre>base_datos_1_prueba</nombre>
+    <tablas/>
+    <funciones/>
+    <procedimientos/>
+  </basedatos>
+</basesdedatos>
