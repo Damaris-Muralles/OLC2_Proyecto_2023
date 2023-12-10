@@ -169,3 +169,58 @@ def Expresion(exp1, operador, exp2):
     "exp2" : exp2,
     "operador" : operador
   }
+
+
+#SSL
+
+def sslIf(condicion, instrucciones):
+  return {
+    "tipo" : "IF",
+    "condicion" : condicion,
+    "instrucciones" : instrucciones
+  }
+
+def DeclararVariable(id, tipo ,valor):
+  return {
+    "tipo" : "DECLARAR_VARIABLE",
+    "id" : id,
+    "tipodato" : tipo,
+    "valor" : valor
+  }
+
+def AsignacionVariable(id, valor):
+  return {
+    "tipo" : "ASIGNACION_VARIABLE",
+    "id" : id,
+    "valor" : valor
+  }
+
+def Parametro(id, tipo):
+  return {
+    "tipo" : "PARAMETRO",
+    "id" : id,
+    "tipodato" : tipo
+  }
+def sslprocedure(id, parametros, instrucciones):
+  return {
+    "tipo" : "PROCEDURE",
+    "id" : id,
+    "parametros" : parametros,
+    "instrucciones" : instrucciones
+  }
+
+def sslfunction(id, parametros, returns, instrucciones):
+  return {
+    "tipo" : "FUNCTION",
+    "id" : id,
+    "parametros" : parametros,
+    "return" : returns,
+    "instrucciones" : instrucciones
+  }
+
+def Retornar(valor):
+  return {
+    "tipo" : "RETORNAR",
+    "valor" : valor
+  }
+

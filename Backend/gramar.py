@@ -71,6 +71,7 @@ tokens  =  [
     'COMA',
     'PUNTO',
     'PTCOMA',
+    'IGUALSIMPLE',
     
     # operadores
     'MAS',
@@ -117,6 +118,7 @@ t_MAYORQUE  = r'>'
 t_MENORQUE  = r'<'
 t_MAYORIGUAL= r'>='
 t_MENORIGUAL= r'<='
+t_IGUALSIMPLE = r'='
 
 # Expresiones regulares
 def t_FECHAHORA(t):
@@ -146,7 +148,7 @@ def t_ENTERO(t):
     return t
 
 def t_IDENTIFICADOR(t):
-    r'[@]([a-zA-Z_][a-zA-Z_0-9])*'
+    r'@[a-zA-Z_][a-zA-Z_0-9]*'
     return t
 
 def t_CADENA(t):
@@ -178,11 +180,21 @@ lexer = lex.lex()
 
 # prueba del analizador lexico
 '''
-data="""if 1 == 1
-end
-+
-intol
-database"""
+data="""
+CREATE FUNCTION Retornasuma(@ProductID int)
+RETURN int
+AS
+BEGIN
+    DECLARE @ret int;
+    SELECT @ret == SUM(Cantidad) FROM inventario WHERE ProductoId == @ProductID; 
+
+    IF (@ret == NULL)
+        SET @ret = 0;
+    END;
+
+    RETURN @ret;
+END;
+"""
 lexer.input(data)
 while True:
     tok = lexer.token()
@@ -232,6 +244,13 @@ def p_instruccion(t) :
                         | update_instr
                         | select_instr
                         | insert_instr
+                        | declaracionvariable
+                        | asignacionvariable
+                        | if_instr
+                        | create_procedure
+                        | create_funcion
+                        | retornar
+
 
     '''
     t[0] = t[1]
@@ -422,21 +441,71 @@ def p_insert(t):
     else:
         t[0] = InsertTable(t[3],t[5],t[9])
 
+# SINTAXIS PARA DECLARACION DE VARIABLES
+
+def p_declaracion(t):
+    '''declaracionvariable : DECLARE IDENTIFICADOR tipodato PTCOMA
+                            | DECLARE IDENTIFICADOR tipodato IGUALSIMPLE expresiones PTCOMA
+    '''
+    if len(t)==5:
+        t[0] = DeclararVariable(t[2],t[3],None)
+    else:
+        t[0] = DeclararVariable(t[2],t[3],t[5])
+
+# SINTAXIS PARA ASIGNACION DE VARIABLES
+
+def p_asignacion(t):
+    '''asignacionvariable : SET IDENTIFICADOR IGUALSIMPLE expresiones PTCOMA
+    '''
+    t[0] = AsignacionVariable(t[2],t[4])
+
 # SINTAXIS PARA IF
 def p_if(t):
-    '''if_instr : IF expresiones begin_instr
-                | IF expresiones begin_instr else_instr
-                | IF expresiones begin_instr elseif_instr
-                | IF expresiones begin_instr elseif_instr else_instr
+    '''if_instr : IF PARIZQ expresiones PARDER instrucciones END PTCOMA '''
+    t[0] = sslIf(t[3],t[5])
+
+# SINTAXIS CREAR PROCEDURE 
+
+def p_create_procedure(t):
+    '''create_procedure : CREATE PROCEDURE IDENT PARIZQ listparam PARDER AS BEGIN instrucciones END PTCOMA
+                        | CREATE PROCEDURE IDENT PARIZQ PARDER AS BEGIN instrucciones END PTCOMA
+    '''
+    if len(t)==12:
+        t[0] = sslprocedure(t[3],t[5],t[9])
+    else:
+        t[0] = sslprocedure(t[3],None,t[8])
+# SINTAXIS FUNCIONES
+def p_funciones(t):
+    ''' create_funcion : CREATE FUNCTION IDENT PARIZQ listparam PARDER RETURN tipodato AS BEGIN instrucciones END PTCOMA
+                        | CREATE FUNCTION IDENT PARIZQ PARDER RETURN tipodato AS BEGIN instrucciones END PTCOMA
+    '''
+    if len(t)==14:
+        t[0] = sslfunction(t[3],t[5],t[8],t[11])
+    else:
+        t[0] = sslfunction(t[3],None,t[7],t[10])
+
+# SINTAXIS PARA PARAMETROS
+def p_listparam(t):
+    '''listparam : listparam param
+                    | param
+    '''
+    if len(t)==3:
+        t[0] = t[1]
+        t[1].append(t[2])
+    else:
+        t[0] = [t[1]]
+
+
+def p_param(t):
+    '''param : IDENTIFICADOR tipodato COMA
+               | IDENTIFICADOR tipodato 
     '''
     if len(t)==4:
-        t[0] = If(t[2],t[3],None,None)
-    elif len(t)==5:
-        t[0] = If(t[2],t[3],None,t[4])
-    elif len(t)==6:
-        t[0] = If(t[2],t[3],t[4],None)
+        t[0] = Parametro(t[1],t[2])
     else:
-        t[0] = If(t[2],t[3],t[4],t[5])
+        t[0] = Parametro(t[1],t[2])
+
+
 # EXPRESIONES
 def p_expresiones(t):
     '''expresiones : FECHAHORA
@@ -492,6 +561,10 @@ def p_func_sistema(t):
     '''
     t[0] = t[1]
 
+def p_retornarr(t):
+    '''retornar : RETURN expresiones PTCOMA'''
+    t[0] = Retornar(t[2])
+
 def p_error(t):
     print(t)
     print("Error sintactico en '%s'" % t.value)
@@ -507,11 +580,26 @@ parser = yacc.yacc()
 
 input = """
 
+CREATE FUNCTION Retornasuma(@ProductID int)
+RETURN int
+AS
+BEGIN
+    DECLARE @ret int;
+    SELECT @ret == SUM(Cantidad) FROM inventario WHERE ProductoId == @ProductID; 
 
+    IF (@ret == NULL)
+        SET @ret = 0;
+    END;
 
-INSERT INTO Damaris VALUES(1,"casa",3);
+    RETURN @ret;
+END;
 
-INSERT INTO Sebatian (columa1, columna2, columna3) VALUES (1,"soyuntexto", 34-01-1922);
+CREATE PROCEDURE inicializacomisiones (@Ciudad varchar(30), @Departamento varchar(10))
+AS
+begin
+    UPDATE tbcomision set comision == 0 where ciudad == @Ciudad;
+    TRUNCATE TABLE tbreportecomisiones;
+END;
 
 
 
