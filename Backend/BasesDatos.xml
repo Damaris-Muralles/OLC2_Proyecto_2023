@@ -12,7 +12,14 @@
                 <tipodato>varchar</tipodato>
                 <cantidad>10</cantidad>  
             </tipo>
-            <atributo>not null</atributo>
+            <atributo>
+              <null>trSue</null>
+              <notnull>false</notnull>
+              <Primaria>false</Primaria>
+              <Foranea>
+                <columnaReferencia>columna1</columnaReferencia>  
+              </Foranea>
+            </atributo>
             <llave>primary key</llave>
             <referencia>null</referencia>
             <campos>

@@ -15,7 +15,7 @@ class TIPO_INSTRUCCION(Enum):
   INSERT_TABLE = 11
   CASE = 12
   SENTENCIA = 13
-  LLAVE = 14
+  LLAMARCOLUMNA = 14
   FUNCION_NATIVA = 15
   IF = 16
   DECLARAR_VARIABLE = 17
@@ -24,13 +24,48 @@ class TIPO_INSTRUCCION(Enum):
   PROCEDURE = 20
   FUNCTION = 21
   RETORNAR = 22
+  COLUMNA = 23
+  CONTATENACION = 24
+  SUBSTRER = 25
+  HOY = 26
+  CONTAR = 27
+  SUMA = 28
+  CAST = 29
+  
 # enump para tipo dato
 class TIPO_DATO(Enum):
   INT = 1
   DECIMAL = 2
+  CHAR = 3
+  DATE = 4
+  DATETIME = 5
+  VARCHAR = 6
+  BIT = 7 
+  INTEGER = 8
+
+class TIPO_ATRIBUTO(Enum):
+  PRIMARY_KEY = 1
+  FOREIGN_KEY = 2
+  NOT_NULL = 3
+  NULL = 4
+
   
 # enump para tipo operacion
-
+class TIPO_OPERACION(Enum):
+  SUMA = 1
+  RESTA = 2
+  MULTIPLICACION = 3
+  DIVISION = 4
+  MAYOR_QUE = 7
+  MENOR_QUE = 8
+  IGUAL_IGUAL = 9
+  NO_IGUAL = 10
+  MAYOR_IGUAL = 11
+  MENOR_IGUAL = 12
+  AND = 13
+  OR = 14
+  NOT = 15
+  
 
 # funciones para encapsular las instrucciones
 def UseDatabase(id):
@@ -111,74 +146,87 @@ def InsertTable(tabla,columnas , valores):
 
 def Case(tipo,expresion,when,else_):
   return{
-    "tipo": "CASE",
-    "sentencias":tipo  
+    "tipo": TIPO_INSTRUCCION.CASE,
+    "sentencias":tipo,
+    "expresiones" : expresion,
+    "when":when,
+
   }
 
 def Sentencia(tipo,expresion,resultado):
   return{
-    "tipo": "SENTENCIA",
+    "tipo": TIPO_INSTRUCCION.SENTENCIA,
     "tipo":tipo,
     "condicion":expresion,
     "resultado":resultado
   }
 
-def Llaves( punto, idtabla, idcolumna):
+def LlamarColumna( punto, idtabla, idcolumna):
   return{
-    "tipo": "LLAVE",
+    "tipo": TIPO_INSTRUCCION.LLAMARCOLUMNA,
     "punto":punto,
     "idtabla":idtabla,
     "idcolumna":idcolumna
-  }
-
-def FuncionNativa(tipo,param1,param2,param3,param4):
-  return {
-    "tipo" : "FUNCION_NATIVA",
-    "tipofuncion" : tipo,
-    "param1" : param1,
-    "param2" : param2,
-    "param3" : param3,
-    "param4" : param4
   }
 
 
 # funciones para encapsular expresiones y datos
 def ColumnaTable(id, tdato, atributo):
   return {
-    "tipo" : "COLUMNA_TABLE",
+    "tipo" : TIPO_INSTRUCCION.COLUMNA,
     "idcolumna" : id,
     "tipodato" :tdato,
     "atributo" :atributo
   }
 
 def TipoDato(tipo, longitud, cantidad):
+  if tipo =="int":
+    tipo = TIPO_DATO.INT
+  elif tipo == "decimal":
+    tipo = TIPO_DATO.DECIMAL
+  elif tipo == "char":
+    tipo = TIPO_DATO.CHAR
+  elif tipo == "date":
+    tipo = TIPO_DATO.DATE
+  elif tipo == "datetime":
+    tipo = TIPO_DATO.DATETIME
+  elif tipo == "varchar":
+    tipo = TIPO_DATO.VARCHAR
+  elif tipo == "bit":
+    tipo = TIPO_DATO.BIT
   return {
-    "tipo" : "TIPO_DATO",
-    "tipodato" :tipo,
+    "tipo" :tipo,
     "longitud" :longitud,
     "cantidad" :cantidad
   }
 
-def Atributo(nombre, id1, id2):
+def Atributo(nombre, tabla, columna):
+  if nombre == "primary":
+    nombre = TIPO_ATRIBUTO.PRIMARY_KEY
+  elif nombre == "references":
+    nombre = TIPO_ATRIBUTO.FOREIGN_KEY
+  elif nombre == "not":
+    nombre = TIPO_ATRIBUTO.NOT_NULL
+  elif nombre == "null":
+    nombre = TIPO_ATRIBUTO.NULL
   return {
-    "tipo" : "ATRIBUTO_COLUMN",
-    "atributo" :nombre,
-    "idtabla" :id1,
-    "idcolumna" :id2
+    "tipo" :nombre,
+    "idtabla_ref" :tabla,
+    "idcolumna_ref" :columna
   }
 
 
 #Funciones Sistema
 def Concatena(cadena1, cadena2):
   return {
-    "tipo" : "CONCATENA",
+    "tipo" : TIPO_INSTRUCCION.CONTATENACION,
     "cadena1" : cadena1,
     "cadena2" : cadena2
   }
 
 def Substraer(cadena, inicio, fin):
   return {
-    "tipo" : "SUBSTRAER",
+    "tipo" : TIPO_INSTRUCCION.SUBSTRER,
     "cadena" : cadena,
     "inicio" : inicio,
     "fin" : fin
@@ -186,32 +234,57 @@ def Substraer(cadena, inicio, fin):
 
 def Hoy():
   return {
-    "tipo" : "HOY"
+    "tipo" : TIPO_INSTRUCCION.HOY
   }
 
 def Contar():
   return {
-    "tipo" : "CONTAR"
+    "tipo" : TIPO_INSTRUCCION.CONTAR
   }
 def Suma(columna):
   return {
-    "tipo" : "SUMA",
+    "tipo" : TIPO_INSTRUCCION.SUMA,
     "columna" : columna
   }
 
 def Cast(columna, tipo):
   return {
-    "tipo" : "CAST",
+    "tipo" : TIPO_INSTRUCCION.CAST,
     "columna" : columna,
     "tipo" : tipo
   }
 
 def Expresion(exp1, operador, exp2):
+  if operador == "+":
+    operador = TIPO_OPERACION.SUMA
+  elif operador == "-":
+    operador = TIPO_OPERACION.RESTA
+  elif operador == "*":
+    operador = TIPO_OPERACION.MULTIPLICACION
+  elif operador == "/":
+    operador = TIPO_OPERACION.DIVISION
+  elif operador == ">":
+    operador = TIPO_OPERACION.MAYOR_QUE
+  elif operador == "<":
+    operador = TIPO_OPERACION.MENOR_QUE
+  elif operador == "==":
+    operador = TIPO_OPERACION.IGUAL_IGUAL
+  elif operador == "!=":
+    operador = TIPO_OPERACION.NO_IGUAL
+  elif operador == ">=":
+    operador = TIPO_OPERACION.MAYOR_IGUAL
+  elif operador == "<=":
+    operador = TIPO_OPERACION.MENOR_IGUAL
+  elif operador == "&&":
+    operador = TIPO_OPERACION.AND
+  elif operador == "||":
+    operador = TIPO_OPERACION.OR
+  elif operador == "!":
+    operador = TIPO_OPERACION.NOT
   return {
-    "tipo" : "EXPRESION",
+    "tipo" : operador,
     "exp1" : exp1,
     "exp2" : exp2,
-    "operador" : operador
   }
 
 
@@ -219,14 +292,14 @@ def Expresion(exp1, operador, exp2):
 
 def sslIf(condicion, instrucciones):
   return {
-    "tipo" : "IF",
+    "tipo" : TIPO_INSTRUCCION.IF,
     "condicion" : condicion,
     "instrucciones" : instrucciones
   }
 
 def DeclararVariable(id, tipo ,valor):
   return {
-    "tipo" : "DECLARAR_VARIABLE",
+    "tipo" : TIPO_INSTRUCCION.DECLARAR_VARIABLE,
     "id" : id,
     "tipodato" : tipo,
     "valor" : valor
@@ -234,20 +307,20 @@ def DeclararVariable(id, tipo ,valor):
 
 def AsignacionVariable(id, valor):
   return {
-    "tipo" : "ASIGNACION_VARIABLE",
+    "tipo" : TIPO_INSTRUCCION.ASIGNACION_VARIABLE,
     "id" : id,
     "valor" : valor
   }
 
 def Parametro(id, tipo):
   return {
-    "tipo" : "PARAMETRO",
+    "tipo" : TIPO_INSTRUCCION.PARAMETRO,
     "id" : id,
     "tipodato" : tipo
   }
 def sslprocedure(id, parametros, instrucciones):
   return {
-    "tipo" : "PROCEDURE",
+    "tipo" : TIPO_INSTRUCCION.PROCEDURE,
     "id" : id,
     "parametros" : parametros,
     "instrucciones" : instrucciones
@@ -255,7 +328,7 @@ def sslprocedure(id, parametros, instrucciones):
 
 def sslfunction(id, parametros, returns, instrucciones):
   return {
-    "tipo" : "FUNCTION",
+    "tipo" : TIPO_INSTRUCCION.FUNCTION,
     "id" : id,
     "parametros" : parametros,
     "return" : returns,
@@ -264,7 +337,7 @@ def sslfunction(id, parametros, returns, instrucciones):
 
 def Retornar(valor):
   return {
-    "tipo" : "RETORNAR",
+    "tipo" : TIPO_INSTRUCCION.RETORNAR,
     "valor" : valor
   }
 
