@@ -8,7 +8,10 @@
         <columnas>
           <columna>
             <nombre>columna1</nombre>
-            <tipo>int</tipo>
+            <tipo>
+                <tipodato>varchar</tipodato>
+                <cantidad>10</cantidad>  
+            </tipo>
             <atributo>not null</atributo>
             <llave>primary key</llave>
             <referencia>null</referencia>

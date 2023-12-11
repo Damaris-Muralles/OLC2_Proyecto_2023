@@ -25,6 +25,10 @@ class TIPO_INSTRUCCION(Enum):
   FUNCTION = 21
   RETORNAR = 22
 # enump para tipo dato
+class TIPO_DATO(Enum):
+  INT = 1
+  DECIMAL = 2
+  
 # enump para tipo operacion
 
 
@@ -43,14 +47,14 @@ def CreateDatabase(id):
 
 def CreateTable(id_, columnas_):
   return {
-    "tipo" : "CREATE_TABLE",
+    "tipo" : TIPO_INSTRUCCION.CREATE_TABLE,
     "idtabla" : id_,
     "columnas" : columnas_
   }
 
 def AlterAgregar(tabla, columna , tipodato):
   return {
-    "tipo" : "ADD_COLUMNA",
+    "tipo" : TIPO_INSTRUCCION.ADD_COLUMNA,
     "idtabla" : tabla,
     "idcolumna" : columna,
     "tipodato" : tipodato
@@ -58,26 +62,26 @@ def AlterAgregar(tabla, columna , tipodato):
 
 def AlterDrop(tabla, columna):
   return {
-    "tipo" : "DROP_COLUMNA",
+    "tipo" : TIPO_INSTRUCCION.DROP_COLUMNA,
     "idtabla" : tabla,
     "idcolumna" : columna
   }
 
 def TruncateTable(tabla):
   return{
-    "tipo": "TRUNCATE_TABLE",
+    "tipo": TIPO_INSTRUCCION.TRUNCATE_TABLE,
     "idtabla":tabla
   }
 
 def DropTable(tabla):
   return{
-    "tipo": "DROP_TABLE",
+    "tipo": TIPO_INSTRUCCION.DROP_TABLE,
     "idtabla":tabla
   }
 
 def UpdateTable(tabla, set, where):
   return{
-    "tipo": "UPDATE_TABLE",
+    "tipo": TIPO_INSTRUCCION.UPDATE_TABLE,
     "idtabla":tabla,
     "set":set,
     "where":where
@@ -85,21 +89,21 @@ def UpdateTable(tabla, set, where):
 
 def DeleteTable(tabla, where):
   return{
-    "tipo": "DELETE_TABLE",
+    "tipo": TIPO_INSTRUCCION.DELETE_TABLE,
     "idtabla":tabla,
     "where":where
   }
 
 def SelectTable(columnas, tablas, where):
   return{
-    "tipo": "SELECT_TABLE",
+    "tipo": TIPO_INSTRUCCION.SELECT_TABLE,
     "columna":columnas,
     "tablas":tablas,
     "where":where
   }
 def InsertTable(tabla,columnas , valores):
   return{
-    "tipo": "INSERT_TABLE",
+    "tipo": TIPO_INSTRUCCION.INSERT_TABLE,
     "idtabla":tabla,
     "columnas":columnas,
     "valores":valores
