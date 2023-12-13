@@ -31,6 +31,7 @@ class TIPO_INSTRUCCION(Enum):
   CONTAR = 27
   SUMA = 28
   CAST = 29
+  CWHILE = 30
   
 # enump para tipo dato
 class TIPO_DATO(Enum):
@@ -77,13 +78,13 @@ def UseDatabase(id):
 def CreateDatabase(id):
   return {
     "tipo" : TIPO_INSTRUCCION.CREATE_DATABASE,
-    "idbase" : id
+    "id" : id
   }
 
 def CreateTable(id_, columnas_):
   return {
     "tipo" : TIPO_INSTRUCCION.CREATE_TABLE,
-    "idtabla" : id_,
+    "id" : id_,
     "columnas" : columnas_
   }
 
@@ -153,6 +154,13 @@ def Case(tipo,expresion,when,else_):
 
   }
 
+def CicloWhile(condicion, instrucciones):
+  return {
+    "tipo" : TIPO_INSTRUCCION.CWHILE,
+    "condicion" : condicion,
+    "instrucciones" : instrucciones
+  }
+
 def Sentencia(tipo,expresion,resultado):
   return{
     "tipo": TIPO_INSTRUCCION.SENTENCIA,
@@ -174,36 +182,35 @@ def LlamarColumna( punto, idtabla, idcolumna):
 def ColumnaTable(id, tdato, atributo):
   return {
     "tipo" : TIPO_INSTRUCCION.COLUMNA,
-    "idcolumna" : id,
+    "id" : id,
     "tipodato" :tdato,
     "atributo" :atributo
   }
 
-def TipoDato(tipo, longitud, cantidad):
+def TipoDato(tipo, longitud):
   if tipo =="int":
     tipo = TIPO_DATO.INT
   elif tipo == "decimal":
     tipo = TIPO_DATO.DECIMAL
-  elif tipo == "char":
+  elif tipo == "nchar":
     tipo = TIPO_DATO.CHAR
   elif tipo == "date":
     tipo = TIPO_DATO.DATE
   elif tipo == "datetime":
     tipo = TIPO_DATO.DATETIME
-  elif tipo == "varchar":
+  elif tipo == "nvarchar":
     tipo = TIPO_DATO.VARCHAR
   elif tipo == "bit":
     tipo = TIPO_DATO.BIT
   return {
     "tipo" :tipo,
-    "longitud" :longitud,
-    "cantidad" :cantidad
+    "longitud" :longitud
   }
 
 def Atributo(nombre, tabla, columna):
   if nombre == "primary":
     nombre = TIPO_ATRIBUTO.PRIMARY_KEY
-  elif nombre == "references":
+  elif nombre == "reference":
     nombre = TIPO_ATRIBUTO.FOREIGN_KEY
   elif nombre == "not":
     nombre = TIPO_ATRIBUTO.NOT_NULL

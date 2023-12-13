@@ -16,6 +16,7 @@ reservadas = {
     'procedure' : 'PROCEDURE',
     'if' : 'IF',
     'case' : 'CASE',
+    'while' : 'WHILE',
 
     # adicioneales
     'data' : 'DATA',
@@ -38,7 +39,7 @@ reservadas = {
     'values' : 'VALUES',
     'primary' : 'PRIMARY',
     'foreing' : 'FOREIGN',
-    'references' : 'REFERENCES',
+    'reference' : 'REFERENCE',
     'column'   : 'COLUMN',
 
     # funciones
@@ -53,10 +54,9 @@ reservadas = {
     # tipos de datos
     'null' : 'NULL',
     'not' : 'NOT',
-    'varchar' : 'VARCHAR',
-    'char' : 'CHAR',
+    'nvarchar' : 'VARCHAR',
+    'nchar' : 'CHAR',
     'int' : 'INT',
-    'integer' : 'INTEGER',
     'decimal' : 'DECIMAL',
     'bit' : 'BIT',
     'date' : 'DATE',
@@ -205,7 +205,7 @@ while True:
 '''
 
 
-# Asociación de operadores y precedencia
+# Asociacion de operadores y precedencia
 precedence = (
     ('right', 'NEGACION'), 
     ('left', 'MAS', 'MENOS'),
@@ -216,7 +216,7 @@ precedence = (
     ('right', 'AND'),
     )
 
-# Definición de la gramática
+# Definicion de la gramatica
 
 def p_init(t) :
     'init            : instrucciones'
@@ -253,6 +253,7 @@ def p_instruccion(t) :
                         | create_funcion
                         | retornar
                         | case_instr
+                        | while_instr
 
 
     '''
@@ -262,25 +263,21 @@ def p_instruccion(t) :
 #TIPOS DE DATOS
 def p_tipodato(t):
     '''
-    tipodato   : DECIMAL PARIZQ ENTERO COMA ENTERO PARDER
-                | INT
-                | INTEGER
+    tipodato   :  INT
                 | DECIMAL
                 | BIT
                 | DATE
                 | DATETIME
                 | VARCHAR PARIZQ ENTERO PARDER
                 | CHAR PARIZQ ENTERO PARDER
-                | VARCHAR
-                | CHAR
+              
                 
     '''
     if len(t)==2:
-        t[0] = TipoDato(t[1],None,None)
+        t[0] = TipoDato(t[1],None)
     elif len(t)==5:
-        t[0] = TipoDato(t[1],t[3],None)
-    elif len(t)==7:
-        t[0] = TipoDato(t[1],t[3],t[5])
+        t[0] = TipoDato(t[1],t[3])
+    
 
 # SINTAXIS PARA USAR BASE DE DATOS
 def p_use_database(t):
@@ -315,6 +312,11 @@ def p_columna(t):
     '''
     if len(t)==5:
         t[0] = ColumnaTable(t[1],t[2],t[3])
+    elif len(t)==4:
+        if t[3] != ',':
+            t[0] = ColumnaTable(t[1],t[2],t[3])
+        else:
+            t[0] = ColumnaTable(t[1],t[2],None)
     else:
         t[0] = ColumnaTable(t[1],t[2],None)
 
@@ -323,7 +325,7 @@ def p_atributo(t):
     '''
 
     atributo   : PRIMARY KEY
-                | REFERENCES IDENT PARIZQ IDENT PARDER
+                | REFERENCE IDENT PARIZQ IDENT PARDER
                 | NULL
                 | NOT NULL
     '''
@@ -463,6 +465,12 @@ def p_if(t):
     '''if_instr : IF PARIZQ expresiones PARDER instrucciones END PTCOMA '''
     t[0] = sslIf(t[3],t[5])
 
+#SINTAXIS PARA WHILE
+def p_while(t):
+    '''while_instr : WHILE expresiones BEGIN instrucciones END PTCOMA '''
+    t[0] = CicloWhile(t[2],t[4])
+
+
 # SINTAXIS CREAR PROCEDURE 
 def p_create_procedure(t):
     '''create_procedure : CREATE PROCEDURE IDENT PARIZQ listparam PARDER AS BEGIN instrucciones END PTCOMA
@@ -566,7 +574,7 @@ def p_expresiones(t):
 
 def p_llaves(t):
     '''llaves : IDENT PUNTO IDENT'''
-    t[0] = Llaves(t[2],t[1],t[3])
+    t[0] = LlamarColumna(t[2],t[1],t[3])
   
 def p_func_sistema(t):
     '''func_sistema : contarr
@@ -601,39 +609,18 @@ def parse(input) :
 
 
 
-
-"""
-input = 
-
-CREATE FUNCTION Retornasuma(@ProductID int)
-RETURN int
-AS
-BEGIN
-    DECLARE @ret int;
-    SELECT @ret == SUM(Cantidad) FROM inventario WHERE ProductoId == @ProductID; 
-
-    IF (@ret == NULL)
-        SET @ret = 0;
-    END;
-
-    RETURN @ret;
-END;
-
-CREATE PROCEDURE inicializacomisiones (@Ciudad varchar(30), @Departamento varchar(10))
-AS
-begin
-    UPDATE tbcomision set comision == 0 where ciudad == @Ciudad;
-    TRUNCATE TABLE tbreportecomisiones;
-END;
-
-
+'''
+input = """
+CREATE TABLE products (
+product_no int REFERENCE products (product_no)
+);
 
 """
 
-#result = parser.parse(input.lower())
-
+result = parser.parse(input.lower())
 
 #recorrer la matriz y diccionario
-#for a in result:
- #   print(a)
-  #  print("=====================================")
+for a in result:
+    print(a)
+    print("=====================================")
+'''
