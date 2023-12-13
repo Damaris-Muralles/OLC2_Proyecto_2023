@@ -72,7 +72,7 @@ class TIPO_OPERACION(Enum):
 def UseDatabase(id):
   return {
     "tipo" : TIPO_INSTRUCCION.USE_DATABASE,
-    "idbase" : id
+    "id" : id
   }
   
 def CreateDatabase(id):
@@ -106,19 +106,19 @@ def AlterDrop(tabla, columna):
 def TruncateTable(tabla):
   return{
     "tipo": TIPO_INSTRUCCION.TRUNCATE_TABLE,
-    "idtabla":tabla
+    "id":tabla
   }
 
 def DropTable(tabla):
   return{
     "tipo": TIPO_INSTRUCCION.DROP_TABLE,
-    "idtabla":tabla
+    "id":tabla
   }
 
 def UpdateTable(tabla, set, where):
   return{
     "tipo": TIPO_INSTRUCCION.UPDATE_TABLE,
-    "idtabla":tabla,
+    "id":tabla,
     "set":set,
     "where":where
   }
@@ -126,7 +126,7 @@ def UpdateTable(tabla, set, where):
 def DeleteTable(tabla, where):
   return{
     "tipo": TIPO_INSTRUCCION.DELETE_TABLE,
-    "idtabla":tabla,
+    "id":tabla,
     "where":where
   }
 
@@ -140,7 +140,7 @@ def SelectTable(columnas, tablas, where):
 def InsertTable(tabla,columnas , valores):
   return{
     "tipo": TIPO_INSTRUCCION.INSERT_TABLE,
-    "idtabla":tabla,
+    "id":tabla,
     "columnas":columnas,
     "valores":valores
   }
@@ -164,7 +164,7 @@ def CicloWhile(condicion, instrucciones):
 def Sentencia(tipo,expresion,resultado):
   return{
     "tipo": TIPO_INSTRUCCION.SENTENCIA,
-    "tipo":tipo,
+    "tipodato":tipo,
     "condicion":expresion,
     "resultado":resultado
   }

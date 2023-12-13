@@ -1,79 +1,13 @@
 <?xml version="1.0" ?>
 <basesdedatos>
   <basedatos>
-    <nombre>Base de datos 1</nombre>
-    <tablas>
-      <tabla>
-        <nombre>tabla1</nombre>
-        <columnas>
-          <columna>
-            <nombre>columna1</nombre>
-            <tipo>
-              <tipodato>varchar</tipodato>
-              <cantidad>10</cantidad>
-            </tipo>
-            <atributo>
-              <null>trSue</null>
-              <notnull>false</notnull>
-              <Primaria>false</Primaria>
-              <Foranea>
-                <columnaReferencia>columna1</columnaReferencia>
-              </Foranea>
-            </atributo>
-            <llave>primary key</llave>
-            <referencia>null</referencia>
-            <campos>
-              <campo>campo1</campo>
-              <campo>campo2</campo>
-              <campo>campo3</campo>
-            </campos>
-          </columna>
-          <columna>
-            <nombre>columna2</nombre>
-            <tipo>varchar</tipo>
-            <atributo>not null</atributo>
-            <llave>foreign key</llave>
-            <referencia>table1</referencia>
-            <campos>
-              <campo>campo1</campo>
-              <campo>campo2</campo>
-              <campo>campo3</campo>
-            </campos>
-          </columna>
-          <columna>
-            <nombre>columna3</nombre>
-            <tipo>varchar</tipo>
-            <atributo>not null</atributo>
-            <llave>foreign key</llave>
-            <referencia>table2</referencia>
-            <campos>
-              <campo>campo1</campo>
-              <campo>campo2</campo>
-              <campo>campo3</campo>
-            </campos>
-          </columna>
-        </columnas>
-      </tabla>
-    </tablas>
-    <funciones>
-      <funcion>funcion1</funcion>
-      <funcion>funcion2</funcion>
-      <funcion>funcion3</funcion>
-    </funciones>
-    <procedimientos>
-      <procedimiento>procedimiento1</procedimiento>
-      <procedimiento>procedimiento2</procedimiento>
-      <procedimiento>procedimiento3</procedimiento>
-    </procedimientos>
-  </basedatos>
-  <basedatos>
     <nombre>intento</nombre>
     <tablas>
       <tabla>
         <nombre>products</nombre>
         <columnas>
           <columna>
-            <id>product_no</id>
+            <id>id</id>
             <tipo>
               <tipodato>1</tipodato>
               <longitud>None</longitud>
@@ -81,10 +15,12 @@
             <atributo>1</atributo>
             <tablaref/>
             <columnaref/>
-            <inputs/>
+            <inputs>
+              <input>1</input>
+            </inputs>
           </columna>
           <columna>
-            <id>name</id>
+            <id>nombre</id>
             <tipo>
               <tipodato>6</tipodato>
               <longitud>1000</longitud>
@@ -92,29 +28,22 @@
             <atributo>3</atributo>
             <tablaref/>
             <columnaref/>
-            <inputs/>
+            <inputs>
+              <input>julio lopez</input>
+            </inputs>
           </columna>
           <columna>
-            <id>price</id>
+            <id>bandera</id>
             <tipo>
-              <tipodato>2</tipodato>
+              <tipodato>1</tipodato>
               <longitud>None</longitud>
             </tipo>
             <atributo>4</atributo>
             <tablaref/>
             <columnaref/>
-            <inputs/>
-          </columna>
-          <columna>
-            <id>product_no</id>
-            <tipo>
-              <tipodato>1</tipodato>
-              <longitud>None</longitud>
-            </tipo>
-            <atributo>2</atributo>
-            <tablaref>products</tablaref>
-            <columnaref>product_no</columnaref>
-            <inputs/>
+            <inputs>
+              <input>1</input>
+            </inputs>
           </columna>
         </columnas>
       </tabla>
