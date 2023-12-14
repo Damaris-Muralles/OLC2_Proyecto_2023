@@ -448,6 +448,41 @@ class XMLManejador:
             f.write(pretty_xml)
 
         return "Tabla eliminada con éxito."
+    
+    def truncate_table(self, database, instruccion):
+        baseDatosEncontrada = self.Existe_basedatos(database)
+        if not baseDatosEncontrada[0]:
+            return "La base de datos no existe."
+        root = baseDatosEncontrada[1]
+        database_element = baseDatosEncontrada[2]
+
+        idtabla = instruccion.get("id")
+
+        tablass_element = database_element.find('tablas')
+        if tablass_element is None:
+            return "No se puede insertar: No existe la tabla."
+        tablas_element = tablass_element.findall('tabla')
+        existe = False
+        tabla_element = None
+        for tabla in tablas_element:
+            if tabla.find('nombre').text == idtabla:
+                existe = True
+                tabla_element = tabla
+                break
+        if not existe:
+            return "No se puede insertar: No existe la tabla."
+
+        columnas_element = tabla_element.find('columnas')
+        columna_element = columnas_element.findall('columna')
+        for columna in columna_element:
+            inputs_element = columna.find('inputs')
+            inputs_element.clear()
+
+        pretty_xml = self.prettify(root)
+        with open(self.filepath, 'w') as f:
+            f.write(pretty_xml)
+
+        return "Tabla truncada con éxito."
 
         
         

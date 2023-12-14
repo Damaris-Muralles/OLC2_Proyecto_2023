@@ -12,42 +12,40 @@
               <tipodato>1</tipodato>
               <longitud>None</longitud>
             </tipo>
-            <atributo>1</atributo>
+            <atributo>4</atributo>
             <tablaref/>
             <columnaref/>
-            <inputs>
-              <input>1</input>
-              <input>2</input>
-              <input>1</input>
-              <input>2</input>
-              <input>1</input>
-              <input>2</input>
-              <input>1</input>
-              <input>2</input>
-            </inputs>
+            <inputs/>
           </columna>
           <columna>
             <id>nombre</id>
             <tipo>
               <tipodato>6</tipodato>
-              <longitud>1000</longitud>
+              <longitud>50</longitud>
             </tipo>
-            <atributo>3</atributo>
+            <atributo/>
             <tablaref/>
             <columnaref/>
-            <inputs>
-              <input>julio lopez</input>
-              <input>jorge sebas</input>
-              <input>julio lopez</input>
-              <input>jorge sebas</input>
-              <input>julio lopez</input>
-              <input>jorge sebas</input>
-              <input>julio lopez</input>
-              <input>jorge sebas</input>
-            </inputs>
+            <inputs/>
           </columna>
           <columna>
-            <id>bandera</id>
+            <id>apellido</id>
+            <tipo>
+              <tipodato>6</tipodato>
+              <longitud>50</longitud>
+            </tipo>
+            <atributo/>
+            <tablaref/>
+            <columnaref/>
+            <inputs/>
+          </columna>
+        </columnas>
+      </tabla>
+      <tabla>
+        <nombre>tabla1</nombre>
+        <columnas>
+          <columna>
+            <id>id</id>
             <tipo>
               <tipodato>1</tipodato>
               <longitud>None</longitud>
@@ -55,138 +53,29 @@
             <atributo>4</atributo>
             <tablaref/>
             <columnaref/>
-            <inputs>
-              <input>guatemala</input>
-              <input>mexico</input>
-              <input>guatemala</input>
-              <input>mexico</input>
-              <input>guatemala</input>
-              <input>mexico</input>
-              <input>guatemala</input>
-              <input>mexico</input>
-            </inputs>
+            <inputs/>
           </columna>
           <columna>
-            <id>intentofinal</id>
-            <tipo>
-              <tipodato>1</tipodato>
-              <longitud>None</longitud>
-            </tipo>
-            <atributo/>
-            <tablaref/>
-            <columnaref/>
-            <inputs>
-              <input>null</input>
-              <input>null</input>
-              <input>null</input>
-              <input>null</input>
-              <input>null</input>
-              <input>null</input>
-              <input>null</input>
-              <input>null</input>
-            </inputs>
-          </columna>
-          <columna>
-            <id>inteto2</id>
-            <tipo>
-              <tipodato>1</tipodato>
-              <longitud>None</longitud>
-            </tipo>
-            <atributo/>
-            <tablaref/>
-            <columnaref/>
-            <inputs>
-              3
-              <input>null</input>
-              <input>null</input>
-              <input>null</input>
-              <input>null</input>
-              <input>null</input>
-              <input>null</input>
-              <input>null</input>
-              <input>null</input>
-            </inputs>
-          </columna>
-          <columna>
-            <id>entrarr</id>
-            <tipo>
-              <tipodato>1</tipodato>
-              <longitud>None</longitud>
-            </tipo>
-            <atributo/>
-            <tablaref/>
-            <columnaref/>
-            <inputs>
-              3
-              <input>null</input>
-              <input>null</input>
-              <input>null</input>
-              <input>null</input>
-              <input>null</input>
-              <input>null</input>
-              <input>null</input>
-              <input>null</input>
-            </inputs>
-          </columna>
-          <columna>
-            <id>normal</id>
-            <tipo>
-              <tipodato>2</tipodato>
-              <longitud>None</longitud>
-            </tipo>
-            <atributo/>
-            <tablaref/>
-            <columnaref/>
-            <inputs>
-              <input>null</input>
-              <input>null</input>
-              <input>null</input>
-              <input>null</input>
-              <input>null</input>
-              <input>null</input>
-              <input>null</input>
-              <input>null</input>
-            </inputs>
-          </columna>
-          <columna>
-            <id>ultimooooo</id>
-            <tipo>
-              <tipodato>1</tipodato>
-              <longitud>None</longitud>
-            </tipo>
-            <atributo>3</atributo>
-            <tablaref/>
-            <columnaref/>
-            <inputs>
-              <input>null</input>
-              <input>null</input>
-              <input>null</input>
-              <input>null</input>
-              <input>null</input>
-              <input>null</input>
-              <input>null</input>
-              <input>null</input>
-            </inputs>
-          </columna>
-          <columna>
-            <id>comprar2</id>
+            <id>nombre</id>
             <tipo>
               <tipodato>6</tipodato>
-              <longitud>11</longitud>
+              <longitud>50</longitud>
             </tipo>
-            <atributo>2</atributo>
-            <tablaref>products</tablaref>
-            <columnaref>id</columnaref>
-            <inputs>
-              <input>null</input>
-              <input>null</input>
-              <input>null</input>
-              <input>null</input>
-              <input>null</input>
-              <input>null</input>
-              <input>null</input>
-              <input>null</input>
-            </inputs>
+            <atributo/>
+            <tablaref/>
+            <columnaref/>
+            <inputs/>
+          </columna>
+          <columna>
+            <id>apellido</id>
+            <tipo>
+              <tipodato>6</tipodato>
+              <longitud>50</longitud>
+            </tipo>
+            <atributo/>
+            <tablaref/>
+            <columnaref/>
+            <inputs/>
           </columna>
         </columnas>
       </tabla>

@@ -37,6 +37,11 @@ def procesar_addcolumna(instr):
 def procesar_droptable(instr):
     print("drop table")
     print(xml.drop_table(ActualBaseDatos, instr))
+
+def procesar_truncatetable(instr):
+    print("truncate table")
+    print(xml.truncate_table(ActualBaseDatos, instr))
+
 def procesar_instrucciones(instrucciones) :
     ## lista de instrucciones recolectadas
     for instr in instrucciones :
@@ -47,6 +52,7 @@ def procesar_instrucciones(instrucciones) :
         elif instr.get('tipo') == TIPO_INSTRUCCION.DROP_COLUMNA : procesar_dropcolumna(instr)
         elif instr.get('tipo') == TIPO_INSTRUCCION.ADD_COLUMNA : procesar_addcolumna(instr)
         elif instr.get('tipo') == TIPO_INSTRUCCION.DROP_TABLE : procesar_droptable(instr)
+        elif instr.get('tipo') == TIPO_INSTRUCCION.TRUNCATE_TABLE : procesar_truncatetable(instr)
         else : print('Error: instrucción no válida')
 
 #f = open("./entrada.txt", "r")
@@ -55,9 +61,6 @@ def procesar_instrucciones(instrucciones) :
 input = """
 
 
-USAR intento;
- 
-drop table tabla2;
 
 
 """
