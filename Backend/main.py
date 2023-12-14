@@ -59,7 +59,17 @@ def procesar_instrucciones(instrucciones) :
 
 #input = f.read()
 input = """
+CREATE DATA BASE intento; 
 
+USAR intento;
+ 
+CREATE TABLE products (
+id int PRIMARY KEY,
+nombre nvarchar(1000) NOT NULL,
+bandera int NULL
+);
+INSERT INTO products (id,nombre,bandera) VALUES(1,'JULIO LOPEZ',1); 
+INSERT INTO products (id,nombre,bandera) VALUES(2,'JULIO LOPEZ',1); 
 
 
 

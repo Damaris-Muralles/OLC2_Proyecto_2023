@@ -169,19 +169,22 @@ class XMLManejador:
         # recorrer todas las columnas en la etiqueta columnas de esa tabla
         columnas_element = tabla_element.find('columnas')
         columnas_element = columnas_element.findall('columna')
-        for columna in columnas_element:
-            # buscar si existe la columna en la lista de columnas a insertar
-            existe = False
-            for col in columnas:
+        # buscar si existe la columna en la lista de columnas a insertar
+        existe = False
+        for col in columnas:
+            for columna in columnas_element:
                 if columna.find('id').text == col:
                     existe = True
                     break
             if not existe:
                 return "No se puede insertar: No existe la columna " + columna.find('id').text + " en la lista de columnas."
-
+        
+        for columna in columnas_element:
+            
+            existe1 = False
             for col in columnas:
                 if columna.find('id').text == col:
-                    existe = True
+                    existe1 = True
                     # encontrar el tipodato de la columna y la longitud
                     tipodato = int(columna.find('tipo').find('tipodato').text)
                     longitud = columna.find('tipo').find('longitud').text
@@ -196,7 +199,7 @@ class XMLManejador:
 
 
                     # si atributo es foranea, buscar si existe la tablaref y la columnaref
-                    if atributo== TIPO_ATRIBUTO.FOREIGN_KEY:
+                    if atributo== TIPO_ATRIBUTO.FOREIGN_KEY.value:
                         tablaref = columna.find('tablaref').text
                         columnaref = columna.find('columnaref').text
                         # buscar si existe la tablaref
@@ -221,6 +224,11 @@ class XMLManejador:
                                 break
                         if not existe:
                             return "No se puede insertar: No existe la columna de referencia."
+                        # el atributo de la tabla de referencia debe ser primary key
+                        atributo_ref = int(columna.find('atributo').text)
+                        if atributo_ref != TIPO_ATRIBUTO.PRIMARY_KEY.value:
+                            return "No se puede insertar: La columna de referencia debe ser primary key."
+                        
                         # optener el tipo de dato y longitud de la columna de referencia
                         tipodato_ref = int(columna.find('tipo').find('tipodato').text)
                         longitud_ref = int(columna.find('tipo').find('longitud').text)
@@ -248,32 +256,58 @@ class XMLManejador:
                     else:
                         # si valores no es vacio
                         if len(valores) == 0:
-                            # verificamos si su atributo es not null, en este caso es error
-                            if atributo == TIPO_ATRIBUTO.NOT_NULL:  
-                                return "No se puede insertar: La columna no acepta valores null."
-                            # agregamos un input con el valor null
-                            input_element = ET.SubElement(inputs, "input")
-                            input_element.text = "null"
+                            print("sin valores")
                         else:
-                        
-                            # verificamos que el tipo de dato sea el mismo que el valor a insertar
-                            if tipodato == TIPO_DATO.INT or tipodato == TIPO_DATO.BIT:
-                                if not isinstance(valores[0], int):
-                                    return "No se puede insertar: El tipo de dato no coincide con la columna." 
-                            elif tipodato == TIPO_DATO.DECIMAL:
-                                if not isinstance(valores[0], float):
-                                    return "No se puede insertar: El tipo de dato no coincide con la columna."
-                            elif tipodato == TIPO_DATO.CHAR or tipodato == TIPO_DATO.VARCHAR:
-                                if not isinstance(valores[0], str):
-                                    return "No se puede insertar: El tipo de dato no coincide con la columna." 
-                                else:
-                                    if len(valores[0]) > longitud:
-                                        return "No se puede insertar: La logintud del valor a insertar no coincide."
+                           
+                            if valores[0] != "null":
+                                # verificamos que el tipo de dato sea el mismo que el valor a insertar
+                                if tipodato == TIPO_DATO.INT.value or tipodato == TIPO_DATO.BIT.value:
+                                    if not isinstance(valores[0], int):
+                                        return f"No se puede insertar: El tipo de dato no coincide con la columna {col}." 
+                                elif tipodato == TIPO_DATO.DECIMAL.value:
+                                    if not isinstance(valores[0], float):
+                                        return f"No se puede insertar: Esta insertando un dato que no es {TIPO_DATO.DECIMAL.name} a la columna {col}"
+                                elif tipodato == TIPO_DATO.CHAR.value or tipodato == TIPO_DATO.VARCHAR.value:
+                                    if not isinstance(valores[0], str):
+                                        return f"No se puede insertar: El tipo de dato no coincide con la columna {col}." 
+                                    else:
+                                        if len(valores[0]) > longitud:
+                                            return "No se puede insertar: La logintud del valor a insertar no coincide."
+                                        else:
+                                            # si es un char agregar espacios necesarios para que sea del tamaño de la longitud
+                                            if tipodato == TIPO_DATO.CHAR.value:
+                                                valores[0] = valores[0].ljust(longitud)
+                                elif tipodato == TIPO_DATO.DATE.value  :
+                                    # verificar que el valor a insertar sea una fecha con formato de dd-mm-yyyy
+                                    if not isinstance(valores[0], str) or not valores[0].match(r'\d{2}-\d{2}-\d{4}'):
+                                        return f"No se puede insertar: Esta insertando un dato que no es {TIPO_DATO.DATE.name} a la columna {col}"
+                                elif tipodato == TIPO_DATO.DATETIME.value:
+                                    if not isinstance(valores[0], str) or not valores[0].match(r'\d{2}-\d{2}-\d{4} \d{2}:\d{2}:\d{2}'):
+                                        return f"No se puede insertar: Esta insertando un dato que no es {TIPO_DATO.DATETIME.name} a la columna {col}."
+                                    
+                     
+
 
                             # verificamos si el valor a insertar es null y si el atributo es not null, en este caso es error
-                            if valores[0] == "null" and atributo == TIPO_ATRIBUTO.NOT_NULL:  
-                                return "No se puede insertar: La columna no acepta valores null."
-                            
+                            if valores[0] == "null" and atributo == TIPO_ATRIBUTO.NOT_NULL.value:  
+                                return f"No se puede insertar: La columna {col} no acepta valores null."
+                            if str(valores[0]) == "null" and atributo == TIPO_ATRIBUTO.PRIMARY_KEY.value:  
+                                return "No se puede insertar: una columna primary key no acepta valores null."
+                          
+
+
+                            # verificamos si el atributo es primary key y validamos posibilidades
+                            if atributo == TIPO_ATRIBUTO.PRIMARY_KEY.value:
+                                # buscar si existe el valor en la columna
+                                inputs_element = columna.find('inputs')
+                                inputs_element = inputs_element.findall('input')
+                                existe = False
+                                for input in inputs_element:
+                                    if input.text == str(valores[0]):
+                                        existe = True
+                                        break
+                                if existe:
+                                    return f"No se puede insertar: El valor ya existe en la columna {col}."
                            
                             # agregar un nuevo elemento 'input' a cada 'input' existente
                             input_element = ET.SubElement(inputs_e, "input")
@@ -281,8 +315,17 @@ class XMLManejador:
 
                             # eliminar el valor de la lista de valores
                             valores.pop(0)
-
                     break
+
+            if not existe1:
+                
+                    # verificamos si su atributo es not null, en este caso es error
+                    if atributo == TIPO_ATRIBUTO.NOT_NULL.value or atributo == TIPO_ATRIBUTO.PRIMARY_KEY.value:  
+                        return "No se puede insertar: La columna no acepta valores null."
+                    # agregamos un input con el valor null
+                    input_element = ET.SubElement(inputs_e, "input")
+                    input_element.text = "null"
+
         # agregar datos a xml
         pretty_xml = self.prettify(root)
         with open(self.filepath, 'w') as f:
