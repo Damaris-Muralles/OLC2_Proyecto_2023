@@ -557,8 +557,8 @@ def p_expresiones(t):
                     | PARIZQ expresiones PARDER
                     | NEGACION expresiones
                     | llaves
-                    | ENTERO
                     | DECIMALES
+                    | ENTERO
                     | CADENA
                     | IDENTIFICADOR
                     | IDENT

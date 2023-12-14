@@ -47,32 +47,28 @@ def procesar_instrucciones(instrucciones) :
     for instr in instrucciones :
         if instr.get('tipo')== TIPO_INSTRUCCION.CREATE_DATABASE : procesar_createdatabase(instr)
         elif instr.get('tipo') == TIPO_INSTRUCCION.CREATE_TABLE : procesar_createtable(instr)
-        elif instr.get('tipo') == TIPO_INSTRUCCION.USE_DATABASE : procesar_usedatabase(instr)
-        elif instr.get('tipo') == TIPO_INSTRUCCION.INSERT_TABLE : procesar_insert(instr)
         elif instr.get('tipo') == TIPO_INSTRUCCION.DROP_COLUMNA : procesar_dropcolumna(instr)
         elif instr.get('tipo') == TIPO_INSTRUCCION.ADD_COLUMNA : procesar_addcolumna(instr)
         elif instr.get('tipo') == TIPO_INSTRUCCION.DROP_TABLE : procesar_droptable(instr)
         elif instr.get('tipo') == TIPO_INSTRUCCION.TRUNCATE_TABLE : procesar_truncatetable(instr)
+        elif instr.get('tipo') == TIPO_INSTRUCCION.INSERT_TABLE : procesar_insert(instr)
+        elif instr.get('tipo') == TIPO_INSTRUCCION.USE_DATABASE : procesar_usedatabase(instr)
         else : print('Error: instrucción no válida')
 
 #f = open("./entrada.txt", "r")
 
 #input = f.read()
 input = """
-CREATE DATA BASE intento; 
 
 USAR intento;
- 
-CREATE TABLE products (
-id int PRIMARY KEY,
-nombre nvarchar(1000) NOT NULL,
-bandera int NULL
+CREATE TABLE tbdetallefactura ( 
+iddetallefac int PRIMARY KEY, 
+product_no int REFERENCE products (id), 
+price decimal NOT NULL, 
+cantidad int  
 );
-INSERT INTO products (id,nombre,bandera) VALUES(1,'JULIO LOPEZ',1); 
-INSERT INTO products (id,nombre,bandera) VALUES(2,'JULIO LOPEZ',1); 
-
-
-
+ 
+INSERT INTO tbdetallefactura(iddetallefac,price,cantidad) VALUES(1,1.00,23);
 """
 instrucciones = g.parse(input.lower())
 ts_global = TS.TablaSimbolo()
