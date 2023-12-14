@@ -34,6 +34,9 @@ def procesar_addcolumna(instr):
     print("add columna")
     print(xml.add_column(ActualBaseDatos, instr))
 
+def procesar_droptable(instr):
+    print("drop table")
+    print(xml.drop_table(ActualBaseDatos, instr))
 def procesar_instrucciones(instrucciones) :
     ## lista de instrucciones recolectadas
     for instr in instrucciones :
@@ -43,6 +46,7 @@ def procesar_instrucciones(instrucciones) :
         elif instr.get('tipo') == TIPO_INSTRUCCION.INSERT_TABLE : procesar_insert(instr)
         elif instr.get('tipo') == TIPO_INSTRUCCION.DROP_COLUMNA : procesar_dropcolumna(instr)
         elif instr.get('tipo') == TIPO_INSTRUCCION.ADD_COLUMNA : procesar_addcolumna(instr)
+        elif instr.get('tipo') == TIPO_INSTRUCCION.DROP_TABLE : procesar_droptable(instr)
         else : print('Error: instrucción no válida')
 
 #f = open("./entrada.txt", "r")
@@ -53,11 +57,7 @@ input = """
 
 USAR intento;
  
-Alter table products add column normal decimal ;
-
-Alter table products add column ultimooooo int not null;
-
-Alter table products add column comprar2 nvarchar(11) reference products(id);
+drop table tabla2;
 
 
 """

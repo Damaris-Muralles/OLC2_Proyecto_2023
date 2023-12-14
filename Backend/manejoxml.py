@@ -393,7 +393,7 @@ class XMLManejador:
         if instruccion.get("atributo") != None:
             atributo = instruccion.get("atributo")
             tipoatributo = atributo.get("tipo").value
-            
+
             tipo_atribut_element.text = str(tipoatributo)               
             if tipoatributo == 2:
                 tablaref = atributo.get("idtabla_ref")
@@ -412,20 +412,42 @@ class XMLManejador:
             input_element = ET.SubElement(tipo_atributo_element, "input")
             input_element.text = "null"
 
-        
-
-      
-               
-            
-            
-            
-
-
         pretty_xml = self.prettify(root)
         with open(self.filepath, 'w') as f:
             f.write(pretty_xml)
 
         return "Columna agregada con éxito."
+    
+    def drop_table(self, database, instruccion):
+        baseDatosEncontrada = self.Existe_basedatos(database)
+        if not baseDatosEncontrada[0]:
+            return "La base de datos no existe."
+        root = baseDatosEncontrada[1]
+        database_element = baseDatosEncontrada[2]
+
+        idtabla = instruccion.get("id")
+
+        tablass_element = database_element.find('tablas')
+        if tablass_element is None:
+            return "No se puede insertar: No existe la tabla."
+        tablas_element = tablass_element.findall('tabla')
+        existe = False
+        tabla_element = None
+        for tabla in tablas_element:
+            if tabla.find('nombre').text == idtabla:
+                existe = True
+                tabla_element = tabla
+                break
+        if not existe:
+            return "No se puede insertar: No existe la tabla."
+
+        tablass_element.remove(tabla_element)
+
+        pretty_xml = self.prettify(root)
+        with open(self.filepath, 'w') as f:
+            f.write(pretty_xml)
+
+        return "Tabla eliminada con éxito."
 
         
         
