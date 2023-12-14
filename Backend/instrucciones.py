@@ -88,12 +88,13 @@ def CreateTable(id_, columnas_):
     "columnas" : columnas_
   }
 
-def AlterAgregar(tabla, columna , tipodato):
+def AlterAgregar(tabla, columna , tipodato, atributo):
   return {
     "tipo" : TIPO_INSTRUCCION.ADD_COLUMNA,
     "idtabla" : tabla,
     "idcolumna" : columna,
-    "tipodato" : tipodato
+    "tipodato" : tipodato,
+    "atributo" : atributo
   }
 
 def AlterDrop(tabla, columna):

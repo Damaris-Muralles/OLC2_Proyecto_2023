@@ -341,10 +341,13 @@ def p_atributo(t):
 # SINTAXIS PARA ALTER TABLE
 def p_alter_table_instr(t) :
     ''' alter_instr     : ALTER TABLE IDENT ADD COLUMN IDENT tipodato PTCOMA
+                        | ALTER TABLE IDENT ADD COLUMN IDENT tipodato atributo PTCOMA
                         | ALTER TABLE IDENT DROP COLUMN IDENT PTCOMA
     '''
     if len(t) == 9:
-        t[0] = AlterAgregar(t[3], t[6], t[7])
+        t[0] = AlterAgregar(t[3], t[6], t[7], None)
+    elif len(t) == 10:
+        t[0] = AlterAgregar(t[3], t[6], t[7], t[8])
     else:
         t[0] = AlterDrop(t[3], t[6])                   
 

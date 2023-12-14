@@ -289,3 +289,151 @@ class XMLManejador:
             f.write(pretty_xml)
 
         return "Fila insertada con éxito."
+    
+    def drop_column(self, database, instruccion):
+        baseDatosEncontrada = self.Existe_basedatos(database)
+        if not baseDatosEncontrada[0]:
+            return "La base de datos no existe."
+        root = baseDatosEncontrada[1]
+        database_element = baseDatosEncontrada[2]
+
+        idtabla = instruccion.get("idtabla")
+        idcolumna = instruccion.get("idcolumna")
+
+        tablas_element = database_element.find('tablas')
+        if tablas_element is None:
+            return "No se puede insertar: No existe la tabla."
+        tablas_element = tablas_element.findall('tabla')
+        existe = False
+        tabla_element = None
+        for tabla in tablas_element:
+            if tabla.find('nombre').text == idtabla:
+                existe = True
+                tabla_element = tabla
+                break
+        if not existe:
+            return "No se puede insertar: No existe la tabla."
+
+        # recorrer todas las columnas en la etiqueta columnas de esa tabla
+        columnas_todo = tabla_element.find('columnas')
+        columnas_element = columnas_todo.findall('columna')
+
+        for columna in columnas_element:
+
+            if columna.find('id').text == idcolumna:
+                # Use parent to remove the columna element
+                print(columna)
+                columnas_todo.remove(columna)
+                print(columna)
+                break
+
+        pretty_xml = self.prettify(root)
+        with open(self.filepath, 'w') as f:
+            f.write(pretty_xml)
+
+        return "Columna eliminada con éxito."
+
+    def add_column(self, database, instruccion):
+        baseDatosEncontrada = self.Existe_basedatos(database)
+        if not baseDatosEncontrada[0]:
+            return "La base de datos no existe."
+        root = baseDatosEncontrada[1]
+        database_element = baseDatosEncontrada[2]
+
+        print(instruccion)
+        idtabla = instruccion.get("idtabla")
+        idcolumna = instruccion.get("idcolumna")
+
+        tipo = instruccion.get("tipodato")
+        tipodato = tipo.get("tipo").value
+        longitud = tipo.get("longitud")
+
+        
+
+        tablas_element = database_element.find('tablas')
+        if tablas_element is None:
+            return "No se puede insertar: No existe la tabla."
+        tablas_element = tablas_element.findall('tabla')
+        existe = False
+        tabla_element = None
+        for tabla in tablas_element:
+            if tabla.find('nombre').text == idtabla:
+                existe = True
+                tabla_element = tabla
+                break
+        if not existe:
+            return "No se puede insertar: No existe la tabla."
+        
+        # recorrer todas las columnas en la etiqueta columnas de esa tabla
+        columnas_element = tabla_element.find('columnas')
+
+        # comprobacion de que no exista una columna con el mismo nombre
+        listacolumnas = []
+        columna_element = columnas_element.findall('columna')
+        for columna in columna_element:
+            listacolumnas.append(columna.find('id').text)
+        if listacolumnas.count(idcolumna) > 0:
+            return "No se puede insertar: Ya existe una columna con el mismo nombre."
+        
+        # crear una etiqueta <columna> por cada columna de la tabla
+        new_columna_element = ET.SubElement(columnas_element, "columna")
+        nombre = ET.SubElement(new_columna_element, "id")
+        nombre.text = idcolumna
+        tipo_element = ET.SubElement(new_columna_element, "tipo")
+        tipo_dato_element = ET.SubElement(tipo_element, "tipodato")
+        tipo_dato_element.text = str(tipodato)
+        longitud_dato = ET.SubElement(tipo_element, "longitud")
+        longitud_dato.text = str(longitud)
+        tipo_atribut_element = ET.SubElement(new_columna_element, "atributo")
+        atributo_tablaref_element = ET.SubElement(new_columna_element, "tablaref")
+        atributo_columnaref_element = ET.SubElement(new_columna_element, "columnaref")
+        tipo_atributo_element = ET.SubElement(new_columna_element, "inputs")
+        contador = 0
+
+        if instruccion.get("atributo") != None:
+            atributo = instruccion.get("atributo")
+            tipoatributo = atributo.get("tipo").value
+            
+            tipo_atribut_element.text = str(tipoatributo)               
+            if tipoatributo == 2:
+                tablaref = atributo.get("idtabla_ref")
+                columnaref = atributo.get("idcolumna_ref")
+                atributo_tablaref_element.text = tablaref          
+                atributo_columnaref_element.text = columnaref
+       
+        #Ver si las demas columnas tienen input en inputs
+        for columna in columna_element:
+            inputs_element = columna.find('inputs')
+            for input in inputs_element:
+                contador += 1
+            break
+
+        for agregar in range(contador):
+            input_element = ET.SubElement(tipo_atributo_element, "input")
+            input_element.text = "null"
+
+        
+
+      
+               
+            
+            
+            
+
+
+        pretty_xml = self.prettify(root)
+        with open(self.filepath, 'w') as f:
+            f.write(pretty_xml)
+
+        return "Columna agregada con éxito."
+
+        
+        
+
+
+
+        
+
+
+
+

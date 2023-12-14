@@ -3,7 +3,7 @@ import tablasimbolo as TS
 from instrucciones import *
 from manejoxml import *
 
-xml = XMLManejador("./BasesDatos.xml")
+xml = XMLManejador("./BasesDatos.xml")  
 ActualBaseDatos = ""
 
 def procesar_createdatabase(instr) :
@@ -25,6 +25,15 @@ def procesar_usedatabase(instr):
 def procesar_insert(instr):
     print("insert")
     print(xml.insert_data(ActualBaseDatos,instr))
+
+def procesar_dropcolumna(instr):
+    print("drop columna")
+    print(xml.drop_column(ActualBaseDatos, instr))
+
+def procesar_addcolumna(instr):
+    print("add columna")
+    print(xml.add_column(ActualBaseDatos, instr))
+
 def procesar_instrucciones(instrucciones) :
     ## lista de instrucciones recolectadas
     for instr in instrucciones :
@@ -32,22 +41,25 @@ def procesar_instrucciones(instrucciones) :
         elif instr.get('tipo') == TIPO_INSTRUCCION.CREATE_TABLE : procesar_createtable(instr)
         elif instr.get('tipo') == TIPO_INSTRUCCION.USE_DATABASE : procesar_usedatabase(instr)
         elif instr.get('tipo') == TIPO_INSTRUCCION.INSERT_TABLE : procesar_insert(instr)
+        elif instr.get('tipo') == TIPO_INSTRUCCION.DROP_COLUMNA : procesar_dropcolumna(instr)
+        elif instr.get('tipo') == TIPO_INSTRUCCION.ADD_COLUMNA : procesar_addcolumna(instr)
         else : print('Error: instrucción no válida')
 
 #f = open("./entrada.txt", "r")
 
 #input = f.read()
 input = """
-CREATE DATA BASE intento; 
+
 
 USAR intento;
  
-CREATE TABLE products (
-id int PRIMARY KEY,
-nombre nvarchar(1000) NOT NULL,
-bandera int NULL
-);
-INSERT INTO products (id,nombre,bandera) VALUES(1,'JULIO LOPEZ',1); 
+Alter table products add column normal decimal ;
+
+Alter table products add column ultimooooo int not null;
+
+Alter table products add column comprar2 nvarchar(11) reference products(id);
+
+
 """
 instrucciones = g.parse(input.lower())
 ts_global = TS.TablaSimbolo()

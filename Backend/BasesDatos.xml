@@ -17,6 +17,13 @@
             <columnaref/>
             <inputs>
               <input>1</input>
+              <input>2</input>
+              <input>1</input>
+              <input>2</input>
+              <input>1</input>
+              <input>2</input>
+              <input>1</input>
+              <input>2</input>
             </inputs>
           </columna>
           <columna>
@@ -30,6 +37,13 @@
             <columnaref/>
             <inputs>
               <input>julio lopez</input>
+              <input>jorge sebas</input>
+              <input>julio lopez</input>
+              <input>jorge sebas</input>
+              <input>julio lopez</input>
+              <input>jorge sebas</input>
+              <input>julio lopez</input>
+              <input>jorge sebas</input>
             </inputs>
           </columna>
           <columna>
@@ -42,7 +56,136 @@
             <tablaref/>
             <columnaref/>
             <inputs>
-              <input>1</input>
+              <input>guatemala</input>
+              <input>mexico</input>
+              <input>guatemala</input>
+              <input>mexico</input>
+              <input>guatemala</input>
+              <input>mexico</input>
+              <input>guatemala</input>
+              <input>mexico</input>
+            </inputs>
+          </columna>
+          <columna>
+            <id>intentofinal</id>
+            <tipo>
+              <tipodato>1</tipodato>
+              <longitud>None</longitud>
+            </tipo>
+            <atributo/>
+            <tablaref/>
+            <columnaref/>
+            <inputs>
+              <input>null</input>
+              <input>null</input>
+              <input>null</input>
+              <input>null</input>
+              <input>null</input>
+              <input>null</input>
+              <input>null</input>
+              <input>null</input>
+            </inputs>
+          </columna>
+          <columna>
+            <id>inteto2</id>
+            <tipo>
+              <tipodato>1</tipodato>
+              <longitud>None</longitud>
+            </tipo>
+            <atributo/>
+            <tablaref/>
+            <columnaref/>
+            <inputs>
+              3
+              <input>null</input>
+              <input>null</input>
+              <input>null</input>
+              <input>null</input>
+              <input>null</input>
+              <input>null</input>
+              <input>null</input>
+              <input>null</input>
+            </inputs>
+          </columna>
+          <columna>
+            <id>entrarr</id>
+            <tipo>
+              <tipodato>1</tipodato>
+              <longitud>None</longitud>
+            </tipo>
+            <atributo/>
+            <tablaref/>
+            <columnaref/>
+            <inputs>
+              3
+              <input>null</input>
+              <input>null</input>
+              <input>null</input>
+              <input>null</input>
+              <input>null</input>
+              <input>null</input>
+              <input>null</input>
+              <input>null</input>
+            </inputs>
+          </columna>
+          <columna>
+            <id>normal</id>
+            <tipo>
+              <tipodato>2</tipodato>
+              <longitud>None</longitud>
+            </tipo>
+            <atributo/>
+            <tablaref/>
+            <columnaref/>
+            <inputs>
+              <input>null</input>
+              <input>null</input>
+              <input>null</input>
+              <input>null</input>
+              <input>null</input>
+              <input>null</input>
+              <input>null</input>
+              <input>null</input>
+            </inputs>
+          </columna>
+          <columna>
+            <id>ultimooooo</id>
+            <tipo>
+              <tipodato>1</tipodato>
+              <longitud>None</longitud>
+            </tipo>
+            <atributo>3</atributo>
+            <tablaref/>
+            <columnaref/>
+            <inputs>
+              <input>null</input>
+              <input>null</input>
+              <input>null</input>
+              <input>null</input>
+              <input>null</input>
+              <input>null</input>
+              <input>null</input>
+              <input>null</input>
+            </inputs>
+          </columna>
+          <columna>
+            <id>comprar2</id>
+            <tipo>
+              <tipodato>6</tipodato>
+              <longitud>11</longitud>
+            </tipo>
+            <atributo>2</atributo>
+            <tablaref>products</tablaref>
+            <columnaref>id</columnaref>
+            <inputs>
+              <input>null</input>
+              <input>null</input>
+              <input>null</input>
+              <input>null</input>
+              <input>null</input>
+              <input>null</input>
+              <input>null</input>
+              <input>null</input>
             </inputs>
           </columna>
         </columnas>
