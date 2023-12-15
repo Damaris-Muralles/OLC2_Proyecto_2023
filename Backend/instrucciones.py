@@ -42,7 +42,6 @@ class TIPO_DATO(Enum):
   DATETIME = 5
   VARCHAR = 6
   BIT = 7 
-  INTEGER = 8
 
 class TIPO_ATRIBUTO(Enum):
   PRIMARY_KEY = 1
@@ -57,17 +56,20 @@ class TIPO_OPERACION(Enum):
   RESTA = 2
   MULTIPLICACION = 3
   DIVISION = 4
-  MAYOR_QUE = 7
-  MENOR_QUE = 8
-  IGUAL_IGUAL = 9
-  NO_IGUAL = 10
-  MAYOR_IGUAL = 11
-  MENOR_IGUAL = 12
-  AND = 13
-  OR = 14
-  NOT = 15
-  IGUAL = 16
+  MAYOR_QUE = 5
+  MENOR_QUE = 6
+  IGUAL_IGUAL = 7
+  NO_IGUAL = 8
+  MAYOR_IGUAL = 9
+  MENOR_IGUAL = 10
+  AND = 11
+  OR = 12
+  NOT = 13
+  IGUAL = 14
+  BETWEEN = 15
+  NOT_BETWEEN = 16
   
+
 
 # funciones para encapsular las instrucciones
 def UseDatabase(id):
@@ -286,12 +288,16 @@ def Expresion(exp1, operador, exp2):
     operador = TIPO_OPERACION.MAYOR_IGUAL
   elif operador == "<=":
     operador = TIPO_OPERACION.MENOR_IGUAL
-  elif operador == "&&":
+  elif operador == "&&" or operador == "and":
     operador = TIPO_OPERACION.AND
-  elif operador == "||":
+  elif operador == "||" or operador == "or":
     operador = TIPO_OPERACION.OR
-  elif operador == "!":
+  elif operador == "!" or operador == "not":
     operador = TIPO_OPERACION.NOT
+  elif operador == "between":
+    operador = TIPO_OPERACION.BETWEEN
+  elif operador == "NOT_BET":
+    operador = TIPO_OPERACION.NOT_BETWEEN
   return {
     "tipo" : operador,
     "exp1" : exp1,

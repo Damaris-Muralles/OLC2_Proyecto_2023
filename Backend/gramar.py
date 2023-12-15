@@ -49,10 +49,13 @@ reservadas = {
     'concatena' : 'CONCATENA',
     'hoy' : 'HOY',
     'substraer' : 'SUBSTRAER',
-    
+    # operaciones
+    'and' : 'Y',
+    'or' : 'O',
+    'not' : 'NOT',
+    'between' : 'BETWEEN',
     # tipos de datos
     'null' : 'NULL',
-    'not' : 'NOT',
     'nvarchar' : 'VARCHAR',
     'nchar' : 'CHAR',
     'int' : 'INT',
@@ -154,7 +157,7 @@ def t_IDENTIFICADOR(t):
 
 def t_CADENA(t):
     r'(\'[^\']*\'|\"[^\"]*\")'
-    t.value = t.value[1:-1] # remuevo las comillas
+    #t.value = t.value[1:-1] # remuevo las comillas
     return t
 
 def t_IDENT(t):
@@ -206,15 +209,16 @@ while True:
 
 # Asociacion de operadores y precedencia
 precedence = (
-    ('right', 'NEGACION'), 
-    ('left', 'MAS', 'MENOS'),
-    ('left', 'POR', 'DIVIDIDO'),
-    ('nonassoc', 'PARDER', 'PARIZQ'),
+   
+    ('right', 'Y','AND', 'BETWEEN'),
+    ('right', 'O','OR'),
+    ('right', 'NOT','NEGACION' ), 
     ('left', 'IGUAL', 'DIFERENTE', 'MAYORQUE','MENORQUE', 'MENORIGUAL', 'MAYORIGUAL'),
-    ('right', 'OR'),
-    ('right', 'AND'),
-    )
+    ('left', 'POR', 'DIVIDIDO'),
+    ('left', 'MAS', 'MENOS'),
+    ('nonassoc', 'PARDER', 'PARIZQ'),
 
+    )
 # Definicion de la gramatica
 
 def p_init(t) :
@@ -545,6 +549,10 @@ def p_expresiones(t):
                     | expresiones OR expresiones
                     | expresiones IGUAL expresiones
                     | expresiones DIFERENTE expresiones
+                    | expresiones Y expresiones
+                    | expresiones O expresiones
+                    | expresiones NOT BETWEEN expresiones
+                    | expresiones BETWEEN expresiones 
                     | expresiones MAYORQUE expresiones
                     | expresiones MENORQUE expresiones 
                     | expresiones MAYORIGUAL expresiones
@@ -556,9 +564,10 @@ def p_expresiones(t):
                     | expresiones DIVIDIDO expresiones
                     | PARIZQ expresiones PARDER
                     | NEGACION expresiones
+                    | NOT expresiones
                     | llaves
-                    | DECIMALES
                     | ENTERO
+                    | DECIMALES
                     | CADENA
                     | IDENTIFICADOR
                     | IDENT
@@ -572,8 +581,11 @@ def p_expresiones(t):
         t[0] = Expresion(t[2],t[1],None)
     elif len(t)==4: 
         t[0] = Expresion(t[1],t[2],t[3])
+    elif len(t)==5:
+        t[0] = Expresion(t[1],"NOT_BET",t[4])
     elif len(t)==2:
         t[0] = t[1]
+    
 
 def p_llaves(t):
     '''llaves : IDENT PUNTO IDENT'''
@@ -612,11 +624,15 @@ def parse(input) :
 
 
 
+
 '''
 input = """
-CREATE TABLE products (
-product_no int REFERENCE products (product_no)
-);
+DELETE FROM tbvalores
+WHERE (id > 3 OR id < 100) 
+AND (valor BETWEEN 50 AND 200) 
+AND not fecha_creacion < hoy()
+AND nombre == 'Juan Perez'
+AND ciudad == ('Guatemala' OR 'Quetzaltenango'OR 'Escuintla');
 
 """
 
@@ -626,4 +642,5 @@ result = parser.parse(input.lower())
 for a in result:
     print(a)
     print("=====================================")
+
 '''
