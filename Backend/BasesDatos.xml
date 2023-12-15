@@ -16,7 +16,6 @@
             <tablaref/>
             <columnaref/>
             <inputs>
-              <input>2</input>
               <input>1</input>
             </inputs>
           </columna>
@@ -30,7 +29,6 @@
             <tablaref/>
             <columnaref/>
             <inputs>
-              <input>carina</input>
               <input>car</input>
             </inputs>
           </columna>
@@ -44,22 +42,7 @@
             <tablaref/>
             <columnaref/>
             <inputs>
-              <input>null</input>
               <input>er</input>
-            </inputs>
-          </columna>
-          <columna>
-            <id>hot</id>
-            <tipo>
-              <tipodato>7</tipodato>
-              <longitud>None</longitud>
-            </tipo>
-            <atributo/>
-            <tablaref/>
-            <columnaref/>
-            <inputs>
-              <input>null</input>
-              <input>23</input>
             </inputs>
           </columna>
         </columnas>

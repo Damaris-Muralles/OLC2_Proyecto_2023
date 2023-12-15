@@ -601,9 +601,57 @@ class XMLManejador:
 
         return "Fila insertada con éxito."
        
-    def delete_filas(self,database,table,condiciones):
-        pass   
+    def delete_registro(self,database,table,eliminar):
 
+        baseDatosEncontrada = self.Existe_basedatos(database)
+        if not baseDatosEncontrada[0]:
+            return "La base de datos no existe."
+        root = baseDatosEncontrada[1]
+        database_element = baseDatosEncontrada[2]
+         #buscar si existe la tabla con el idtabla, si no existe retorna error
+        tablass_element = database_element.find('tablas')
+        if tablass_element is None:
+            return "No se puede eliminar : No existe la tabla."
+        tablas_element = tablass_element.findall('tabla')
+        existe = False
+        tabla_element = None
+        for tabla in tablas_element:
+            if tabla.find('nombre').text == table:
+                existe = True
+                tabla_element = tabla
+                break
+        if not existe:
+            return "No se puede eliminar : No existe la tabla."
+
+
+
+
+        if eliminar == None:
+            return "No se puede eliminar: Ningun valor cumple las condiciones."
+        
+        columnas_element = tabla_element.find('columnas')
+        columna_element = columnas_element.findall('columna')
+        
+        for col in eliminar:
+            #recorrer todas las columnas de la tabla
+            for columna in columna_element:
+                # buscar todos los inputs de la columna
+                inputs_element11 = columna.find('inputs')
+                inputs_element = list(inputs_element11)
+                # eliminar el input que coincida con la posicion col
+                inputs_element11.remove(inputs_element[col-1])
+
+
+
+        pretty_xml = self.prettify(root)
+        with open(self.filepath, 'w') as f:
+            f.write(pretty_xml)
+
+        return "Registro eliminado con éxito."
+        
+    def update_registro(self):
+        pass
+    
 
 
         

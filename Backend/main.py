@@ -42,6 +42,10 @@ def procesar_truncatetable(instr):
     print("truncate table")
     print(xml.truncate_table(ActualBaseDatos, instr))
 
+def procesar_delete(instr):
+    print("delete")
+    print(xml.delete_registro(ActualBaseDatos, instr.get("id"),[1]))
+
 def procesar_instrucciones(instrucciones) :
     ## lista de instrucciones recolectadas
     for instr in instrucciones :
@@ -53,6 +57,7 @@ def procesar_instrucciones(instrucciones) :
         elif instr.get('tipo') == TIPO_INSTRUCCION.TRUNCATE_TABLE : procesar_truncatetable(instr)
         elif instr.get('tipo') == TIPO_INSTRUCCION.INSERT_TABLE : procesar_insert(instr)
         elif instr.get('tipo') == TIPO_INSTRUCCION.USE_DATABASE : procesar_usedatabase(instr)
+        elif instr.get('tipo') == TIPO_INSTRUCCION.DELETE_TABLE : procesar_delete(instr)
         else : print('Error: instrucción no válida')
 
 #f = open("./entrada.txt", "r")
@@ -69,6 +74,8 @@ cantidad int
 );
  
 INSERT INTO tbdetallefactura(iddetallefac,price,cantidad) VALUES(1,1.00,23);
+
+DELETE FROM products where id = 3;
 """
 instrucciones = g.parse(input.lower())
 ts_global = TS.TablaSimbolo()

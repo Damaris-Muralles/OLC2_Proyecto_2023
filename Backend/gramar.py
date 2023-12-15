@@ -38,7 +38,6 @@ reservadas = {
     'key' : 'KEY',
     'values' : 'VALUES',
     'primary' : 'PRIMARY',
-    'foreing' : 'FOREIGN',
     'reference' : 'REFERENCE',
     'column'   : 'COLUMN',
 
@@ -550,6 +549,7 @@ def p_expresiones(t):
                     | expresiones MENORQUE expresiones 
                     | expresiones MAYORIGUAL expresiones
                     | expresiones MENORIGUAL expresiones
+                    | expresiones IGUALSIMPLE expresiones
                     | expresiones MAS expresiones
                     | expresiones MENOS expresiones
                     | expresiones POR expresiones

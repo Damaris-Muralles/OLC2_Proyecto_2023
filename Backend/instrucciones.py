@@ -66,6 +66,7 @@ class TIPO_OPERACION(Enum):
   AND = 13
   OR = 14
   NOT = 15
+  IGUAL = 16
   
 
 # funciones para encapsular las instrucciones
@@ -277,6 +278,8 @@ def Expresion(exp1, operador, exp2):
     operador = TIPO_OPERACION.MENOR_QUE
   elif operador == "==":
     operador = TIPO_OPERACION.IGUAL_IGUAL
+  elif operador == "=":
+    operador = TIPO_OPERACION.IGUAL
   elif operador == "!=":
     operador = TIPO_OPERACION.NO_IGUAL
   elif operador == ">=":
