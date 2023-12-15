@@ -104,6 +104,22 @@
           </columna>
         </columnas>
       </tabla>
+      <tabla>
+        <nombre>tabla2</nombre>
+        <columnas>
+          <columna>
+            <id>product_no</id>
+            <tipo>
+              <tipodato>1</tipodato>
+              <longitud>None</longitud>
+            </tipo>
+            <atributo>2</atributo>
+            <tablaref>products</tablaref>
+            <columnaref>id</columnaref>
+            <inputs/>
+          </columna>
+        </columnas>
+      </tabla>
     </tablas>
     <funciones/>
     <procedimientos/>
