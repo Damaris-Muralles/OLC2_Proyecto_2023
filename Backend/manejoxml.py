@@ -28,6 +28,7 @@ class XMLManejador:
                 return [True,root,element]
 
         return [False,root,None]
+    
     def obtener_registros(self, database, table,colum):
         baseDatosEncontrada = self.Existe_basedatos(database)
         if not baseDatosEncontrada[0]:
@@ -37,7 +38,7 @@ class XMLManejador:
         #buscar si existe la tabla con el idtabla, si no existe retorna error
         tablass_element = database_element.find('tablas')
         if tablass_element is None:
-            return "No se pueden obtener los datos: no existe la tabla."
+            return {"dato":"No se pueden obtener los datos: no existe la tabla.","tipo":"Error"}
         tablas_element = tablass_element.findall('tabla')
         existe = False
         tabla_element = None
@@ -47,7 +48,7 @@ class XMLManejador:
                 tabla_element = tabla
                 break
         if not existe:
-            return  "No se pueden obtener los datos: no existe la tabla."
+            return {"dato":"No se pueden obtener los datos: no existe la tabla.","tipo":"Error"} 
 
         columnas_element = tabla_element.find('columnas')
         columna_element = columnas_element.findall('columna')
@@ -66,7 +67,7 @@ class XMLManejador:
                 inputs_element = inputs_element.findall('input')
                 lista = []
                 if len(inputs_element) == 0:
-                    return lista
+                    return {"dato":lista,"tipo":tipodato}
                 for input in inputs_element:
                     if tipodato == TIPO_DATO.INT.value or tipodato == TIPO_DATO.BIT.value:
                         lista.append(int(input.text))
@@ -76,7 +77,7 @@ class XMLManejador:
                         lista.append(input.text)
 
                   
-                return lista
+                return {"dato":lista,"tipo":tipodato}
             
     def add_database(self, database):
         

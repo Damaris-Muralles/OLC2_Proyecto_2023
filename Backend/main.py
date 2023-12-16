@@ -83,8 +83,7 @@ DELETE FROM products where id = 3;"""
 
 
 input = """
-USAR intento;
-DELETE FROM products where id = 3;
+DELETE FROM products where '03-04-2000'/ "hola";
 """
 instrucciones = g.parse(input.lower())
 ts_global = TS.TablaSimbolo()
