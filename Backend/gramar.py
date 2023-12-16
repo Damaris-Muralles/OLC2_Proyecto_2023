@@ -49,11 +49,13 @@ reservadas = {
     'concatena' : 'CONCATENA',
     'hoy' : 'HOY',
     'substraer' : 'SUBSTRAER',
+
     # operaciones
     'and' : 'Y',
     'or' : 'O',
     'not' : 'NOT',
     'between' : 'BETWEEN',
+
     # tipos de datos
     'null' : 'NULL',
     'nvarchar' : 'VARCHAR',
@@ -63,8 +65,7 @@ reservadas = {
     'bit' : 'BIT',
     'date' : 'DATE',
     'datetime' : 'DATETIME'
-   
-    
+
 }
 
 tokens  =  [
@@ -126,11 +127,11 @@ t_IGUALSIMPLE = r'='
 
 # Expresiones regulares
 def t_FECHAHORA(t):
-    r'\d{2}-\d{2}-\d{4}\s\d{2}:\d{2}:\d{2}'
+    r'[\'|\"][\d]{2}-[\d]{2}-[\d]{4}\s[\d]{2}:[\d]{2}:[\d]{2}[\'|\"]'
     return t
 
 def t_FECHA(t):
-    r'\d{2}-\d{2}-\d{4}'
+    r'[\'|\"][\d]{2}-[\d]{2}-[\d]{4}[\'|\"]'
     return t
 
 def t_DECIMALES(t):
@@ -280,7 +281,7 @@ def p_tipodato(t):
         t[0] = TipoDato(t[1],None)
     elif len(t)==5:
         t[0] = TipoDato(t[1],t[3])
-    
+
 
 # SINTAXIS PARA USAR BASE DE DATOS
 def p_use_database(t):
@@ -323,7 +324,6 @@ def p_columna(t):
     else:
         t[0] = ColumnaTable(t[1],t[2],None)
 
-# atributos de la columna
 def p_atributo(t):
     '''
 
@@ -338,7 +338,6 @@ def p_atributo(t):
         t[0] = Atributo(t[1],t[2],t[4])
     else:
         t[0] = Atributo(t[1],None,None)
-
 
 
 # SINTAXIS PARA ALTER TABLE
@@ -365,42 +364,6 @@ def p_drop_instr(t):
     '''
     t[0] = DropTable(t[3])
 
-# SINTAXIS CONCATENAR
-def p_concater(t):
-    '''concater : CONCATENA PARIZQ CADENA COMA CADENA PARDER '''
-    t[0] = Concatena(t[3], t[5])
-
-# SITAXIS SUBSTRAER
-def p_substraer(t):
-    '''subtrae : SUBSTRAER PARIZQ CADENA COMA ENTERO COMA ENTERO PARDER '''
-    t[0] = Substraer(t[3], t[5], t[7])
-
-# SINTAXIS PARA HOY
-def p_hoy(t):
-    '''hoyy : HOY PARIZQ PARDER'''
-    t[0] = Hoy()
-
-# SINTAXIS PARA CONTAR
-def p_contar(t):
-    '''contarr : CONTAR PARIZQ POR PARDER'''
-    t[0] = Contar()
-
-# SINTAXIS PARA SUMA
-def p_suma(t):
-    '''sumaa : SUMA PARIZQ IDENT PARDER
-            | SUMA PARIZQ ENTERO PARDER'''
-    t[0] = Suma(t[3])
-
-# SINTAXIS PARA CAST
-def p_cast(t):
-    '''castt : CAST PARIZQ variable_operar AS tipodato PARDER '''
-    t[0] = Cast(t[3], t[5])
-
-def p_variable_operar(t):
-    '''variable_operar : IDENT
-                        | IDENTIFICADOR'''
-    t[0] = t[1]
-    
 # SINTAXIS PARAUPDATE
 def p_update_instr(t):
     '''update_instr : UPDATE IDENT SET expresiones WHERE expresiones PTCOMA
@@ -452,13 +415,20 @@ def p_insert(t):
 
 # SINTAXIS PARA DECLARACION DE VARIABLES
 def p_declaracion(t):
-    '''declaracionvariable : DECLARE IDENTIFICADOR tipodato PTCOMA
+    '''declaracionvariable : DECLARE IDENTIFICADOR AS tipodato IGUALSIMPLE expresiones PTCOMA
                             | DECLARE IDENTIFICADOR tipodato IGUALSIMPLE expresiones PTCOMA
+                            | DECLARE IDENTIFICADOR AS tipodato PTCOMA
+                            | DECLARE IDENTIFICADOR tipodato PTCOMA
+                            
     '''
     if len(t)==5:
         t[0] = DeclararVariable(t[2],t[3],None)
-    else:
+    elif len(t)==6:
+        t[0] = DeclararVariable(t[2],t[4])
+    elif len(t)==7:
         t[0] = DeclararVariable(t[2],t[3],t[5])
+    else:
+        t[0] = DeclararVariable(t[2],t[4],t[6])
 
 # SINTAXIS PARA ASIGNACION DE VARIABLES
 def p_asignacion(t):
@@ -475,7 +445,6 @@ def p_if(t):
 def p_while(t):
     '''while_instr : WHILE expresiones BEGIN instrucciones END PTCOMA '''
     t[0] = CicloWhile(t[2],t[4])
-
 
 # SINTAXIS CREAR PROCEDURE 
 def p_create_procedure(t):
@@ -586,11 +555,51 @@ def p_expresiones(t):
     elif len(t)==2:
         t[0] = t[1]
     
-
+# ALIAS
 def p_llaves(t):
     '''llaves : IDENT PUNTO IDENT'''
     t[0] = LlamarColumna(t[2],t[1],t[3])
-  
+
+
+
+# SINTAXIS CONCATENAR
+def p_concater(t):
+    '''concater : CONCATENA PARIZQ CADENA COMA CADENA PARDER '''
+    t[0] = Concatena(t[3], t[5])
+
+# SITAXIS SUBSTRAER
+def p_substraer(t):
+    '''subtrae : SUBSTRAER PARIZQ CADENA COMA ENTERO COMA ENTERO PARDER '''
+    t[0] = Substraer(t[3], t[5], t[7])
+
+# SINTAXIS PARA HOY
+def p_hoy(t):
+    '''hoyy : HOY PARIZQ PARDER'''
+    t[0] = Hoy()
+
+# SINTAXIS PARA CONTAR
+def p_contar(t):
+    '''contarr : CONTAR PARIZQ POR PARDER'''
+    t[0] = Contar()
+
+# SINTAXIS PARA SUMA
+def p_suma(t):
+    '''sumaa : SUMA PARIZQ IDENT PARDER
+            | SUMA PARIZQ ENTERO PARDER'''
+    t[0] = Suma(t[3])
+
+# SINTAXIS PARA CAST
+def p_cast(t):
+    '''castt : CAST PARIZQ variable_operar AS tipodato PARDER '''
+    t[0] = Cast(t[3], t[5])
+
+def p_variable_operar(t):
+    '''variable_operar : IDENT
+                        | IDENTIFICADOR'''
+    t[0] = t[1]
+    
+
+# FUNCIONES SISTEMA
 def p_func_sistema(t):
     '''func_sistema : contarr
                     | sumaa

@@ -28,7 +28,56 @@ class XMLManejador:
                 return [True,root,element]
 
         return [False,root,None]
-    
+    def obtener_registros(self, database, table,colum):
+        baseDatosEncontrada = self.Existe_basedatos(database)
+        if not baseDatosEncontrada[0]:
+            return "La base de datos no existe."
+        root = baseDatosEncontrada[1]
+        database_element = baseDatosEncontrada[2]
+        #buscar si existe la tabla con el idtabla, si no existe retorna error
+        tablass_element = database_element.find('tablas')
+        if tablass_element is None:
+            return "No se pueden obtener los datos: no existe la tabla."
+        tablas_element = tablass_element.findall('tabla')
+        existe = False
+        tabla_element = None
+        for tabla in tablas_element:
+            if tabla.find('nombre').text == table:
+                existe = True
+                tabla_element = tabla
+                break
+        if not existe:
+            return  "No se pueden obtener los datos: no existe la tabla."
+
+        columnas_element = tabla_element.find('columnas')
+        columna_element = columnas_element.findall('columna')
+        
+        # buscar que exista la columna colum
+        for columna in columna_element:
+            if columna.find('id').text == colum:
+                # buscar el tipo de dato de la columna
+                tipodato = columna.find('tipo').find('tipodato').text
+                if tipodato != None:
+                    tipodato = int(tipodato)
+                
+
+                # buscar todos los inputs de la columna y retornarlos como lista
+                inputs_element = columna.find('inputs')
+                inputs_element = inputs_element.findall('input')
+                lista = []
+                if len(inputs_element) == 0:
+                    return lista
+                for input in inputs_element:
+                    if tipodato == TIPO_DATO.INT.value or tipodato == TIPO_DATO.BIT.value:
+                        lista.append(int(input.text))
+                    elif tipodato == TIPO_DATO.DECIMAL.value:
+                        lista.append(float(input.text))
+                    else:
+                        lista.append(input.text)
+
+                  
+                return lista
+            
     def add_database(self, database):
         
 
@@ -631,15 +680,17 @@ class XMLManejador:
         
         columnas_element = tabla_element.find('columnas')
         columna_element = columnas_element.findall('columna')
-        
+        index=-1
         for col in eliminar:
+            index+=1
             #recorrer todas las columnas de la tabla
             for columna in columna_element:
                 # buscar todos los inputs de la columna
                 inputs_element11 = columna.find('inputs')
                 inputs_element = list(inputs_element11)
                 # eliminar el input que coincida con la posicion col
-                inputs_element11.remove(inputs_element[col-1])
+                if col==1:
+                    inputs_element11.remove(inputs_element[index])
 
 
 

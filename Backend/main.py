@@ -2,6 +2,7 @@ import gramar as g
 import tablasimbolo as TS
 from instrucciones import *
 from manejoxml import *
+from where import *
 
 xml = XMLManejador("./BasesDatos.xml")  
 ActualBaseDatos = ""
@@ -44,11 +45,10 @@ def procesar_truncatetable(instr):
 
 def procesar_delete(instr):
     print("delete")
-    #print(xml.delete_registro(ActualBaseDatos, instr.get("id"),[1]))
-    
     # solo para probar el where
-    procesar_where1(instr.get("where"))
-
+    eliminar=procesar_where1(instr.get("where"),ActualBaseDatos, instr.get("id"))
+    
+    #print(xml.delete_registro(ActualBaseDatos, instr.get("id"),eliminar))
 
 def procesar_instrucciones(instrucciones) :
     ## lista de instrucciones recolectadas
@@ -83,11 +83,8 @@ DELETE FROM products where id = 3;"""
 
 
 input = """
-
+USAR intento;
 DELETE FROM products where id = 3;
-DELETE FROM tbvalores
-WHERE id > 3 OR id < 100;
-
 """
 instrucciones = g.parse(input.lower())
 ts_global = TS.TablaSimbolo()

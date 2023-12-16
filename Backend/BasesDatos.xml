@@ -17,6 +17,9 @@
             <columnaref/>
             <inputs>
               <input>1</input>
+              <input>3</input>
+              <input>2</input>
+              <input>4</input>
             </inputs>
           </columna>
           <columna>
@@ -30,6 +33,9 @@
             <columnaref/>
             <inputs>
               <input>car</input>
+              <input>2</input>
+              <input>3</input>
+              <input>4</input>
             </inputs>
           </columna>
           <columna>
@@ -43,6 +49,9 @@
             <columnaref/>
             <inputs>
               <input>er</input>
+              <input>2</input>
+              <input>3</input>
+              <input>4</input>
             </inputs>
           </columna>
         </columnas>
@@ -101,22 +110,6 @@
             <inputs>
               <input>23</input>
             </inputs>
-          </columna>
-        </columnas>
-      </tabla>
-      <tabla>
-        <nombre>tabla2</nombre>
-        <columnas>
-          <columna>
-            <id>product_no</id>
-            <tipo>
-              <tipodato>1</tipodato>
-              <longitud>None</longitud>
-            </tipo>
-            <atributo>2</atributo>
-            <tablaref>products</tablaref>
-            <columnaref>id</columnaref>
-            <inputs/>
           </columna>
         </columnas>
       </tabla>

@@ -49,7 +49,6 @@ class TIPO_ATRIBUTO(Enum):
   NOT_NULL = 3
   NULL = 4
 
-  
 # enump para tipo operacion
 class TIPO_OPERACION(Enum):
   SUMA = 1

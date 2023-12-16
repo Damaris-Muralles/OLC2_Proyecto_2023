@@ -1,14 +1,25 @@
-import xml.etree.ElementTree as ET
-import xml.dom.minidom as minidom
-from instrucciones import *
 
-def procesar_where1(instr):
-    
+from instrucciones import *
+import tablasimbolo as TS
+from instrucciones import *
+from manejoxml import *
+
+xml = XMLManejador("./BasesDatos.xml")  
+
+basedata = ""
+table = ""
+
+def procesar_where1(instr,base,tabla):
+    global basedata
+    basedata = base
+    global table
+    table = tabla
+
     if isinstance(instr, dict):
         if instr.get("tipo") == TIPO_OPERACION.MAYOR_QUE:
             
-            exp1=procesar_where1(instr.get("exp1"))
-            exp2=procesar_where1(instr.get("exp2"))
+            exp1=procesar_where1(instr.get("exp1"), base, tabla)
+            exp2=procesar_where1(instr.get("exp2"), base, tabla)
             print(exp1," > ",exp2)
             exp1 = procesar_expresion(exp1)
             exp2 = procesar_expresion(exp2)
@@ -33,8 +44,8 @@ def procesar_where1(instr):
             print("respuesta: ",respuesta)
             return respuesta
         elif instr.get("tipo") == TIPO_OPERACION.MENOR_QUE:
-            exp1=procesar_where1(instr.get("exp1"))
-            exp2=procesar_where1(instr.get("exp2"))
+            exp1=procesar_where1(instr.get("exp1"), base, tabla)
+            exp2=procesar_where1(instr.get("exp2"), base, tabla)
             print(exp1," <",exp2)
             exp1 = procesar_expresion(exp1)
             exp2 = procesar_expresion(exp2)
@@ -58,8 +69,8 @@ def procesar_where1(instr):
             print("respuesta: ",respuesta)
             return respuesta
         elif instr.get("tipo") == TIPO_OPERACION.IGUAL_IGUAL or instr.get("tipo") == TIPO_OPERACION.IGUAL:
-            exp1=procesar_where1(instr.get("exp1"))
-            exp2=procesar_where1(instr.get("exp2"))
+            exp1=procesar_where1(instr.get("exp1"), base, tabla)
+            exp2=procesar_where1(instr.get("exp2"), base, tabla)
             print(exp1,"==",exp2)
             exp1 = procesar_expresion(exp1)
             exp2 = procesar_expresion(exp2)
@@ -83,8 +94,8 @@ def procesar_where1(instr):
             print("respuesta: ",respuesta)
             return respuesta
         elif instr.get("tipo") == TIPO_OPERACION.NO_IGUAL:
-            exp1=procesar_where1(instr.get("exp1"))
-            exp2=procesar_where1(instr.get("exp2"))
+            exp1=procesar_where1(instr.get("exp1"), base, tabla)
+            exp2=procesar_where1(instr.get("exp2"), base, tabla)
             print(exp1," !=",exp2)
             exp1 = procesar_expresion(exp1)
             exp2 = procesar_expresion(exp2)
@@ -108,8 +119,8 @@ def procesar_where1(instr):
             print("respuesta: ",respuesta)
             return respuesta
         elif instr.get("tipo") == TIPO_OPERACION.MAYOR_IGUAL:
-            exp1=procesar_where1(instr.get("exp1"))
-            exp2=procesar_where1(instr.get("exp2"))
+            exp1=procesar_where1(instr.get("exp1"), base, tabla)
+            exp2=procesar_where1(instr.get("exp2"), base, tabla)
             print(exp1," >=",exp2)
             exp1 = procesar_expresion(exp1)
             exp2 = procesar_expresion(exp2)
@@ -133,8 +144,8 @@ def procesar_where1(instr):
             print("respuesta: ",respuesta)
             return respuesta
         elif instr.get("tipo") == TIPO_OPERACION.MENOR_IGUAL:
-            exp1=procesar_where1(instr.get("exp1"))
-            exp2=procesar_where1(instr.get("exp2"))
+            exp1=procesar_where1(instr.get("exp1"), base, tabla)
+            exp2=procesar_where1(instr.get("exp2"), base, tabla)
             print(exp1," <=",exp2)
             exp1 = procesar_expresion(exp1)
             exp2 = procesar_expresion(exp2)
@@ -158,8 +169,8 @@ def procesar_where1(instr):
             print("respuesta: ",respuesta)
             return respuesta
         elif instr.get("tipo") == TIPO_OPERACION.AND:
-            exp1=procesar_where1(instr.get("exp1"))
-            exp2=procesar_where1(instr.get("exp2"))
+            exp1=procesar_where1(instr.get("exp1"), base, tabla)
+            exp2=procesar_where1(instr.get("exp2"), base, tabla)
             print(exp1, "&&", exp2)
             exp1 = procesar_expresion(exp1)
             exp2 = procesar_expresion(exp2)
@@ -187,8 +198,8 @@ def procesar_where1(instr):
             return respuesta
         elif instr.get("tipo") == TIPO_OPERACION.OR:
             
-            exp1=procesar_where1(instr.get("exp1"))
-            exp2=procesar_where1(instr.get("exp2"))
+            exp1=procesar_where1(instr.get("exp1"), base, tabla)
+            exp2=procesar_where1(instr.get("exp2"), base, tabla)
             print(exp1, "||", exp2)
             exp1 = procesar_expresion(exp1)
             exp2 = procesar_expresion(exp2)
@@ -216,7 +227,7 @@ def procesar_where1(instr):
             return respuesta
         elif instr.get("tipo") == TIPO_OPERACION.NOT:
 
-            exp1=procesar_where1(instr.get("exp1"))
+            exp1=procesar_where1(instr.get("exp1"), base, tabla)
             print("!", exp1)
             exp1 = procesar_expresion(exp1)
             respuesta = []
@@ -229,7 +240,7 @@ def procesar_where1(instr):
             
             return respuesta
         elif instr.get("tipo") == TIPO_OPERACION.BETWEEN:
-            exp1=procesar_where1(instr.get("exp1"))
+            exp1=procesar_where1(instr.get("exp1"), base, tabla)
             exp2=procesar_where1(instr.get("exp2").get("exp1"))
             exp3=procesar_where1(instr.get("exp2").get("exp2"))
             print(exp1, "esta entre", exp2 , " y ", exp3)
@@ -260,26 +271,26 @@ def procesar_where1(instr):
             return respuesta
         elif instr.get("tipo") == TIPO_OPERACION.SUMA:
             print("+")
-            exp1=procesar_where1(instr.get("exp1"))
-            exp2=procesar_where1(instr.get("exp2"))
+            exp1=procesar_where1(instr.get("exp1"), base, tabla)
+            exp2=procesar_where1(instr.get("exp2"), base, tabla)
             print("exp1: ",exp1," exp2: ",exp2)
             return [exp1,exp2]
         elif instr.get("tipo") == TIPO_OPERACION.RESTA:
             print("-")
-            exp1=procesar_where1(instr.get("exp1"))
-            exp2=procesar_where1(instr.get("exp2"))
+            exp1=procesar_where1(instr.get("exp1"), base, tabla)
+            exp2=procesar_where1(instr.get("exp2"), base, tabla)
             print("exp1: ",exp1," exp2: ",exp2)
             return [exp1,exp2]
         elif instr.get("tipo") == TIPO_OPERACION.MULTIPLICACION:
             print("*")
-            exp1=procesar_where1(instr.get("exp1"))
-            exp2=procesar_where1(instr.get("exp2"))
+            exp1=procesar_where1(instr.get("exp1"), base, tabla)
+            exp2=procesar_where1(instr.get("exp2"), base, tabla)
             print("exp1: ",exp1," exp2: ",exp2)
             return [exp1,exp2]
         elif instr.get("tipo") == TIPO_OPERACION.DIVISION:
             print("/")
-            exp1=procesar_where1(instr.get("exp1"))
-            exp2=procesar_where1(instr.get("exp2"))
+            exp1=procesar_where1(instr.get("exp1"), base, tabla)
+            exp2=procesar_where1(instr.get("exp2"), base, tabla)
             print("exp1: ",exp1," exp2: ",exp2)
             return exp1/exp2
         
@@ -296,12 +307,9 @@ def procesar_expresion(cadena):
    
     if isinstance(cadena, str):
         if not cadena.startswith('\"') or not cadena.startswith('\''):
-            # comprobar si es una fecha con nel formato dd-mm-yyyy o dd-mm-yyyy hh:mm:ss
-            if cadena.count('-') == 2:
-                return [cadena]
-            
             # se tiene que buscar en la tabla la columna correspondiente
-            return [1,2,3]
+            return xml.obtener_registros(basedata,table,cadena)
+        
         elif cadena.startswith('@'):
             # se tiene que buscar en la tabla de simbolos
             return [5]
