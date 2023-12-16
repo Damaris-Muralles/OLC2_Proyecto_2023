@@ -23,35 +23,35 @@
             </inputs>
           </columna>
           <columna>
-            <id>nombre</id>
+            <id>cantidad</id>
             <tipo>
-              <tipodato>6</tipodato>
-              <longitud>1000</longitud>
+              <tipodato>1</tipodato>
+              <longitud>None</longitud>
             </tipo>
             <atributo>3</atributo>
             <tablaref/>
             <columnaref/>
             <inputs>
-              <input>car</input>
-              <input>2</input>
-              <input>3</input>
-              <input>4</input>
+              <input>23</input>
+              <input>23</input>
+              <input>14</input>
+              <input>40</input>
             </inputs>
           </columna>
           <columna>
-            <id>bandera</id>
+            <id>price</id>
             <tipo>
-              <tipodato>6</tipodato>
-              <longitud>100</longitud>
+              <tipodato>2</tipodato>
+              <longitud>None</longitud>
             </tipo>
             <atributo>4</atributo>
             <tablaref/>
             <columnaref/>
             <inputs>
-              <input>er</input>
-              <input>2</input>
-              <input>3</input>
-              <input>4</input>
+              <input>2.23</input>
+              <input>2.24</input>
+              <input>3.4</input>
+              <input>4.2</input>
             </inputs>
           </columna>
         </columnas>
