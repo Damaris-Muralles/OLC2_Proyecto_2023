@@ -707,8 +707,76 @@ class XMLManejador:
 
         return "Registro eliminado con éxito."
         
-    def update_registro(self):
-        pass
+    def UpdateTable(self, database, table, sets, listset, where ):
+        baseDatosEncontrada = self.Existe_basedatos(database)
+        if not baseDatosEncontrada[0]:
+            return "La base de datos no existe."
+        root = baseDatosEncontrada[1]
+        database_element = baseDatosEncontrada[2]
+         #buscar si existe la tabla con el idtabla, si no existe retorna error
+        tablas_element = database_element.find('tablas')
+        if tablas_element is None:
+            return "No se puede eliminar : No existe la tabla." 
+        
+        tabla_element = tablas_element.findall('tabla')
+        existe = False
+        for tabla in tabla_element:
+            if tabla.find('nombre').text == table:
+                existe = True
+                tabla_element = tabla
+                break
+        
+        if not existe:
+            return "No se puede actualizar la tabla : No existe la tabla."
+
+        columnas_element = tabla_element.find('columnas')
+        columna_element = columnas_element.findall('columna')
+
+
+        intset = -1
+        print("sets ",sets)
+        print("listset ",listset)
+        for col in sets:
+            print("col ",col)
+            intset += 1
+            print("intset ",listset[intset])
+            index=-1
+            nombrecol = col.get("exp1")
+            #recorrer todas las columnas de la tabla
+            for columna in columna_element:
+                print("columna ",nombrecol)
+                if columna.find('id').text == nombrecol:
+                    print("intset3 ",listset[intset])
+                    # buscar todos los inputs de la columna
+                    inputs_element11 = columna.find('inputs')
+                    for input in inputs_element11:
+                        index+=1
+                      
+                        if (not isinstance(listset[intset], list)) and (where[index] == 1):
+                            
+                            # eliminar el input que coincida con la posicion col
+                            valor = str(listset[intset]).replace("'","").replace('"','')
+                            input.text = valor
+                        elif(where[index] == 1):
+                            print("lista else ",listset)
+                            listset2 = listset[intset]
+                            print("lista2 ",listset2)
+                            # eliminar el input que coincida con la posicion col
+                            valor = str(listset2[index]).replace("'","").replace('"','')
+                            input.text = valor
+
+                
+
+
+        pretty_xml = self.prettify(root)
+        with open(self.filepath, 'w') as f:
+            f.write(pretty_xml)
+
+
+
+
+
+        return "Registro actualizado con éxito."
     
 
 

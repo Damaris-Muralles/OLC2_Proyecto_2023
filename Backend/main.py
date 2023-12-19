@@ -51,6 +51,20 @@ def procesar_delete(instr):
     
     #print(xml.delete_registro(ActualBaseDatos, instr.get("id"),eliminar))
 
+def procesar_update(instr):
+    print(instr)
+    whereupdate = procesar_where1(instr.get("where"),ActualBaseDatos, instr.get("id"))
+    listset = []
+
+    for i in instr.get("set"):
+
+        listset.append(procesar_where1(i.get("exp2"), ActualBaseDatos, instr.get("id")))
+
+    print(listset)
+
+    print(xml.UpdateTable(ActualBaseDatos, instr.get("id"),instr.get("set"), listset,whereupdate))
+
+
 def procesar_instrucciones(instrucciones) :
     ## lista de instrucciones recolectadas
     for instr in instrucciones :
@@ -63,6 +77,7 @@ def procesar_instrucciones(instrucciones) :
         elif instr.get('tipo') == TIPO_INSTRUCCION.INSERT_TABLE : procesar_insert(instr)
         elif instr.get('tipo') == TIPO_INSTRUCCION.USE_DATABASE : procesar_usedatabase(instr)
         elif instr.get('tipo') == TIPO_INSTRUCCION.DELETE_TABLE : procesar_delete(instr)
+        elif instr.get('tipo') == TIPO_INSTRUCCION.UPDATE_TABLE : procesar_update(instr)
         else : print('Error: instrucción no válida')
 
 #f = open("./entrada.txt", "r")
