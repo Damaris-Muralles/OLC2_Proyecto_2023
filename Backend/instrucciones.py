@@ -32,6 +32,8 @@ class TIPO_INSTRUCCION(Enum):
   SUMA = 28
   CAST = 29
   CWHILE = 30
+  WHEN = 31
+  ELSE = 32
   
 # enump para tipo dato
 class TIPO_DATO(Enum):
@@ -71,6 +73,7 @@ class TIPO_OPERACION(Enum):
 
 
 # funciones para encapsular las instrucciones
+# DDL
 def UseDatabase(id):
   return {
     "tipo" : TIPO_INSTRUCCION.USE_DATABASE,
@@ -117,7 +120,7 @@ def DropTable(tabla):
     "tipo": TIPO_INSTRUCCION.DROP_TABLE,
     "id":tabla
   }
-
+# DML
 def UpdateTable(tabla, set, where):
   return{
     "tipo": TIPO_INSTRUCCION.UPDATE_TABLE,
@@ -148,29 +151,6 @@ def InsertTable(tabla,columnas , valores):
     "valores":valores
   }
 
-def Case(tipo,expresion,when,else_):
-  return{
-    "tipo": TIPO_INSTRUCCION.CASE,
-    "sentencias":tipo,
-    "expresiones" : expresion,
-    "when":when,
-
-  }
-
-def CicloWhile(condicion, instrucciones):
-  return {
-    "tipo" : TIPO_INSTRUCCION.CWHILE,
-    "condicion" : condicion,
-    "instrucciones" : instrucciones
-  }
-
-def Sentencia(tipo,expresion,resultado):
-  return{
-    "tipo": TIPO_INSTRUCCION.SENTENCIA,
-    "tipodato":tipo,
-    "condicion":expresion,
-    "resultado":resultado
-  }
 
 def LlamarColumna( punto, idtabla, idcolumna):
   return{
@@ -247,10 +227,12 @@ def Hoy():
     "tipo" : TIPO_INSTRUCCION.HOY
   }
 
-def Contar():
+def Contar(columna):
   return {
-    "tipo" : TIPO_INSTRUCCION.CONTAR
+    "tipo" : TIPO_INSTRUCCION.CONTAR,
+    "columna" : columna
   }
+
 def Suma(columna):
   return {
     "tipo" : TIPO_INSTRUCCION.SUMA,
@@ -261,7 +243,7 @@ def Cast(columna, tipo):
   return {
     "tipo" : TIPO_INSTRUCCION.CAST,
     "columna" : columna,
-    "tipo" : tipo
+    "tipodato" : tipo
   }
 
 def Expresion(exp1, operador, exp2):
@@ -305,12 +287,41 @@ def Expresion(exp1, operador, exp2):
 
 
 #SSL
+def Case(tipo,expresion,when,else_):
+  if tipo=="WHEN":
+    tipo=TIPO_INSTRUCCION.WHEN
+  elif tipo=="ELSE":
+    tipo=TIPO_INSTRUCCION.ELSE
+  return{
+    "tipo": TIPO_INSTRUCCION.CASE,
+    "sentencias":tipo,
+    "expresiones" : expresion,
+    "when":when,
+    "else":else_
 
-def sslIf(condicion, instrucciones):
+  }
+
+def CicloWhile(condicion, instrucciones):
+  return {
+    "tipo" : TIPO_INSTRUCCION.CWHILE,
+    "condicion" : condicion,
+    "instrucciones" : instrucciones
+  }
+
+def Sentencia(tipo,expresion,resultado):
+  return{
+    "tipo": TIPO_INSTRUCCION.SENTENCIA,
+    "tipodato":tipo,
+    "condicion":expresion,
+    "resultado":resultado
+  }
+
+def sslIf(condicion, verdadero, falso):
   return {
     "tipo" : TIPO_INSTRUCCION.IF,
     "condicion" : condicion,
-    "instrucciones" : instrucciones
+    "verdadero" : verdadero,
+    "falso" : falso
   }
 
 def DeclararVariable(id, tipo ,valor):

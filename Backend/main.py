@@ -2,7 +2,7 @@ import gramar as g
 import tablasimbolo as TS
 from instrucciones import *
 from manejoxml import *
-from where import *
+from Where import *
 
 xml = XMLManejador("./BasesDatos.xml")  
 ActualBaseDatos = ""
@@ -45,6 +45,7 @@ def procesar_truncatetable(instr):
 
 def procesar_delete(instr):
     print("delete")
+    print(instr.get("where"))
     # solo para probar el where
     eliminar=procesar_where1(instr.get("where"),ActualBaseDatos, instr.get("id"))
     
@@ -83,8 +84,21 @@ DELETE FROM products where id = 3;"""
 
 
 input = """
+
 USAR intento;
-DELETE FROM products where cantidad == 23 AND 2.24==price;
+
+CREATE TABLE tbdetallefactura ( 
+iddetallefac int PRIMARY KEY, 
+price decimal NOT NULL, 
+cantidad int ,
+texto nvarchar(50)
+);
+ 
+INSERT INTO tbdetallefactura(iddetallefac,price,cantidad,texto) VALUES(1,2.23,23, "hola");
+INSERT INTO tbdetallefactura(iddetallefac,price,cantidad,texto) VALUES(2,2.24,23, "col2");
+INSERT INTO tbdetallefactura(iddetallefac,price,cantidad,texto) VALUES(3,3.00,21, "col3");
+INSERT INTO tbdetallefactura(iddetallefac,price,cantidad,texto) VALUES(4,3.31,24, "hola");
+DELETE FROM tbdetallefactura where texto == "hola" || iddetallefac == 2 ;
 """
 instrucciones = g.parse(input.lower())
 ts_global = TS.TablaSimbolo()

@@ -14,7 +14,7 @@ reservadas = {
     'insert' : 'INSERT',
     'function' : 'FUNCTION',    
     'procedure' : 'PROCEDURE',
-    'if' : 'IF',
+    'if' : 'IF1',
     'case' : 'CASE',
     'while' : 'WHILE',
 
@@ -46,7 +46,7 @@ reservadas = {
     'suma' : 'SUMA',
     'contar' : 'CONTAR',
     'return' : 'RETURN',
-    'concatena' : 'CONCATENA',
+    'concatenar' : 'CONCATENA',
     'hoy' : 'HOY',
     'substraer' : 'SUBSTRAER',
 
@@ -214,7 +214,7 @@ precedence = (
     ('right', 'Y','AND', 'BETWEEN'),
     ('right', 'O','OR'),
     ('right', 'NOT','NEGACION' ), 
-    ('left', 'IGUAL', 'DIFERENTE', 'MAYORQUE','MENORQUE', 'MENORIGUAL', 'MAYORIGUAL'),
+    ('left', 'IGUAL','IGUALSIMPLE', 'DIFERENTE', 'MAYORQUE','MENORQUE', 'MENORIGUAL', 'MAYORIGUAL'),
     ('left', 'POR', 'DIVIDIDO'),
     ('left', 'MAS', 'MENOS'),
     ('nonassoc', 'PARDER', 'PARIZQ'),
@@ -252,11 +252,9 @@ def p_instruccion(t) :
                         | insert_instr
                         | declaracionvariable
                         | asignacionvariable
-                        | if_instr
                         | create_procedure
                         | create_funcion
                         | retornar
-                        | case_instr
                         | while_instr
 
 
@@ -366,9 +364,10 @@ def p_drop_instr(t):
 
 # SINTAXIS PARAUPDATE
 def p_update_instr(t):
-    '''update_instr : UPDATE IDENT SET expresiones WHERE expresiones PTCOMA
+    '''update_instr : UPDATE IDENT SET tablavalor WHERE expresiones PTCOMA
                     '''
     t[0] = UpdateTable(t[2], t[4], t[6])
+
 
 # SINTAXIS PARA DELETE
 def p_delete_instr(t):
@@ -376,7 +375,7 @@ def p_delete_instr(t):
                     '''
     t[0] = DeleteTable(t[3], t[5])
 
-# SINTAXIS PARA SELECT
+# SINTAXIS PARA SELECT le falta
 def p_select(t):
     '''select_instr :   SELECT tablaselect FROM tablaselect PTCOMA 
                 | SELECT tablaselect FROM tablaselect WHERE expresiones PTCOMA
@@ -406,12 +405,32 @@ def p_tablas(t):
 # SINTAXIS PARA INSERT
 def p_insert(t):
     '''insert_instr : INSERT INTO IDENT VALUES PARIZQ tablaselect PARDER PTCOMA
-                    | INSERT INTO IDENT PARIZQ tablaselect PARDER VALUES PARIZQ tablaselect PARDER PTCOMA
+                    | INSERT INTO IDENT PARIZQ tablainsert PARDER VALUES PARIZQ tablavalor PARDER PTCOMA
     '''
     if len(t)==9:
         t[0] = InsertTable(t[3],None,t[6])
     else:
         t[0] = InsertTable(t[3],t[5],t[9])
+
+def p_tablainsert(t):
+    '''tablainsert : tablainsert COMA IDENT
+                    | IDENT
+    '''
+    if len(t)==4:
+        t[0] = t[1]
+        t[1].append(t[3])
+    else:
+        t[0] = [t[1]]
+
+def p_tablavalor(t):
+    '''tablavalor : tablavalor COMA expresiones
+                    | expresiones
+    '''
+    if len(t)==4:
+        t[0] = t[1]
+        t[1].append(t[3])
+    else:
+        t[0] = [t[1]]
 
 # SINTAXIS PARA DECLARACION DE VARIABLES
 def p_declaracion(t):
@@ -436,15 +455,6 @@ def p_asignacion(t):
     '''
     t[0] = AsignacionVariable(t[2],t[4])
 
-# SINTAXIS PARA IF
-def p_if(t):
-    '''if_instr : IF PARIZQ expresiones PARDER instrucciones END PTCOMA '''
-    t[0] = sslIf(t[3],t[5])
-
-#SINTAXIS PARA WHILE
-def p_while(t):
-    '''while_instr : WHILE expresiones BEGIN instrucciones END PTCOMA '''
-    t[0] = CicloWhile(t[2],t[4])
 
 # SINTAXIS CREAR PROCEDURE 
 def p_create_procedure(t):
@@ -486,9 +496,68 @@ def p_param(t):
     else:
         t[0] = Parametro(t[1],t[2])
 
+#SINTAXIS PARA WHILE
+def p_while(t):
+    '''while_instr : WHILE expresiones BEGIN instrucciones END PTCOMA '''
+    t[0] = CicloWhile(t[2],t[4])
+
+
+# EXPRESIONES
+def p_expresiones(t):
+    '''expresiones :  expresiones AND expresiones
+                    | expresiones OR expresiones
+                    | expresiones IGUAL expresiones
+                    | expresiones DIFERENTE expresiones
+                    | expresiones Y expresiones
+                    | expresiones O expresiones
+                    | expresiones NOT BETWEEN expresiones
+                    | expresiones BETWEEN expresiones 
+                    | expresiones MAYORQUE expresiones
+                    | expresiones MENORQUE expresiones 
+                    | expresiones MAYORIGUAL expresiones
+                    | expresiones MENORIGUAL expresiones
+                    | expresiones IGUALSIMPLE expresiones
+                    | expresiones MAS expresiones
+                    | expresiones MENOS expresiones
+                    | expresiones POR expresiones
+                    | expresiones DIVIDIDO expresiones
+                    | PARIZQ expresiones PARDER
+                    | NEGACION expresiones
+                    | NOT expresiones
+                    | func_sistema
+                    | llaves
+                    | if_instr
+                    | case_instr
+                    | FECHAHORA
+                    | FECHA
+                    | DECIMALES
+                    | ENTERO
+                    | CADENA
+                    | IDENTIFICADOR
+                    | IDENT
+                    | NULL
+                    
+                    
+                   
+                '''
+    if t[1] == '(':
+        t[0] = t[2]
+    elif len(t)==3:
+        t[0] = Expresion(t[2],t[1],None)
+    elif len(t)==4: 
+        t[0] = Expresion(t[1],t[2],t[3])
+    elif len(t)==5:
+        t[0] = Expresion(t[1],"NOT_BET",t[4])
+    elif len(t)==2:
+        t[0] = t[1]
+# SINTAXIS PARA IF
+def p_if_instr(t):
+    '''if_instr : IF1 PARIZQ expresiones COMA expresiones COMA expresiones PARDER'''
+    t[0] = sslIf(t[3],t[5],t[7])
+
 # SINTAXIS PARA CASE
 def p_case_instr(t):
-    '''case_instr : CASE sentencias END PTCOMA'''
+    '''case_instr : CASE sentencias END '''
     t[0] = Case(t[2])
 
 def p_sentencias(t):
@@ -509,67 +578,27 @@ def p_sentencia(t):
         t[0] = Sentencia(t[1],t[2],t[3])
     else:
         t[0] = Sentencia(t[1],None,t[2])
-
-# EXPRESIONES
-def p_expresiones(t):
-    '''expresiones : FECHAHORA
-                    | FECHA
-                    | expresiones AND expresiones
-                    | expresiones OR expresiones
-                    | expresiones IGUAL expresiones
-                    | expresiones DIFERENTE expresiones
-                    | expresiones Y expresiones
-                    | expresiones O expresiones
-                    | expresiones NOT BETWEEN expresiones
-                    | expresiones BETWEEN expresiones 
-                    | expresiones MAYORQUE expresiones
-                    | expresiones MENORQUE expresiones 
-                    | expresiones MAYORIGUAL expresiones
-                    | expresiones MENORIGUAL expresiones
-                    | expresiones IGUALSIMPLE expresiones
-                    | expresiones MAS expresiones
-                    | expresiones MENOS expresiones
-                    | expresiones POR expresiones
-                    | expresiones DIVIDIDO expresiones
-                    | PARIZQ expresiones PARDER
-                    | NEGACION expresiones
-                    | NOT expresiones
-                    | llaves
-                    | ENTERO
-                    | DECIMALES
-                    | CADENA
-                    | IDENTIFICADOR
-                    | IDENT
-                    | NULL
-                    | func_sistema
-                   
-                '''
-    if t[1] == '(':
-        t[0] = t[2]
-    elif len(t)==3:
-        t[0] = Expresion(t[2],t[1],None)
-    elif len(t)==4: 
-        t[0] = Expresion(t[1],t[2],t[3])
-    elif len(t)==5:
-        t[0] = Expresion(t[1],"NOT_BET",t[4])
-    elif len(t)==2:
-        t[0] = t[1]
-    
+   
 # ALIAS
 def p_llaves(t):
     '''llaves : IDENT PUNTO IDENT'''
     t[0] = LlamarColumna(t[2],t[1],t[3])
 
-
+def p_variable_funcion(t):
+    '''variable_funcion : IDENT
+                        | IDENTIFICADOR
+                        | CADENA    
+    '''
+    t[0] = t[1]
 
 # SINTAXIS CONCATENAR
 def p_concater(t):
-    '''concater : CONCATENA PARIZQ CADENA COMA CADENA PARDER '''
+    '''concater : CONCATENA PARIZQ variable_funcion COMA variable_funcion PARDER '''
     t[0] = Concatena(t[3], t[5])
 
 # SITAXIS SUBSTRAER
 def p_substraer(t):
-    '''subtrae : SUBSTRAER PARIZQ CADENA COMA ENTERO COMA ENTERO PARDER '''
+    '''subtrae : SUBSTRAER PARIZQ variable_funcion COMA ENTERO COMA ENTERO PARDER '''
     t[0] = Substraer(t[3], t[5], t[7])
 
 # SINTAXIS PARA HOY
@@ -579,25 +608,21 @@ def p_hoy(t):
 
 # SINTAXIS PARA CONTAR
 def p_contar(t):
-    '''contarr : CONTAR PARIZQ POR PARDER'''
-    t[0] = Contar()
+    '''contarr : CONTAR PARIZQ POR PARDER
+                | CONTAR PARIZQ IDENT PARDER'''
+    t[0] = Contar(t[3])
 
 # SINTAXIS PARA SUMA
 def p_suma(t):
     '''sumaa : SUMA PARIZQ IDENT PARDER
-            | SUMA PARIZQ ENTERO PARDER'''
+                | SUMA PARIZQ POR PARDER'''
     t[0] = Suma(t[3])
 
 # SINTAXIS PARA CAST
 def p_cast(t):
-    '''castt : CAST PARIZQ variable_operar AS tipodato PARDER '''
+    '''castt : CAST PARIZQ variable_funcion AS tipodato PARDER '''
     t[0] = Cast(t[3], t[5])
 
-def p_variable_operar(t):
-    '''variable_operar : IDENT
-                        | IDENTIFICADOR'''
-    t[0] = t[1]
-    
 
 # FUNCIONES SISTEMA
 def p_func_sistema(t):
@@ -636,12 +661,7 @@ def parse(input) :
 
 '''
 input = """
-DELETE FROM tbvalores
-WHERE (id > 3 OR id < 100) 
-AND (valor BETWEEN 50 AND 200) 
-AND not fecha_creacion < hoy()
-AND nombre == 'Juan Perez'
-AND ciudad == ('Guatemala' OR 'Quetzaltenango'OR 'Escuintla');
+DELETE FROM products where if(28>11,"Verdadero","falso");
 
 """
 

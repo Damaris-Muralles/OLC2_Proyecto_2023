@@ -77,7 +77,7 @@ class XMLManejador:
                         lista.append(input.text)
 
                   
-                return {"dato":lista,"tipo":tipodato}
+                return {"dato":lista,"tipo":TIPO_DATO(tipodato)}
             
     def add_database(self, database):
         
@@ -393,7 +393,13 @@ class XMLManejador:
         if valores == None:
             return "No se puede insertar: No se especificaron valores a insertar."
         
-        
+        for i in range(len( valores)):
+            if isinstance(valores[i], str):
+                valores[i] = str(valores[i]).replace("'","").replace('"','')
+            if isinstance(valores[i], int):
+                valores[i] = int(str(valores[i]).replace("'","").replace('"',''))
+            if isinstance(valores[i], float):
+                valores[i] = float(str(valores[i]).replace("'","").replace('"',''))
         
         #buscar si existe la tabla con el idtabla, si no existe retorna error
         tablas_element = database_element.find('tablas')

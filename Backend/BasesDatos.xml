@@ -17,7 +17,7 @@
             <columnaref/>
             <inputs>
               <input>1</input>
-              <input>3</input>
+              <input>23</input>
               <input>2</input>
               <input>4</input>
             </inputs>
@@ -35,7 +35,7 @@
               <input>23</input>
               <input>23</input>
               <input>14</input>
-              <input>40</input>
+              <input>4</input>
             </inputs>
           </columna>
           <columna>
@@ -70,19 +70,9 @@
             <columnaref/>
             <inputs>
               <input>1</input>
-            </inputs>
-          </columna>
-          <columna>
-            <id>product_no</id>
-            <tipo>
-              <tipodato>1</tipodato>
-              <longitud>None</longitud>
-            </tipo>
-            <atributo>2</atributo>
-            <tablaref>products</tablaref>
-            <columnaref>id</columnaref>
-            <inputs>
               <input>2</input>
+              <input>3</input>
+              <input>4</input>
             </inputs>
           </columna>
           <columna>
@@ -95,7 +85,10 @@
             <tablaref/>
             <columnaref/>
             <inputs>
-              <input>1.0</input>
+              <input>2.23</input>
+              <input>2.24</input>
+              <input>3.0</input>
+              <input>3.31</input>
             </inputs>
           </columna>
           <columna>
@@ -109,6 +102,25 @@
             <columnaref/>
             <inputs>
               <input>23</input>
+              <input>23</input>
+              <input>21</input>
+              <input>24</input>
+            </inputs>
+          </columna>
+          <columna>
+            <id>texto</id>
+            <tipo>
+              <tipodato>6</tipodato>
+              <longitud>50</longitud>
+            </tipo>
+            <atributo/>
+            <tablaref/>
+            <columnaref/>
+            <inputs>
+              <input>hola</input>
+              <input>col2</input>
+              <input>col3</input>
+              <input>hola</input>
             </inputs>
           </columna>
         </columnas>
