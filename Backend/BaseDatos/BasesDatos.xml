@@ -23,7 +23,7 @@
             </inputs>
           </columna>
           <columna>
-            <id>cantidad</id>
+            <id>edad</id>
             <tipo>
               <tipodato>1</tipodato>
               <longitud>None</longitud>
@@ -34,7 +34,7 @@
             <inputs>
               <input>23</input>
               <input>23</input>
-              <input>14</input>
+              <input>30</input>
               <input>4</input>
             </inputs>
           </columna>

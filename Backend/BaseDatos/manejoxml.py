@@ -1,6 +1,6 @@
 import xml.etree.ElementTree as ET
 import xml.dom.minidom as minidom
-from instrucciones import *
+from Analizadores.instrucciones import *
 
 
 class XMLManejador:
@@ -32,13 +32,13 @@ class XMLManejador:
     def obtener_registros(self, database, table,colum):
         baseDatosEncontrada = self.Existe_basedatos(database)
         if not baseDatosEncontrada[0]:
-            return "La base de datos no existe."
+            return {"dato":"Base de datos no existe.","tipo":"ERROR"}
         root = baseDatosEncontrada[1]
         database_element = baseDatosEncontrada[2]
         #buscar si existe la tabla con el idtabla, si no existe retorna error
         tablass_element = database_element.find('tablas')
         if tablass_element is None:
-            return {"dato":"No se pueden obtener los datos: no existe la tabla.","tipo":"Error"}
+            return {"dato":"No se pueden obtener los datos: no existe la tabla.","tipo":"ERROR"}
         tablas_element = tablass_element.findall('tabla')
         existe = False
         tabla_element = None
@@ -48,7 +48,7 @@ class XMLManejador:
                 tabla_element = tabla
                 break
         if not existe:
-            return {"dato":"No se pueden obtener los datos: no existe la tabla.","tipo":"Error"} 
+            return {"dato":"No se pueden obtener los datos: no existe la tabla.","tipo":"ERROR"} 
 
         columnas_element = tabla_element.find('columnas')
         columna_element = columnas_element.findall('columna')
@@ -66,8 +66,9 @@ class XMLManejador:
                 inputs_element = columna.find('inputs')
                 inputs_element = inputs_element.findall('input')
                 lista = []
+                tipolist = []   
                 if len(inputs_element) == 0:
-                    return {"dato":lista,"tipo":tipodato}
+                    return {"dato":"No hay registros","tipo":"ERROR"}
                 for input in inputs_element:
                     if tipodato == TIPO_DATO.INT.value or tipodato == TIPO_DATO.BIT.value:
                         lista.append(int(input.text))
@@ -75,10 +76,12 @@ class XMLManejador:
                         lista.append(float(input.text))
                     else:
                         lista.append(input.text)
+                    tipolist.append(TIPO_DATO(tipodato))
 
                   
-                return {"dato":lista,"tipo":TIPO_DATO(tipodato)}
+                return {"dato":lista,"tipo":tipolist}
             
+        return {"dato":"No se pueden obtener los datos: no existe la columna.","tipo":"ERROR"}
     def add_database(self, database):
         
 
@@ -706,7 +709,7 @@ class XMLManejador:
             f.write(pretty_xml)
 
         return "Registro eliminado con éxito."
-        
+            
     def UpdateTable(self, database, table, sets, listset, where ):
         baseDatosEncontrada = self.Existe_basedatos(database)
         if not baseDatosEncontrada[0]:
@@ -773,11 +776,9 @@ class XMLManejador:
             f.write(pretty_xml)
 
 
-
-
-
         return "Registro actualizado con éxito."
     
+
 
 
         

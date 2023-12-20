@@ -1,5 +1,5 @@
 
-from instrucciones import *
+from Analizadores.instrucciones import *
 # Lista de palabras reservadas
 reservadas = {
     # instrucciones
@@ -46,7 +46,7 @@ reservadas = {
     'suma' : 'SUMA',
     'contar' : 'CONTAR',
     'return' : 'RETURN',
-    'concatenar' : 'CONCATENA',
+    'concatena' : 'CONCATENA',
     'hoy' : 'HOY',
     'substraer' : 'SUBSTRAER',
 
@@ -550,6 +550,7 @@ def p_expresiones(t):
         t[0] = Expresion(t[1],"NOT_BET",t[4])
     elif len(t)==2:
         t[0] = t[1]
+
 # SINTAXIS PARA IF
 def p_if_instr(t):
     '''if_instr : IF1 PARIZQ expresiones COMA expresiones COMA expresiones PARDER'''
@@ -572,10 +573,13 @@ def p_sentencias(t):
 
 def p_sentencia(t):
     '''sentencia : WHEN expresiones THEN expresiones
+                    | ELSE THEN expresiones
                     | ELSE expresiones
     '''
-    if len(t)==4:
-        t[0] = Sentencia(t[1],t[2],t[3])
+    if len(t)==5:
+        t[0] = Sentencia(t[1],t[2],t[4])
+    elif len(t)==4:
+        t[0] = Sentencia(t[1],None,t[3])
     else:
         t[0] = Sentencia(t[1],None,t[2])
    

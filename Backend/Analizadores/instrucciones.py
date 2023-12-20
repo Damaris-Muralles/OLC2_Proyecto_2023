@@ -287,17 +287,10 @@ def Expresion(exp1, operador, exp2):
 
 
 #SSL
-def Case(tipo,expresion,when,else_):
-  if tipo=="WHEN":
-    tipo=TIPO_INSTRUCCION.WHEN
-  elif tipo=="ELSE":
-    tipo=TIPO_INSTRUCCION.ELSE
+def Case(sentencia):
   return{
     "tipo": TIPO_INSTRUCCION.CASE,
-    "sentencias":tipo,
-    "expresiones" : expresion,
-    "when":when,
-    "else":else_
+    "sentencias":sentencia
 
   }
 
@@ -309,12 +302,15 @@ def CicloWhile(condicion, instrucciones):
   }
 
 def Sentencia(tipo,expresion,resultado):
+  if tipo=="when":
+    tipo=TIPO_INSTRUCCION.WHEN
+  elif tipo=="else":
+    tipo=TIPO_INSTRUCCION.ELSE
   return{
-    "tipo": TIPO_INSTRUCCION.SENTENCIA,
     "tipodato":tipo,
     "condicion":expresion,
     "resultado":resultado
-  }
+}
 
 def sslIf(condicion, verdadero, falso):
   return {
@@ -345,6 +341,7 @@ def Parametro(id, tipo):
     "id" : id,
     "tipodato" : tipo
   }
+
 def sslprocedure(id, parametros, instrucciones):
   return {
     "tipo" : TIPO_INSTRUCCION.PROCEDURE,
