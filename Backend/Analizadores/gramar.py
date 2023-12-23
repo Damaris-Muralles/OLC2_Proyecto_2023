@@ -5,7 +5,7 @@ reservadas = {
     # instrucciones
     'create' : 'CREATE',
     'alter' : 'ALTER',
-    'usar' : 'USAR',
+    'use' : 'USAR',
     'drop' : 'DROP',
     'truncate' : 'TRUNCATE',
     'select' : 'SELECT',
@@ -307,8 +307,8 @@ def p_listacolumnas(t) :
 
 def p_columna(t):
     '''
-    columna    : IDENT tipodato atributo COMA
-                | IDENT tipodato atributo 
+    columna    : IDENT tipodato lista_atributos COMA
+                | IDENT tipodato lista_atributos 
                 | IDENT tipodato COMA
                 | IDENT tipodato
     '''
@@ -321,6 +321,16 @@ def p_columna(t):
             t[0] = ColumnaTable(t[1],t[2],None)
     else:
         t[0] = ColumnaTable(t[1],t[2],None)
+
+def p_lista_atributos(t):
+    '''lista_atributos : lista_atributos atributo
+                        | atributo
+    '''
+    if len(t)==3:
+        t[0] = t[1]
+        t[1].append(t[2])
+    else:
+        t[0] = [t[1]]
 
 def p_atributo(t):
     '''
@@ -377,13 +387,45 @@ def p_delete_instr(t):
 
 # SINTAXIS PARA SELECT le falta
 def p_select(t):
-    '''select_instr :   SELECT tablaselect FROM tablaselect PTCOMA 
-                | SELECT tablaselect FROM tablaselect WHERE expresiones PTCOMA
+    '''select_instr :   SELECT tablaselect1 FROM tablaselect WHERE expresiones PTCOMA
+                        | SELECT tablaselect1 FROM tablaselect PTCOMA
+                        | SELECT tablaselect1 PTCOMA
     '''
     if len(t)==6:
         t[0] = SelectTable(t[2],t[4],None)
+    elif len(t)==4:
+        t[0] = SelectTable(t[2],None,None)
     else:
         t[0] = SelectTable(t[2],t[4],t[6])
+
+def  p_tablaselect1(t):
+    '''tablaselect1 : tablaselect1 tablas1
+                    | tablas1
+    '''
+    if len(t) == 3:
+        t[0] = t[1]
+        t[1].append(t[2])
+    else:
+        t[0] = [t[1]]
+
+def p_tablas1(t):
+    '''tablas1 : POR
+    | expresiones IDENT COMA
+    | expresiones COMA
+    | expresiones IDENT
+    | expresiones
+    '''
+    if t[1] == '*':
+        t[0] = tselect(t[1],None)
+    elif len(t)==4:
+        t[0] = tselect(t[1],t[2])
+    elif len(t)==3:
+        if t[2] != ',':
+            t[0] = tselect(t[1],t[2])
+        else:
+            t[0] = tselect(t[1],None)
+    else:
+        t[0] = tselect(t[1],None)
 
 def  p_tablaselect(t):
     '''tablaselect : tablaselect tablas
@@ -591,6 +633,7 @@ def p_llaves(t):
 def p_variable_funcion(t):
     '''variable_funcion : IDENT
                         | IDENTIFICADOR
+                        | llaves
                         | CADENA    
     '''
     t[0] = t[1]
@@ -602,7 +645,7 @@ def p_concater(t):
 
 # SITAXIS SUBSTRAER
 def p_substraer(t):
-    '''subtrae : SUBSTRAER PARIZQ variable_funcion COMA ENTERO COMA ENTERO PARDER '''
+    '''subtrae : SUBSTRAER PARIZQ variable_funcion COMA expresiones COMA expresiones PARDER '''
     t[0] = Substraer(t[3], t[5], t[7])
 
 # SINTAXIS PARA HOY
@@ -613,18 +656,22 @@ def p_hoy(t):
 # SINTAXIS PARA CONTAR
 def p_contar(t):
     '''contarr : CONTAR PARIZQ POR PARDER
-                | CONTAR PARIZQ IDENT PARDER'''
+                | CONTAR PARIZQ IDENT PARDER
+                | CONTAR PARIZQ llaves PARDER'''
     t[0] = Contar(t[3])
 
 # SINTAXIS PARA SUMA
 def p_suma(t):
     '''sumaa : SUMA PARIZQ IDENT PARDER
-                | SUMA PARIZQ POR PARDER'''
+                | SUMA PARIZQ POR PARDER
+                | SUMA PARIZQ llaves PARDER'''
     t[0] = Suma(t[3])
 
 # SINTAXIS PARA CAST
 def p_cast(t):
-    '''castt : CAST PARIZQ variable_funcion AS tipodato PARDER '''
+    '''castt : CAST PARIZQ IDENT AS tipodato PARDER 
+                | CAST PARIZQ llaves AS tipodato PARDER
+                | CAST PARIZQ IDENTIFICADOR AS tipodato PARDER'''
     t[0] = Cast(t[3], t[5])
 
 
@@ -646,8 +693,7 @@ def p_retornarr(t):
 
 
 def p_error(t):
-    print(t)
-    print("Error sintactico en '%s'" % t.value)
+    print("Error sintactico en '%s', fila: %s, columna: %s" % (t.value, t.lineno, t.lexpos))
 
 
 

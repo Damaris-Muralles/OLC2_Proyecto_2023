@@ -6,7 +6,7 @@ def funcion_hoy():
     fecha_hora_actual = datetime.now()
     fecha_hora_formateada = fecha_hora_actual.strftime("\'%d-%m-%Y %H:%M:%S\'")
     print("respuesta: ",fecha_hora_formateada,"tipo:",TIPO_DATO.DATETIME)
-    return {"respuesta: ",fecha_hora_formateada,"tipo:",TIPO_DATO.DATETIME}
+    return {"respuesta":fecha_hora_formateada,"tipo":TIPO_DATO.DATETIME}
 
 def funcion_concatena(exp1,exp2,tipoE1,tipoE2):
     respuesta = []
@@ -61,12 +61,12 @@ def funcion_concatena(exp1,exp2,tipoE1,tipoE2):
     print("respuesta: ",respuesta,"tipo:",tiporesult)
     return {"respuesta":respuesta,"tipo":tiporesult}
 
-def funcion_substraer(exp1,exp2,exp3,tipoE2,tipoE3):
+def funcion_substraer(exp1,exp2,exp3,tipoE1,tipoE2,tipoE3):
     respuesta = []
     tiporesult=[]
 
     if len(exp1)>1 and len(exp2)>1 and len(exp3)>1:
-        for i, j,k,tipo2,tipo3 in zip(exp1, exp2,exp3,tipoE2,tipoE3 ):
+        for i, j,k,tipo1,tipo2,tipo3 in zip(exp1, exp2,exp3,tipoE1,tipoE2,tipoE3 ):
             if i is None :
                 print("Error: no se puede substraer de un valor nulo")
                 return {"respuesta":"ERROR","tipo":"ERROR"}
@@ -74,22 +74,35 @@ def funcion_substraer(exp1,exp2,exp3,tipoE2,tipoE3):
             elif is_date_or_datetime(i) :
                 print("Error: no se puede substraer de un valor de tipo fecha o fecha hora")
                 return {"respuesta":"ERROR","tipo":"ERROR"}
+            elif tipo1 == TIPO_DATO.INT or tipo1 == TIPO_DATO.DECIMAL:
+                print("Error: no se puede substraer de un valor de tipo entero o decimal")
+                return {"respuesta":"ERROR","tipo":"ERROR"}
             # si son int o float, error
             elif isinstance(i,int) or isinstance(i,float):
                 print("Error: no se puede substraer de un valor de tipo entero o decimal")
                 return {"respuesta":"ERROR","tipo":"ERROR"}
+            
             elif tipo2 != TIPO_DATO.INT or tipo3 != TIPO_DATO.INT:
                 print("Error: Para substraer se necesita de dos valores enteros como parametros")
                 return {"respuesta":"ERROR","tipo":"ERROR"}
             
-            # substraer  cadena,inicio,fin
-            c1= i[j:k]
-            tiporesult.append(TIPO_DATO.VARCHAR)
-            # añadir a la respuesta
-            respuesta.append(f"{c1}")
+            try:
+                if j-1<0:
+                    print("Error: no se puede substraer el valor "+str(j)+" esta fuera de rango")
+                    return {"respuesta":"ERROR","tipo":"ERROR"}
+                c1=i[j-1:k]
+                
+                # añadir a la respuesta
+                respuesta.append(f"{c1}")
+                tiporesult.append(TIPO_DATO.VARCHAR)
+            except:
+                print("Error: no se puede substraer de desde el caracter "+str(j)+" hasta el caracter "+str(k)+" de la cadena "+str(i))
+                return {"respuesta":"ERROR","tipo":"ERROR"}
                 
     else:
+        cont=-1
         for i in exp1:  
+            cont+=1
             if i is None :
                 print("Error: no se puede substraer de un valor nulo")
                 return {"respuesta":"ERROR","tipo":"ERROR"}
@@ -97,19 +110,29 @@ def funcion_substraer(exp1,exp2,exp3,tipoE2,tipoE3):
             elif is_date_or_datetime(i) :
                 print("Error: no se puede substraer de un valor de tipo fecha o fecha hora")
                 return {"respuesta":"ERROR","tipo":"ERROR"}
+            elif tipoE1[cont] == TIPO_DATO.INT or tipoE1[cont] == TIPO_DATO.DECIMAL:
+                print("Error: no se puede substraer de un valor de tipo entero o decimal")
+                return {"respuesta":"ERROR","tipo":"ERROR"}
             # si son int o float, error
             elif isinstance(i,int) or isinstance(i,float):
                 print("Error: no se puede substraer de un valor de tipo entero o decimal")
                 return {"respuesta":"ERROR","tipo":"ERROR"}
+            
             elif tipoE2[0] != TIPO_DATO.INT or tipoE3[0] != TIPO_DATO.INT:
                 print("Error: Para substraer se necesita de dos valores enteros como parametros")
                 return {"respuesta":"ERROR","tipo":"ERROR"}
-            
-            c1=i[exp2[0]:exp3[0]]
-            
-            # añadir a la respuesta
-            respuesta.append(f"{c1}")
-            tiporesult.append(TIPO_DATO.VARCHAR)
+            try:
+                if exp2[0]-1<0:
+                    print("Error: no se puede substraer el valor "+str(exp2[0])+" esta fuera de rango")
+                    return {"respuesta":"ERROR","tipo":"ERROR"}
+                c1=i[exp2[0]-1:exp3[0]]
+                
+                # añadir a la respuesta
+                respuesta.append(f"{c1}")
+                tiporesult.append(TIPO_DATO.VARCHAR)
+            except:
+                print("Error: no se puede substraer de desde el caracter "+str(exp2[0])+" hasta el caracter "+str(exp3[0])+" de la cadena "+str(i))
+                return {"respuesta":"ERROR","tipo":"ERROR"}
     
     print("respuesta: ",respuesta,"tipo:",tiporesult)
     return {"respuesta":respuesta,"tipo":tiporesult}  
@@ -279,11 +302,106 @@ def funcion_cast(exp1,tipoE1,tipo2,longitud):
     print("respuesta: ",respuesta,"tipo:",tiporesult)
     return {"respuesta":respuesta,"tipo":tiporesult}
 
-def funcion_sumar():
-    pass
+def funcion_sumar(exp1,condicion,basedatos,tab,xml):
+    respuesta = []
+    tiporesult=[]
+    tabla=""
+    print("exp1: ",exp1," condicion: ",condicion)
+    
+    
+    if exp1 =="*":
+        return {"respuesta":["ERROR"],"tipo":"ERROR"}
+    else:
+        igualcolum=0
+        tabref=""
+        comp1=0
+        
+        igualcolum,tabref,comp1=tab.comprobar(exp1,xml,basedatos)
+        
+        if igualcolum==-1:
+                print("ERROR: al buscar columna ",exp1," en las tablas")
+                return {"respuesta": ["ERROR"], "tipo": "ERROR"}
+        
+        if comp1==1:
+            tabla=exp1.split(".")[0]
+            exp1=exp1.split(".")[1]
+        elif comp1==0:
+            if igualcolum==1:
+                tabla=tabref
+            elif igualcolum>1:
+                print("Error: la columna ",exp1," existe en mas de una de las tablas especificadas")
+                return {"respuesta": ["ERROR"], "tipo": "ERROR"}
+            else:
+                print("Error: la columna ",exp1," no existe en las tablas")
+                return {"respuesta": ["ERROR"], "tipo": "ERROR"}
 
-def funcion_contar():
-    pass
+
+        suma=0
+        exp1=xml.obtener_registros(basedatos,tabla,exp1)
+        if exp1.get("tipo")=="ERROR":
+            return {"respuesta":["ERROR"],"tipo":"ERROR"}
+        tipoE1=exp1.get("tipo")
+        exp1=exp1.get("dato")
+        if len(condicion)!=0:
+            for i,tipo1,j in zip(exp1,tipoE1,condicion):
+                if i is None:
+                    print("Error: no se puede sumar un valor nulo")
+                    return {"respuesta":["ERROR"],"tipo":"ERROR"}
+                if tipo1==TIPO_DATO.INT or tipo1==TIPO_DATO.DECIMAL or tipo1==TIPO_DATO.BIT:
+                    if j==1:
+                        suma+=round(float(i),2)
+                else:
+                    print("Error: no se puede sumar un valor de tipo ",tipo1.name)
+                    return {"respuesta":["ERROR"],"tipo":"ERROR"}
+        else:
+            for i,tipo1 in zip(exp1,tipoE1):
+                if i is None:
+                    print("Error: no se puede sumar un valor nulo")
+                    return {"respuesta":["ERROR"],"tipo":"ERROR"}
+                if tipo1==TIPO_DATO.INT or tipo1==TIPO_DATO.DECIMAL or tipo1==TIPO_DATO.BIT:
+                    suma+=round(float(i),2)
+                else:
+                    if i!="null":
+                        print("Error: no se puede sumar un valor de tipo ",tipo1.name)
+                        return {"respuesta":["ERROR"],"tipo":"ERROR"}
+        respuesta.append(suma)
+        tiporesult.append(TIPO_DATO.DECIMAL)
+            
+    print("respuesta: ",respuesta,"tipo:",tiporesult)
+    return {"respuesta":respuesta,"tipo":tiporesult}
+
+def funcion_contar(exp1,condicion,basedatos,tabla,xml):
+    respuesta = []
+    tiporesult=[]
+    print("exp1: ",exp1," condicion: ",condicion)
+    
+    if exp1 =="*":
+        
+        suma=0
+        exp1=xml.obtener_registros(basedatos,tabla,"*todo*")
+        print("exp1: ",exp1)
+        if exp1.get("tipo")=="ERROR":
+            return {"respuesta":["ERROR"],"tipo":"ERROR"}
+        exp1=exp1.get("dato")[0]
+        if len(condicion)!=0:
+            if len(exp1)==0:
+                print("Error: no hay registros para contar")
+                return {"respuesta":["ERROR"],"tipo":"ERROR"}
+            if len(exp1)==len(condicion):
+                suma=condicion.count(1)  
+        else:
+            if len(exp1)==0:
+                print("Error: no hay registros para contar")
+                return {"respuesta":["ERROR"],"tipo":"ERROR"}
+            suma=len(exp1)
+                   
+        respuesta.append(suma)
+        tiporesult.append(TIPO_DATO.INT)
+    else:
+        return{"respuesta":["ERROR"],"tipo":"ERROR"}
+            
+    print("respuesta: ",respuesta,"tipo:",tiporesult)
+    return {"respuesta":respuesta,"tipo":tiporesult}
 
 def is_date_or_datetime(s):
     s = str(s)

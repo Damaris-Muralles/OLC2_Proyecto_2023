@@ -7,8 +7,10 @@ from Expresiones.OpBasicas import *
 from Expresiones.Ifs import *
 from Expresiones.FuncionesNativas import *
 from Expresiones.ExpCase import *
+from ValidacionVariasTablas import *
 
 xml = XMLManejador("./BaseDatos/BasesDatos.xml") 
+comprobador=ComprobarTabla()
 
 basedata = ""
 table = ""
@@ -325,11 +327,18 @@ def procesar_where1(instr,base,tabla):
             listatipodatos.append(resultado.get("tipo"))
             return resultado.get("respuesta")
         elif instr.get("tipo")==TIPO_INSTRUCCION.CONTATENACION:
-           
+            
             # procesando expresiones
-            exp1,exp2=procesar_expresiones(instr, base, tabla)
+            exp1=procesar_where1(instr.get("cadena1"), base, tabla)
             if listatipodatos and listatipodatos[-1] == "ERROR":
-                        return ["ERROR"]
+                return ["ERROR"]
+            if listatipodatos and listatipodatos[-1] == "noinstr":
+                listatipodatos.pop()
+            exp2=procesar_where1(instr.get("cadena2"), base, tabla)
+            if listatipodatos and listatipodatos[-1] == "ERROR":
+                return ["ERROR"]
+            if listatipodatos and listatipodatos[-1] == "noinstr":
+                listatipodatos.pop()
             # imprimiendo expresiones
             print("")
             print(exp1," concatenado ",exp2)
@@ -576,19 +585,25 @@ def procesar_datos(exp1, exp2):
 
 def Obtener_valor(cadena):
     # si expresion contine comillas dobles o simples escribir algo
+
     if isinstance(cadena, str):
-        if not cadena.startswith('\"') and not cadena.startswith('\''):
+        
+        if cadena.startswith('@'):
+            
+            variable=obtener_variable(cadena)
+            listatipodatos.append(variable.get("tipo"))
+            print("variable: ",variable)
+            return variable
+        elif not cadena.startswith('\"') and not cadena.startswith('\''):
             # se tiene que buscar en la tabla la columna correspondiente
-            colum=xml.obtener_registros(basedata,table,cadena)
+            # ver si tiene un punto, si es asi dividirlo
+            
+            
+            colum=obtener_id(basedata,table,cadena)
             print("colum: ",colum)
             listatipodatos.append(colum.get("tipo"))
-            
             return colum
-        
-        elif cadena.startswith('@'):
-            # se tiene que buscar en la tabla de simbolos
-            listatipodatos.append([TIPO_DATO.INT])
-            return [5]
+            
         else:
             # quitar las comillas
             cadena = cadena[1:-1]
@@ -620,3 +635,38 @@ def Obtener_valor(cadena):
                 tip=TIPO_DATO.DECIMAL
             listatipodatos.append([tip])
             return [cadena]
+
+def obtener_variable(variable):
+    # buscar en la tabla de simbolos la variable
+  
+    return {"dato": [1], "tipo": [TIPO_DATO.INT]}
+
+def obtener_id(data,tabla,cadena):
+        
+        igualcolum=0
+        tabref=""
+        comp1=0
+        
+        igualcolum,tabref,comp1=comprobador.comprobar(cadena,xml,data)
+        
+        if igualcolum==-1:
+                print("ERROR: al buscar columna ",cadena," en las tablas")
+                return {"dato": ["ERROR"], "tipo": "ERROR"}
+        
+        if comp1==1:
+            tabla=cadena.split(".")[0]
+            cadena=cadena.split(".")[1]
+        elif comp1==0:
+            if igualcolum==1:
+                tabla=tabref
+            elif igualcolum>1:
+                print("Error: la columna ",cadena," existe en mas de una de las tablas especificadas")
+                return {"dato": ["ERROR"], "tipo": "ERROR"}
+            else:
+                print("Error: la columna ",cadena," no existe en las tablas")
+                return {"dato": ["ERROR"], "tipo": "ERROR"}
+
+              
+       
+        colum=xml.obtener_registros(data,tabla,cadena)
+        return colum

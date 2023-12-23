@@ -143,6 +143,11 @@ def SelectTable(columnas, tablas, where):
     "tablas":tablas,
     "where":where
   }
+def tselect(col,encabezado):
+  return{
+    "colum":col,
+    "encabezado":encabezado
+  }
 def InsertTable(tabla,columnas , valores):
   return{
     "tipo": TIPO_INSTRUCCION.INSERT_TABLE,
@@ -153,12 +158,14 @@ def InsertTable(tabla,columnas , valores):
 
 
 def LlamarColumna( punto, idtabla, idcolumna):
-  return{
+  return idtabla+punto+idcolumna
+""""
+{
     "tipo": TIPO_INSTRUCCION.LLAMARCOLUMNA,
     "punto":punto,
     "idtabla":idtabla,
     "idcolumna":idcolumna
-  }
+  }"""
 
 
 # funciones para encapsular expresiones y datos

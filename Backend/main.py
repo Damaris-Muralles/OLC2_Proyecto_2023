@@ -15,10 +15,11 @@ ActualBaseDatos = ""
 def procesar_instrucciones(instrucciones) :
     ## lista de instrucciones recolectadas
     global ActualBaseDatos
-    
+   
     for instr in instrucciones :
         print("==================================================================================================================")
         print("instruccion actual: ", instr)
+        
         if instr.get('tipo')== TIPO_INSTRUCCION.CREATE_DATABASE : ActualBaseDatos=procesar_createdatabase(instr,xml)
         elif instr.get('tipo') == TIPO_INSTRUCCION.CREATE_TABLE : procesar_createtable(instr,ActualBaseDatos,xml)
         elif instr.get('tipo') == TIPO_INSTRUCCION.USE_DATABASE : ActualBaseDatos=procesar_usedatabase(instr)
@@ -29,6 +30,7 @@ def procesar_instrucciones(instrucciones) :
         elif instr.get('tipo') == TIPO_INSTRUCCION.INSERT_TABLE : procesar_insert(instr,ActualBaseDatos,xml)
         elif instr.get('tipo') == TIPO_INSTRUCCION.DELETE_TABLE : procesar_delete(instr,ActualBaseDatos,xml)
         elif instr.get('tipo') == TIPO_INSTRUCCION.UPDATE_TABLE : procesar_update(instr,ActualBaseDatos,xml)
+        elif instr.get('tipo') == TIPO_INSTRUCCION.SELECT_TABLE : procesar_select(instr,ActualBaseDatos,xml)
         else : print('Error: instrucción no válida')
         print("==================================================================================================================")
 
@@ -36,21 +38,13 @@ def procesar_instrucciones(instrucciones) :
 
 #input = f.read()
 # otras pruebas de entrada
-
+#DELETE FROM products where  id=23;
 
 input = """
+USE tbbanco;
 
-USAR intento;
-
-DELETE FROM products where  case 
- when edad > 18 and edad <= 25
- then 'Adolecente'
- when edad > 25 and edad <= 35
- then 'Adulto joven'
- when edad >35 and edad <= 45
- then 'Adulto Maduro'
- else 'Adulto Mayor'
- end;
+select CONTAR(*) FROM tbcredito;
+SELECT * FROM tbproducto where idestado != 1;
 """
 instrucciones = g.parse(input.lower())
 ts_global = TS.TablaSimbolo()

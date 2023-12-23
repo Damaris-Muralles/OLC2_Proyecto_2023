@@ -10,11 +10,12 @@ def procesar_createdatabase(instr,xml) :
 def procesar_createtable(instr,ActualBaseDatos,xml):
     print(xml.add_table_info(ActualBaseDatos, instr))
 
-def procesar_dropcolumna(instr,ActualBaseDatos,xml):
-    print(xml.drop_column(ActualBaseDatos, instr))
-
 def procesar_addcolumna(instr,ActualBaseDatos,xml):
     print(xml.add_column(ActualBaseDatos, instr))
+
+# validar si es esta referenciada en otra tabla
+def procesar_dropcolumna(instr,ActualBaseDatos,xml):
+    print(xml.drop_column(ActualBaseDatos, instr))
 
 def procesar_droptable(instr,ActualBaseDatos,xml):
     print(xml.drop_table(ActualBaseDatos, instr))

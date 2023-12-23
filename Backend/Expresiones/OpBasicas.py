@@ -11,52 +11,53 @@ def suma_op(exp1,exp2,tipoE1,tipoE2):
         for i, j,tipo1,tipo2 in zip(exp1, exp2,tipoE1,tipoE2):
             dat = 0
             print("i: ",tipo1," j: ",tipo2)
-            if (tipo1==TIPO_DATO.BIT and tipo2==TIPO_DATO.BIT) or (tipo2==TIPO_DATO.BIT and (i==1 or i==0)) or (tipo1==TIPO_DATO.BIT and (j==1 or j==0)) or ((j==1 or j==0) and (i==1 or i==0)):
+            if (tipo1==TIPO_DATO.BIT and tipo2==TIPO_DATO.BIT) :
+              
                 dat = i or j
                 tiporesult = TIPO_DATO.BIT
-            elif (tipo1==TIPO_DATO.BIT and tipo2==TIPO_DATO.INT) or (tipo2==TIPO_DATO.INT and (i==1 or i==0)) or (tipo1==TIPO_DATO.BIT and isinstance(j,int)) or ((i==1 or i==0) and isinstance(j,int)):
+            elif (tipo1==TIPO_DATO.BIT and tipo2==TIPO_DATO.INT) :
                 dat = int(i + j)
                 tiporesult = TIPO_DATO.INT
-            elif (tipo1==TIPO_DATO.BIT and tipo2==TIPO_DATO.DECIMAL) or (tipo2==TIPO_DATO.DECIMAL and (i==1 or i==0)) or (tipo1==TIPO_DATO.BIT and isinstance(j,float)) or ((i==1 or i==0) and isinstance(j,float)):
+            elif (tipo1==TIPO_DATO.BIT and tipo2==TIPO_DATO.DECIMAL) :
                 dat = round(float(i + j),2)
                 tiporesult = TIPO_DATO.DECIMAL
-            elif (tipo1==TIPO_DATO.BIT and (tipo2==TIPO_DATO.CHAR or tipo2==TIPO_DATO.VARCHAR) ) or ((tipo2==TIPO_DATO.CHAR or tipo2 == TIPO_DATO.VARCHAR) and (i==1 or i==0)) or (tipo1==TIPO_DATO.BIT and isinstance(j,str)) or ((i==1 or i==0) and isinstance(j,str)) and (is_date_or_datetime(j)==False):
+            elif (tipo1==TIPO_DATO.BIT and (tipo2==TIPO_DATO.CHAR or tipo2==TIPO_DATO.VARCHAR) ):
                 dat = str(i) + str(j)
                 tiporesult=TIPO_DATO.VARCHAR
-            elif (tipo1==TIPO_DATO.INT and tipo2==TIPO_DATO.BIT) or (tipo2==TIPO_DATO.BIT and isinstance(i,int)) or (tipo1==TIPO_DATO.INT and (j==1 or j==0) ) or ((j==1 or j==0) and isinstance(i,int)):
+            elif (tipo1==TIPO_DATO.INT and tipo2==TIPO_DATO.BIT) :
                 dat = int(i + j)
                 tiporesult = TIPO_DATO.INT
-            elif (tipo1==TIPO_DATO.INT and tipo2==TIPO_DATO.INT) or (tipo2==TIPO_DATO.INT and isinstance(i,int)) or (tipo1==TIPO_DATO.INT and isinstance(j,int)) or (isinstance(i,int) and isinstance(j,int)):
+            elif (tipo1==TIPO_DATO.INT and tipo2==TIPO_DATO.INT):
                 dat = int(i + j)
                 tiporesult = TIPO_DATO.INT
-            elif (tipo1==TIPO_DATO.INT and tipo2==TIPO_DATO.DECIMAL) or (tipo2==TIPO_DATO.DECIMAL and isinstance(i,int)) or (tipo1==TIPO_DATO.INT and isinstance(j,float)) or (isinstance(i,int) and isinstance(j,float)):
+            elif (tipo1==TIPO_DATO.INT and tipo2==TIPO_DATO.DECIMAL) :
                 dat = round(float(i + j),2)
                 tiporesult = TIPO_DATO.DECIMAL
-            elif (tipo1==TIPO_DATO.INT and (tipo2==TIPO_DATO.CHAR or tipo2==TIPO_DATO.VARCHAR) ) or ((tipo2==TIPO_DATO.CHAR or tipo2 == TIPO_DATO.VARCHAR) and isinstance(i,int)) or (tipo1==TIPO_DATO.INT and isinstance(j,str)) or (isinstance(i,int) and isinstance(j,str)) and (is_date_or_datetime(j)==False):
+            elif (tipo1==TIPO_DATO.INT and (tipo2==TIPO_DATO.CHAR or tipo2==TIPO_DATO.VARCHAR) ):
                 dat = str(i) + str(j)
                 tiporesult=TIPO_DATO.VARCHAR
-            elif (tipo1==TIPO_DATO.DECIMAL and tipo2==TIPO_DATO.BIT) or (tipo2==TIPO_DATO.BIT and isinstance(i,float)) or (tipo1==TIPO_DATO.DECIMAL and (j==1 or j==0)) or (isinstance(i,float) and (j==1 or j==0)):
+            elif (tipo1==TIPO_DATO.DECIMAL and tipo2==TIPO_DATO.BIT) :
                 dat = round(float(i + j),2)
                 tiporesult = TIPO_DATO.DECIMAL
-            elif (tipo1==TIPO_DATO.DECIMAL and tipo2==TIPO_DATO.INT) or (tipo2==TIPO_DATO.INT and isinstance(i,float)) or (tipo1==TIPO_DATO.DECIMAL and isinstance(j,int)) or (isinstance(i,float) and isinstance(j,int)):
+            elif (tipo1==TIPO_DATO.DECIMAL and tipo2==TIPO_DATO.INT) :
                 dat = round(float(i + j),2)
                 tiporesult = TIPO_DATO.DECIMAL
-            elif (tipo1==TIPO_DATO.DECIMAL and tipo2==TIPO_DATO.DECIMAL) or (tipo2==TIPO_DATO.DECIMAL and isinstance(i,float)) or (tipo1==TIPO_DATO.DECIMAL and isinstance(j,float)) or (isinstance(i,float) and isinstance(j,float)):
+            elif (tipo1==TIPO_DATO.DECIMAL and tipo2==TIPO_DATO.DECIMAL) :
                 dat = round(float(i + j),2)
                 tiporesult = TIPO_DATO.DECIMAL
-            elif (tipo1==TIPO_DATO.DECIMAL and (tipo2==TIPO_DATO.CHAR or tipo2==TIPO_DATO.VARCHAR) ) or ((tipo2==TIPO_DATO.CHAR or tipo2 == TIPO_DATO.VARCHAR) and isinstance(i,float)) or (tipo1==TIPO_DATO.DECIMAL and isinstance(j,str)) or (isinstance(i,float) and isinstance(j,str)) and (is_date_or_datetime(j)==False):
+            elif (tipo1==TIPO_DATO.DECIMAL and (tipo2==TIPO_DATO.CHAR or tipo2==TIPO_DATO.VARCHAR) ):
                 dat = str(i) + str(j)
                 tiporesult=TIPO_DATO.VARCHAR
-            elif ((tipo1==TIPO_DATO.CHAR or tipo1==TIPO_DATO.VARCHAR) and tipo2==TIPO_DATO.BIT) or ((tipo1==TIPO_DATO.CHAR or tipo1 == TIPO_DATO.VARCHAR) and (j==1 or j==0)) or (tipo2==TIPO_DATO.BIT and isinstance(i,str)) or (isinstance(i,str) and (j==1 or j==0)) and (is_date_or_datetime(i)==False):
+            elif ((tipo1==TIPO_DATO.CHAR or tipo1==TIPO_DATO.VARCHAR) and tipo2==TIPO_DATO.BIT) :
                 dat = str(i) + str(j)
                 tiporesult=TIPO_DATO.VARCHAR
-            elif ((tipo1==TIPO_DATO.CHAR or tipo1==TIPO_DATO.VARCHAR) and tipo2==TIPO_DATO.INT) or ((tipo1==TIPO_DATO.CHAR or tipo1 == TIPO_DATO.VARCHAR) and isinstance(j,int)) or (tipo2==TIPO_DATO.INT and isinstance(i,str)) or (isinstance(i,str) and isinstance(j,int)) and (is_date_or_datetime(i)==False):
+            elif ((tipo1==TIPO_DATO.CHAR or tipo1==TIPO_DATO.VARCHAR) and tipo2==TIPO_DATO.INT):
                 dat = str(i) + str(j)
                 tiporesult=TIPO_DATO.VARCHAR
-            elif ((tipo1==TIPO_DATO.CHAR or tipo1==TIPO_DATO.VARCHAR) and tipo2==TIPO_DATO.DECIMAL) or ((tipo1==TIPO_DATO.CHAR or tipo1 == TIPO_DATO.VARCHAR) and isinstance(j,float)) or (tipo2==TIPO_DATO.DECIMAL and isinstance(i,str)) or (isinstance(i,str) and isinstance(j,float)) and (is_date_or_datetime(i)==False):
+            elif ((tipo1==TIPO_DATO.CHAR or tipo1==TIPO_DATO.VARCHAR) and tipo2==TIPO_DATO.DECIMAL) :
                 dat = str(i) + str(j)
                 tiporesult=TIPO_DATO.VARCHAR
-            elif ((tipo1==TIPO_DATO.CHAR or tipo1==TIPO_DATO.VARCHAR) and (tipo2==TIPO_DATO.CHAR or tipo2==TIPO_DATO.VARCHAR) and   isinstance(i,str)) or ((tipo1==TIPO_DATO.CHAR or tipo1 == TIPO_DATO.VARCHAR) and isinstance(j,str)) or (isinstance(i,str) and isinstance(j,str)) and (is_date_or_datetime(i)==False):
+            elif ((tipo1==TIPO_DATO.CHAR or tipo1==TIPO_DATO.VARCHAR) and (tipo2==TIPO_DATO.CHAR or tipo2==TIPO_DATO.VARCHAR) and   isinstance(i,str)):
                 dat = str(i) + str(j)
                 tiporesult=TIPO_DATO.VARCHAR
             else:
@@ -75,52 +76,52 @@ def suma_op(exp1,exp2,tipoE1,tipoE2):
                 b+=1
                 dat = 0
                 print("i: ",tipoE1[a]," j: ",tipoE2[b])
-                if (tipoE1[a]==TIPO_DATO.BIT and tipoE2[b]==TIPO_DATO.BIT) or (tipoE2[b]==TIPO_DATO.BIT and (i==1 or i==0)) or (tipoE1[a]==TIPO_DATO.BIT and (j==1 or j==0)) or ((j==1 or j==0) and (i==1 or i==0)):
+                if (tipoE1[a]==TIPO_DATO.BIT and tipoE2[b]==TIPO_DATO.BIT) :
                     dat = i or j
                     tiporesult = TIPO_DATO.BIT
-                elif (tipoE1[a]==TIPO_DATO.BIT and tipoE2[b]==TIPO_DATO.INT) or (tipoE2[b]==TIPO_DATO.INT and (i==1 or i==0)) or (tipoE1[a]==TIPO_DATO.BIT and isinstance(j,int)) or ((i==1 or i==0) and isinstance(j,int)):
+                elif (tipoE1[a]==TIPO_DATO.BIT and tipoE2[b]==TIPO_DATO.INT) :
                     dat = int(i + j)
                     tiporesult = TIPO_DATO.INT
-                elif (tipoE1[a]==TIPO_DATO.BIT and tipoE2[b]==TIPO_DATO.DECIMAL) or (tipoE2[b]==TIPO_DATO.DECIMAL and (i==1 or i==0)) or (tipoE1[a]==TIPO_DATO.BIT and isinstance(j,float)) or ((i==1 or i==0) and isinstance(j,float)):
+                elif (tipoE1[a]==TIPO_DATO.BIT and tipoE2[b]==TIPO_DATO.DECIMAL):
                     dat = round(float(i + j),2)
                     tiporesult = TIPO_DATO.DECIMAL
-                elif (tipoE1[a]==TIPO_DATO.BIT and (tipoE2[b]==TIPO_DATO.CHAR or tipoE2[b]==TIPO_DATO.VARCHAR) ) or ((tipoE2[b]==TIPO_DATO.CHAR or tipoE2[b] == TIPO_DATO.VARCHAR) and (i==1 or i==0)) or (tipoE1[a]==TIPO_DATO.BIT and isinstance(j,str)) or ((i==1 or i==0) and isinstance(j,str)) and (is_date_or_datetime(j)==False):
+                elif (tipoE1[a]==TIPO_DATO.BIT and (tipoE2[b]==TIPO_DATO.CHAR or tipoE2[b]==TIPO_DATO.VARCHAR) ) :
                     dat = str(i) + str(j)
                     tiporesult=TIPO_DATO.VARCHAR
-                elif (tipoE1[a]==TIPO_DATO.INT and tipoE2[b]==TIPO_DATO.BIT) or (tipoE2[b]==TIPO_DATO.BIT and isinstance(i,int)) or (tipoE1[a]==TIPO_DATO.INT and (j==1 or j==0) ) or ((j==1 or j==0) and isinstance(i,int)):
+                elif (tipoE1[a]==TIPO_DATO.INT and tipoE2[b]==TIPO_DATO.BIT) :
                     dat = int(i + j)
                     tiporesult = TIPO_DATO.INT
-                elif (tipoE1[a]==TIPO_DATO.INT and tipoE2[b]==TIPO_DATO.INT) or (tipoE2[b]==TIPO_DATO.INT and isinstance(i,int)) or (tipoE1[a]==TIPO_DATO.INT and isinstance(j,int)) or (isinstance(i,int) and isinstance(j,int)):
+                elif (tipoE1[a]==TIPO_DATO.INT and tipoE2[b]==TIPO_DATO.INT) :
                     dat = int(i + j)
                     tiporesult = TIPO_DATO.INT
-                elif (tipoE1[a]==TIPO_DATO.INT and tipoE2[b]==TIPO_DATO.DECIMAL) or (tipoE2[b]==TIPO_DATO.DECIMAL and isinstance(i,int)) or (tipoE1[a]==TIPO_DATO.INT and isinstance(j,float)) or (isinstance(i,int) and isinstance(j,float)):
+                elif (tipoE1[a]==TIPO_DATO.INT and tipoE2[b]==TIPO_DATO.DECIMAL):
                     dat = round(float(i + j),2)
                     tiporesult = TIPO_DATO.DECIMAL
-                elif (tipoE1[a]==TIPO_DATO.INT and (tipoE2[b]==TIPO_DATO.CHAR or tipoE2[b]==TIPO_DATO.VARCHAR) ) or ((tipoE2[b]==TIPO_DATO.CHAR or tipoE2[b] == TIPO_DATO.VARCHAR) and isinstance(i,int)) or (tipoE1[a]==TIPO_DATO.INT and isinstance(j,str)) or (isinstance(i,int) and isinstance(j,str)) and (is_date_or_datetime(j)==False):
+                elif (tipoE1[a]==TIPO_DATO.INT and (tipoE2[b]==TIPO_DATO.CHAR or tipoE2[b]==TIPO_DATO.VARCHAR) ) :
                     dat = str(i) + str(j)
                     tiporesult=TIPO_DATO.VARCHAR
-                elif (tipoE1[a]==TIPO_DATO.DECIMAL and tipoE2[b]==TIPO_DATO.BIT) or (tipoE2[b]==TIPO_DATO.BIT and isinstance(i,float)) or (tipoE1[a]==TIPO_DATO.DECIMAL and (j==1 or j==0)) or (isinstance(i,float) and (j==1 or j==0)):
+                elif (tipoE1[a]==TIPO_DATO.DECIMAL and tipoE2[b]==TIPO_DATO.BIT) :
                     dat = round(float(i + j),2)
                     tiporesult = TIPO_DATO.DECIMAL
-                elif (tipoE1[a]==TIPO_DATO.DECIMAL and tipoE2[b]==TIPO_DATO.INT) or (tipoE2[b]==TIPO_DATO.INT and isinstance(i,float)) or (tipoE1[a]==TIPO_DATO.DECIMAL and isinstance(j,int)) or (isinstance(i,float) and isinstance(j,int)):
+                elif (tipoE1[a]==TIPO_DATO.DECIMAL and tipoE2[b]==TIPO_DATO.INT) :
                     dat = round(float(i + j),2)
                     tiporesult = TIPO_DATO.DECIMAL
-                elif (tipoE1[a]==TIPO_DATO.DECIMAL and tipoE2[b]==TIPO_DATO.DECIMAL) or (tipoE2[b]==TIPO_DATO.DECIMAL and isinstance(i,float)) or (tipoE1[a]==TIPO_DATO.DECIMAL and isinstance(j,float)) or (isinstance(i,float) and isinstance(j,float)):
+                elif (tipoE1[a]==TIPO_DATO.DECIMAL and tipoE2[b]==TIPO_DATO.DECIMAL) :
                     dat = round(float(i + j),2)
                     tiporesult = TIPO_DATO.DECIMAL
-                elif (tipoE1[a]==TIPO_DATO.DECIMAL and (tipoE2[b]==TIPO_DATO.CHAR or tipoE2[b]==TIPO_DATO.VARCHAR) ) or ((tipoE2[b]==TIPO_DATO.CHAR or tipoE2[b] == TIPO_DATO.VARCHAR) and isinstance(i,float)) or (tipoE1[a]==TIPO_DATO.DECIMAL and isinstance(j,str)) or (isinstance(i,float) and isinstance(j,str)) and (is_date_or_datetime(j)==False):
+                elif (tipoE1[a]==TIPO_DATO.DECIMAL and (tipoE2[b]==TIPO_DATO.CHAR or tipoE2[b]==TIPO_DATO.VARCHAR) ) :
                     dat = str(i) + str(j)
                     tiporesult=TIPO_DATO.VARCHAR
-                elif ((tipoE1[a]==TIPO_DATO.CHAR or tipoE1[a]==TIPO_DATO.VARCHAR) and tipoE2[b]==TIPO_DATO.BIT) or ((tipoE1[a]==TIPO_DATO.CHAR or tipoE1[a] == TIPO_DATO.VARCHAR) and (j==1 or j==0)) or (tipoE2[b]==TIPO_DATO.BIT and isinstance(i,str)) or (isinstance(i,str) and (j==1 or j==0)) and (is_date_or_datetime(i)==False):
+                elif ((tipoE1[a]==TIPO_DATO.CHAR or tipoE1[a]==TIPO_DATO.VARCHAR) and tipoE2[b]==TIPO_DATO.BIT):
                     dat = str(i) + str(j)
                     tiporesult=TIPO_DATO.VARCHAR
-                elif ((tipoE1[a]==TIPO_DATO.CHAR or tipoE1[a]==TIPO_DATO.VARCHAR) and tipoE2[b]==TIPO_DATO.INT) or ((tipoE1[a]==TIPO_DATO.CHAR or tipoE1[a] == TIPO_DATO.VARCHAR) and isinstance(j,int)) or (tipoE2[b]==TIPO_DATO.INT and isinstance(i,str)) or (isinstance(i,str) and isinstance(j,int)) and (is_date_or_datetime(i)==False):
+                elif ((tipoE1[a]==TIPO_DATO.CHAR or tipoE1[a]==TIPO_DATO.VARCHAR) and tipoE2[b]==TIPO_DATO.INT) :
                     dat = str(i) + str(j)
                     tiporesult=TIPO_DATO.VARCHAR
-                elif ((tipoE1[a]==TIPO_DATO.CHAR or tipoE1[a]==TIPO_DATO.VARCHAR) and tipoE2[b]==TIPO_DATO.DECIMAL) or ((tipoE1[a]==TIPO_DATO.CHAR or tipoE1[a] == TIPO_DATO.VARCHAR) and isinstance(j,float)) or (tipoE2[b]==TIPO_DATO.DECIMAL and isinstance(i,str)) or (isinstance(i,str) and isinstance(j,float)) and (is_date_or_datetime(i)==False):
+                elif ((tipoE1[a]==TIPO_DATO.CHAR or tipoE1[a]==TIPO_DATO.VARCHAR) and tipoE2[b]==TIPO_DATO.DECIMAL) :
                     dat = str(i) + str(j)
                     tiporesult=TIPO_DATO.VARCHAR
-                elif ((tipoE1[a]==TIPO_DATO.CHAR or tipoE1[a]==TIPO_DATO.VARCHAR) and (tipoE2[b]==TIPO_DATO.CHAR or tipoE2[b]==TIPO_DATO.VARCHAR) and   isinstance(i,str)) or ((tipoE1[a]==TIPO_DATO.CHAR or tipoE1[a] == TIPO_DATO.VARCHAR) and isinstance(j,str)) or (isinstance(i,str) and isinstance(j,str)) and (is_date_or_datetime(i)==False):
+                elif ((tipoE1[a]==TIPO_DATO.CHAR or tipoE1[a]==TIPO_DATO.VARCHAR) and (tipoE2[b]==TIPO_DATO.CHAR or tipoE2[b]==TIPO_DATO.VARCHAR) and   isinstance(i,str)) :
                     dat = str(i) + str(j)
                     tiporesult=TIPO_DATO.VARCHAR
                 else:
@@ -144,28 +145,28 @@ def resta_op(exp1,exp2,tipoE1,tipoE2):
         for i, j,tipo1,tipo2 in zip(exp1, exp2,tipoE1,tipoE2):
                 dat = 0
                 print("i: ",tipo1," j: ",tipo2)
-                if (tipo1==TIPO_DATO.BIT and tipo2==TIPO_DATO.INT) or (tipo2==TIPO_DATO.INT and (i==1 or i==0)) or (tipo1==TIPO_DATO.BIT and isinstance(j,int)) or ((i==1 or i==0) and isinstance(j,int)):
+                if (tipo1==TIPO_DATO.BIT and tipo2==TIPO_DATO.INT) :
                     dat = int(i - j)
                     tiporesult = TIPO_DATO.INT
-                elif (tipo1==TIPO_DATO.BIT and tipo2==TIPO_DATO.DECIMAL) or (tipo2==TIPO_DATO.DECIMAL and (i==1 or i==0)) or (tipo1==TIPO_DATO.BIT and isinstance(j,float)) or ((i==1 or i==0) and isinstance(j,float)):
+                elif (tipo1==TIPO_DATO.BIT and tipo2==TIPO_DATO.DECIMAL) :
                     dat = round(float(i - j),2)
                     tiporesult = TIPO_DATO.DECIMAL
-                elif (tipo1==TIPO_DATO.INT and tipo2==TIPO_DATO.BIT) or (tipo2==TIPO_DATO.BIT and isinstance(i,int)) or (tipo1==TIPO_DATO.INT and (j==1 or j==0)) or ((j==1 or j==0) and isinstance(i,int)):
+                elif (tipo1==TIPO_DATO.INT and tipo2==TIPO_DATO.BIT) :
                     dat = int(i - j)
                     tiporesult = TIPO_DATO.INT
-                elif (tipo1==TIPO_DATO.INT and tipo2==TIPO_DATO.INT) or (tipo2==TIPO_DATO.INT and isinstance(i,int)) or (tipo1==TIPO_DATO.INT and isinstance(j,int)) or (isinstance(i,int) and isinstance(j,int)):
+                elif (tipo1==TIPO_DATO.INT and tipo2==TIPO_DATO.INT) :
                     dat = int(i - j)
                     tiporesult = TIPO_DATO.INT
-                elif (tipo1==TIPO_DATO.INT and tipo2==TIPO_DATO.DECIMAL) or (tipo2==TIPO_DATO.DECIMAL and isinstance(i,int)) or (tipo1==TIPO_DATO.INT and isinstance(j,float)) or (isinstance(i,int) and isinstance(j,float)):
+                elif (tipo1==TIPO_DATO.INT and tipo2==TIPO_DATO.DECIMAL) :
                     dat = round(float(i - j),2)
                     tiporesult = TIPO_DATO.DECIMAL
-                elif (tipo1==TIPO_DATO.DECIMAL and tipo2==TIPO_DATO.BIT) or (tipo2==TIPO_DATO.BIT and isinstance(i,float)) or (tipo1==TIPO_DATO.DECIMAL and (j==1 or j==0)) or ((j==1 or j==0) and isinstance(i,float)):
+                elif (tipo1==TIPO_DATO.DECIMAL and tipo2==TIPO_DATO.BIT) :
                     dat = round(float(i - j),2)
                     tiporesult = TIPO_DATO.DECIMAL
-                elif (tipo1==TIPO_DATO.DECIMAL and tipo2==TIPO_DATO.INT) or (tipo2==TIPO_DATO.INT and isinstance(i,float)) or (tipo1==TIPO_DATO.DECIMAL and isinstance(j,int)) or (isinstance(i,float) and isinstance(j,int)):
+                elif (tipo1==TIPO_DATO.DECIMAL and tipo2==TIPO_DATO.INT) :
                     dat = round(float(i - j),2)
                     tiporesult = TIPO_DATO.DECIMAL
-                elif (tipo1==TIPO_DATO.DECIMAL and tipo2==TIPO_DATO.DECIMAL) or (tipo2==TIPO_DATO.DECIMAL and isinstance(i,float)) or (tipo1==TIPO_DATO.DECIMAL and isinstance(j,float)) or (isinstance(i,float) and isinstance(j,float)):
+                elif (tipo1==TIPO_DATO.DECIMAL and tipo2==TIPO_DATO.DECIMAL) :
                     dat = round(float(i - j),2)
                     tiporesult = TIPO_DATO.DECIMAL
                 else:
@@ -183,28 +184,28 @@ def resta_op(exp1,exp2,tipoE1,tipoE2):
                 b+=1
                 dat = 0
                 print("i: ",tipoE1[a]," j: ",tipoE2[b])
-                if (tipoE1[a]==TIPO_DATO.BIT and tipoE2[b]==TIPO_DATO.INT) or (tipoE2[b]==TIPO_DATO.INT and (i==1 or i==0)) or (tipoE1[a]==TIPO_DATO.BIT and isinstance(j,int)) or ((i==1 or i==0) and isinstance(j,int)):
+                if (tipoE1[a]==TIPO_DATO.BIT and tipoE2[b]==TIPO_DATO.INT) :
                     dat = int(i - j)
                     tiporesult = TIPO_DATO.INT
-                elif (tipoE1[a]==TIPO_DATO.BIT and tipoE2[b]==TIPO_DATO.DECIMAL) or (tipoE2[b]==TIPO_DATO.DECIMAL and (i==1 or i==0)) or (tipoE1[a]==TIPO_DATO.BIT and isinstance(j,float)) or ((i==1 or i==0) and isinstance(j,float)):
+                elif (tipoE1[a]==TIPO_DATO.BIT and tipoE2[b]==TIPO_DATO.DECIMAL):
                     dat = round(float(i - j),2)
                     tiporesult = TIPO_DATO.DECIMAL
-                elif (tipoE1[a]==TIPO_DATO.INT and tipoE2[b]==TIPO_DATO.BIT) or (tipoE2[b]==TIPO_DATO.BIT and isinstance(i,int)) or (tipoE1[a]==TIPO_DATO.INT and (j==1 or j==0)) or ((j==1 or j==0) and isinstance(i,int)):
+                elif (tipoE1[a]==TIPO_DATO.INT and tipoE2[b]==TIPO_DATO.BIT) :
                     dat = int(i - j)
                     tiporesult = TIPO_DATO.INT
-                elif (tipoE1[a]==TIPO_DATO.INT and tipoE2[b]==TIPO_DATO.INT) or (tipoE2[b]==TIPO_DATO.INT and isinstance(i,int)) or (tipoE1[a]==TIPO_DATO.INT and isinstance(j,int)) or (isinstance(i,int) and isinstance(j,int)):
+                elif (tipoE1[a]==TIPO_DATO.INT and tipoE2[b]==TIPO_DATO.INT):
                     dat = int(i - j)
                     tiporesult = TIPO_DATO.INT
-                elif (tipoE1[a]==TIPO_DATO.INT and tipoE2[b]==TIPO_DATO.DECIMAL) or (tipoE2[b]==TIPO_DATO.DECIMAL and isinstance(i,int)) or (tipoE1[a]==TIPO_DATO.INT and isinstance(j,float)) or (isinstance(i,int) and isinstance(j,float)):
+                elif (tipoE1[a]==TIPO_DATO.INT and tipoE2[b]==TIPO_DATO.DECIMAL) :
                     dat = round(float(i - j),2)
                     tiporesult = TIPO_DATO.DECIMAL
-                elif (tipoE1[a]==TIPO_DATO.DECIMAL and tipoE2[b]==TIPO_DATO.BIT) or (tipoE2[b]==TIPO_DATO.BIT and isinstance(i,float)) or (tipoE1[a]==TIPO_DATO.DECIMAL and (j==1 or j==0)) or ((j==1 or j==0) and isinstance(i,float)):
+                elif (tipoE1[a]==TIPO_DATO.DECIMAL and tipoE2[b]==TIPO_DATO.BIT) :
                     dat = round(float(i - j),2)
                     tiporesult = TIPO_DATO.DECIMAL
-                elif (tipoE1[a]==TIPO_DATO.DECIMAL and tipoE2[b]==TIPO_DATO.INT) or (tipoE2[b]==TIPO_DATO.INT and isinstance(i,float)) or (tipoE1[a]==TIPO_DATO.DECIMAL and isinstance(j,int)) or (isinstance(i,float) and isinstance(j,int)):
+                elif (tipoE1[a]==TIPO_DATO.DECIMAL and tipoE2[b]==TIPO_DATO.INT) :
                     dat = round(float(i - j),2)
                     tiporesult = TIPO_DATO.DECIMAL
-                elif (tipoE1[a]==TIPO_DATO.DECIMAL and tipoE2[b]==TIPO_DATO.DECIMAL) or (tipoE2[b]==TIPO_DATO.DECIMAL and isinstance(i,float)) or (tipoE1[a]==TIPO_DATO.DECIMAL and isinstance(j,float)) or (isinstance(i,float) and isinstance(j,float)):
+                elif (tipoE1[a]==TIPO_DATO.DECIMAL and tipoE2[b]==TIPO_DATO.DECIMAL) :
                     dat = round(float(i - j),2)
                     tiporesult = TIPO_DATO.DECIMAL
                 else:
@@ -226,37 +227,37 @@ def multiplicacion_op(exp1,exp2,tipoE1,tipoE2):
         for i, j,tipo1,tipo2 in zip(exp1, exp2,tipoE1,tipoE2):
                 print("i: ",tipo1," j: ",tipo2)
                 dat = 0
-                if (tipo1==TIPO_DATO.BIT and tipo2==TIPO_DATO.BIT) or (tipo2==TIPO_DATO.BIT and (i==1 or i==0)) or (tipo1==TIPO_DATO.BIT and (j==1 or j==0)) or ((j==1 or j==0) and (i==1 or i==0)):
+                if (tipo1==TIPO_DATO.BIT and tipo2==TIPO_DATO.BIT) :
                     dat = i and j
                     tiporesult = TIPO_DATO.BIT
-                elif (tipo1==TIPO_DATO.BIT and tipo2==TIPO_DATO.INT) or (tipo2==TIPO_DATO.INT and (i==1 or i==0)) or (tipo1==TIPO_DATO.BIT and isinstance(j,int)) or ((i==1 or i==0) and isinstance(j,int)):
+                elif (tipo1==TIPO_DATO.BIT and tipo2==TIPO_DATO.INT) :
                     dat = int(i * j)
                     tiporesult = TIPO_DATO.INT
-                elif (tipo1==TIPO_DATO.BIT and tipo2==TIPO_DATO.DECIMAL) or (tipo2==TIPO_DATO.DECIMAL and (i==1 or i==0)) or (tipo1==TIPO_DATO.BIT and isinstance(j,float)) or ((i==1 or i==0) and isinstance(j,float)):
+                elif (tipo1==TIPO_DATO.BIT and tipo2==TIPO_DATO.DECIMAL) :
                     dat = round(float(i * j),2)
                     tiporesult = TIPO_DATO.DECIMAL
-                elif (tipo1==TIPO_DATO.INT and tipo2==TIPO_DATO.BIT) or (tipo2==TIPO_DATO.BIT and isinstance(i,int)) or (tipo1==TIPO_DATO.INT and (j==1 or j==0)) or ((j==1 or j==0) and isinstance(i,int)):
+                elif (tipo1==TIPO_DATO.INT and tipo2==TIPO_DATO.BIT) :
                     dat = int(i * j)
                     tiporesult = TIPO_DATO.INT
-                elif (tipo1==TIPO_DATO.INT and tipo2==TIPO_DATO.INT) or (tipo2==TIPO_DATO.INT and isinstance(i,int)) or (tipo1==TIPO_DATO.INT and isinstance(j,int)) or (isinstance(i,int) and isinstance(j,int)):
+                elif (tipo1==TIPO_DATO.INT and tipo2==TIPO_DATO.INT) :
                     dat = int(i * j)
                     tiporesult = TIPO_DATO.INT
-                elif (tipo1==TIPO_DATO.INT and tipo2==TIPO_DATO.DECIMAL) or (tipo2==TIPO_DATO.DECIMAL and isinstance(i,int)) or (tipo1==TIPO_DATO.INT and isinstance(j,float)) or (isinstance(i,int) and isinstance(j,float)):
+                elif (tipo1==TIPO_DATO.INT and tipo2==TIPO_DATO.DECIMAL) :
                     dat = round(float(i * j),2)
                     tiporesult = TIPO_DATO.DECIMAL
-                elif (tipo1==TIPO_DATO.DECIMAL and tipo2==TIPO_DATO.BIT) or (tipo2==TIPO_DATO.BIT and isinstance(i,float)) or (tipo1==TIPO_DATO.DECIMAL and (j==1 or j==0)) or ((j==1 or j==0) and isinstance(i,float)):
+                elif (tipo1==TIPO_DATO.DECIMAL and tipo2==TIPO_DATO.BIT) :
                     dat = round(float(i * j),2)
                     tiporesult = TIPO_DATO.DECIMAL
-                elif (tipo1==TIPO_DATO.DECIMAL and tipo2==TIPO_DATO.INT) or (tipo2==TIPO_DATO.INT and isinstance(i,float)) or (tipo1==TIPO_DATO.DECIMAL and isinstance(j,int)) or (isinstance(i,float) and isinstance(j,int)):
+                elif (tipo1==TIPO_DATO.DECIMAL and tipo2==TIPO_DATO.INT) :
                     dat = round(float(i * j),2)
                     tiporesult = TIPO_DATO.DECIMAL
-                elif (tipo1==TIPO_DATO.DECIMAL and tipo2==TIPO_DATO.DECIMAL) or (tipo2==TIPO_DATO.DECIMAL and isinstance(i,float)) or (tipo1==TIPO_DATO.DECIMAL and isinstance(j,float)) or (isinstance(i,float) and isinstance(j,float)):
+                elif (tipo1==TIPO_DATO.DECIMAL and tipo2==TIPO_DATO.DECIMAL) :
                     dat = round(float(i * j),2)
                     tiporesult = TIPO_DATO.DECIMAL
-                elif ((tipo1==TIPO_DATO.CHAR or tipo1==TIPO_DATO.VARCHAR) and (tipo2==TIPO_DATO.DATE or tipo2==TIPO_DATO.DATETIME )) or ((tipo2==TIPO_DATO.DATE or tipo2 == TIPO_DATO.DATETIME) and isinstance(i,str)) or ((tipo1==TIPO_DATO.CHAR or tipo1 == TIPO_DATO.VARCHAR) and is_date_or_datetime(j)) or (is_date_or_datetime(i) and isinstance(j,str)):
+                elif ((tipo1==TIPO_DATO.CHAR or tipo1==TIPO_DATO.VARCHAR) and (tipo2==TIPO_DATO.DATE or tipo2==TIPO_DATO.DATETIME )) :
                     dat = str(i) + str(j)
                     tiporesult=TIPO_DATO.VARCHAR
-                elif ((tipo1==TIPO_DATO.DATE or tipo1==TIPO_DATO.DATETIME) and (tipo2==TIPO_DATO.CHAR or tipo2==TIPO_DATO.VARCHAR )) or ((tipo2==TIPO_DATO.CHAR or tipo2 == TIPO_DATO.VARCHAR) and is_date_or_datetime(i)) or ((tipo1==TIPO_DATO.DATE or tipo1 == TIPO_DATO.DATETIME) and isinstance(j,str)) or (is_date_or_datetime(i) and isinstance(j,str)):
+                elif ((tipo1==TIPO_DATO.DATE or tipo1==TIPO_DATO.DATETIME) and (tipo2==TIPO_DATO.CHAR or tipo2==TIPO_DATO.VARCHAR )) :
                     dat = str(i) + str(j)
                     tiporesult=TIPO_DATO.VARCHAR
                 else:
@@ -274,37 +275,37 @@ def multiplicacion_op(exp1,exp2,tipoE1,tipoE2):
                 b+=1
                 print("i: ",tipoE1[a]," j: ",tipoE2[b])
                 dat = 0
-                if (tipoE1[a]==TIPO_DATO.BIT and tipoE2[b]==TIPO_DATO.BIT) or (tipoE2[b]==TIPO_DATO.BIT and (i==1 or i==0)) or (tipoE1[a]==TIPO_DATO.BIT and (j==1 or j==0)) or ((j==1 or j==0) and (i==1 or i==0)):
+                if (tipoE1[a]==TIPO_DATO.BIT and tipoE2[b]==TIPO_DATO.BIT):
                     dat = i and j
                     tiporesult = TIPO_DATO.BIT
-                elif (tipoE1[a]==TIPO_DATO.BIT and tipoE2[b]==TIPO_DATO.INT) or (tipoE2[b]==TIPO_DATO.INT and (i==1 or i==0)) or (tipoE1[a]==TIPO_DATO.BIT and isinstance(j,int)) or ((i==1 or i==0) and isinstance(j,int)):
+                elif (tipoE1[a]==TIPO_DATO.BIT and tipoE2[b]==TIPO_DATO.INT) :
                     dat = int(i * j)
                     tiporesult = TIPO_DATO.INT
-                elif (tipoE1[a]==TIPO_DATO.BIT and tipoE2[b]==TIPO_DATO.DECIMAL) or (tipoE2[b]==TIPO_DATO.DECIMAL and (i==1 or i==0)) or (tipoE1[a]==TIPO_DATO.BIT and isinstance(j,float)) or ((i==1 or i==0) and isinstance(j,float)):
+                elif (tipoE1[a]==TIPO_DATO.BIT and tipoE2[b]==TIPO_DATO.DECIMAL) :
                     dat = round(float(i * j),2)
                     tiporesult = TIPO_DATO.DECIMAL
-                elif (tipoE1[a]==TIPO_DATO.INT and tipoE2[b]==TIPO_DATO.BIT) or (tipoE2[b]==TIPO_DATO.BIT and isinstance(i,int)) or (tipoE1[a]==TIPO_DATO.INT and (j==1 or j==0)) or ((j==1 or j==0) and isinstance(i,int)):
+                elif (tipoE1[a]==TIPO_DATO.INT and tipoE2[b]==TIPO_DATO.BIT) :
                     dat = int(i * j)
                     tiporesult = TIPO_DATO.INT
-                elif (tipoE1[a]==TIPO_DATO.INT and tipoE2[b]==TIPO_DATO.INT) or (tipoE2[b]==TIPO_DATO.INT and isinstance(i,int)) or (tipoE1[a]==TIPO_DATO.INT and isinstance(j,int)) or (isinstance(i,int) and isinstance(j,int)):
+                elif (tipoE1[a]==TIPO_DATO.INT and tipoE2[b]==TIPO_DATO.INT) :
                     dat = int(i * j)
                     tiporesult = TIPO_DATO.INT
-                elif (tipoE1[a]==TIPO_DATO.INT and tipoE2[b]==TIPO_DATO.DECIMAL) or (tipoE2[b]==TIPO_DATO.DECIMAL and isinstance(i,int)) or (tipoE1[a]==TIPO_DATO.INT and isinstance(j,float)) or (isinstance(i,int) and isinstance(j,float)):
+                elif (tipoE1[a]==TIPO_DATO.INT and tipoE2[b]==TIPO_DATO.DECIMAL):
                     dat = round(float(i * j),2)
                     tiporesult = TIPO_DATO.DECIMAL
-                elif (tipoE1[a]==TIPO_DATO.DECIMAL and tipoE2[b]==TIPO_DATO.BIT) or (tipoE2[b]==TIPO_DATO.BIT and isinstance(i,float)) or (tipoE1[a]==TIPO_DATO.DECIMAL and (j==1 or j==0)) or ((j==1 or j==0) and isinstance(i,float)):
+                elif (tipoE1[a]==TIPO_DATO.DECIMAL and tipoE2[b]==TIPO_DATO.BIT) :
                     dat = round(float(i * j),2)
                     tiporesult = TIPO_DATO.DECIMAL
-                elif (tipoE1[a]==TIPO_DATO.DECIMAL and tipoE2[b]==TIPO_DATO.INT) or (tipoE2[b]==TIPO_DATO.INT and isinstance(i,float)) or (tipoE1[a]==TIPO_DATO.DECIMAL and isinstance(j,int)) or (isinstance(i,float) and isinstance(j,int)):
+                elif (tipoE1[a]==TIPO_DATO.DECIMAL and tipoE2[b]==TIPO_DATO.INT) :
                     dat = round(float(i * j),2)
                     tiporesult = TIPO_DATO.DECIMAL
-                elif (tipoE1[a]==TIPO_DATO.DECIMAL and tipoE2[b]==TIPO_DATO.DECIMAL) or (tipoE2[b]==TIPO_DATO.DECIMAL and isinstance(i,float)) or (tipoE1[a]==TIPO_DATO.DECIMAL and isinstance(j,float)) or (isinstance(i,float) and isinstance(j,float)):
+                elif (tipoE1[a]==TIPO_DATO.DECIMAL and tipoE2[b]==TIPO_DATO.DECIMAL) :
                     dat = round(float(i * j),2)
                     tiporesult = TIPO_DATO.DECIMAL
-                elif ((tipoE1[a]==TIPO_DATO.CHAR or tipoE1[a]==TIPO_DATO.VARCHAR) and (tipoE2[b]==TIPO_DATO.DATE or tipoE2[b]==TIPO_DATO.DATETIME )) or ((tipoE2[b]==TIPO_DATO.DATE or tipoE2[b] == TIPO_DATO.DATETIME) and isinstance(i,str)) or ((tipoE1[a]==TIPO_DATO.CHAR or tipoE1[a] == TIPO_DATO.VARCHAR) and is_date_or_datetime(j)) or (is_date_or_datetime(i) and isinstance(j,str)):
+                elif ((tipoE1[a]==TIPO_DATO.CHAR or tipoE1[a]==TIPO_DATO.VARCHAR) and (tipoE2[b]==TIPO_DATO.DATE or tipoE2[b]==TIPO_DATO.DATETIME )):
                     dat = str(i) + str(j)
                     tiporesult=TIPO_DATO.VARCHAR
-                elif ((tipoE1[a]==TIPO_DATO.DATE or tipoE1[a]==TIPO_DATO.DATETIME) and (tipoE2[b]==TIPO_DATO.CHAR or tipoE2[b]==TIPO_DATO.VARCHAR )) or ((tipoE2[b]==TIPO_DATO.CHAR or tipoE2[b] == TIPO_DATO.VARCHAR) and is_date_or_datetime(i)) or ((tipoE1[a]==TIPO_DATO.DATE or tipoE1[a] == TIPO_DATO.DATETIME) and isinstance(j,str)) or (is_date_or_datetime(i) and isinstance(j,str)):
+                elif ((tipoE1[a]==TIPO_DATO.DATE or tipoE1[a]==TIPO_DATO.DATETIME) and (tipoE2[b]==TIPO_DATO.CHAR or tipoE2[b]==TIPO_DATO.VARCHAR )) :
                     dat = str(i) + str(j)
                     tiporesult=TIPO_DATO.VARCHAR
                 else:
@@ -327,34 +328,34 @@ def division_op(exp1,exp2,tipoE1,tipoE2):
             print("i: ",tipo1," j: ",tipo2)
             try:
                 dat = 0
-                if (tipo1==TIPO_DATO.BIT and tipo2==TIPO_DATO.INT) or (tipo2==TIPO_DATO.INT and (i==1 or i==0)) or (tipo1==TIPO_DATO.BIT and isinstance(j,int)) or ((i==1 or i==0) and isinstance(j,int)):
+                if (tipo1==TIPO_DATO.BIT and tipo2==TIPO_DATO.INT):
                     dat = int(i / j)
                     tiporesult = TIPO_DATO.INT
-                elif (tipo1==TIPO_DATO.BIT and tipo2==TIPO_DATO.DECIMAL) or (tipo2==TIPO_DATO.DECIMAL and (i==1 or i==0)) or (tipo1==TIPO_DATO.BIT and isinstance(j,float)) or ((i==1 or i==0) and isinstance(j,float)):
+                elif (tipo1==TIPO_DATO.BIT and tipo2==TIPO_DATO.DECIMAL):
                     dat = round(float(i / j),2)
                     tiporesult = TIPO_DATO.DECIMAL
-                elif (tipo1==TIPO_DATO.INT and tipo2==TIPO_DATO.BIT) or (tipo2==TIPO_DATO.BIT and isinstance(i,int)) or (tipo1==TIPO_DATO.INT and (j==1 or j==0)) or ((j==1 or j==0) and isinstance(i,int)):
+                elif (tipo1==TIPO_DATO.INT and tipo2==TIPO_DATO.BIT) :
                     dat = int(i / j)
                     tiporesult = TIPO_DATO.INT
-                elif (tipo1==TIPO_DATO.INT and tipo2==TIPO_DATO.INT) or (tipo2==TIPO_DATO.INT and isinstance(i,int)) or (tipo1==TIPO_DATO.INT and isinstance(j,int)) or (isinstance(i,int) and isinstance(j,int)):
+                elif (tipo1==TIPO_DATO.INT and tipo2==TIPO_DATO.INT) :
                     dat = int(i / j)
                     tiporesult = TIPO_DATO.INT
-                elif (tipo1==TIPO_DATO.INT and tipo2==TIPO_DATO.DECIMAL) or (tipo2==TIPO_DATO.DECIMAL and isinstance(i,int)) or (tipo1==TIPO_DATO.INT and isinstance(j,float)) or (isinstance(i,int) and isinstance(j,float)):
+                elif (tipo1==TIPO_DATO.INT and tipo2==TIPO_DATO.DECIMAL):
                     dat = round(float(i / j),2)
                     tiporesult = TIPO_DATO.DECIMAL
-                elif (tipo1==TIPO_DATO.DECIMAL and tipo2==TIPO_DATO.BIT) or (tipo2==TIPO_DATO.BIT and isinstance(i,float)) or (tipo1==TIPO_DATO.DECIMAL and (j==1 or j==0)) or ((j==1 or j==0) and isinstance(i,float)):
+                elif (tipo1==TIPO_DATO.DECIMAL and tipo2==TIPO_DATO.BIT):
                     dat = round(float(i / j),2)
                     tiporesult = TIPO_DATO.DECIMAL
-                elif (tipo1==TIPO_DATO.DECIMAL and tipo2==TIPO_DATO.INT) or (tipo2==TIPO_DATO.INT and isinstance(i,float)) or (tipo1==TIPO_DATO.DECIMAL and isinstance(j,int)) or (isinstance(i,float) and isinstance(j,int)):
+                elif (tipo1==TIPO_DATO.DECIMAL and tipo2==TIPO_DATO.INT):
                     dat = round(float(i / j),2)
                     tiporesult = TIPO_DATO.DECIMAL
-                elif (tipo1==TIPO_DATO.DECIMAL and tipo2==TIPO_DATO.DECIMAL) or (tipo2==TIPO_DATO.DECIMAL and isinstance(i,float)) or (tipo1==TIPO_DATO.DECIMAL and isinstance(j,float)) or (isinstance(i,float) and isinstance(j,float)):
+                elif (tipo1==TIPO_DATO.DECIMAL and tipo2==TIPO_DATO.DECIMAL) :
                     dat = round(float(i / j),2)
                     tiporesult = TIPO_DATO.DECIMAL
-                elif ((tipo1==TIPO_DATO.CHAR or tipo1==TIPO_DATO.VARCHAR) and (tipo2==TIPO_DATO.DATE or tipo2==TIPO_DATO.DATETIME )) or ((tipo2==TIPO_DATO.DATE or tipo2 == TIPO_DATO.DATETIME) and isinstance(i,str)) or ((tipo1==TIPO_DATO.CHAR or tipo1 == TIPO_DATO.VARCHAR) and is_date_or_datetime(j)) or (is_date_or_datetime(i) and isinstance(j,str)):
+                elif ((tipo1==TIPO_DATO.CHAR or tipo1==TIPO_DATO.VARCHAR) and (tipo2==TIPO_DATO.DATE or tipo2==TIPO_DATO.DATETIME )):
                     dat = str(i) + str(j)
                     tiporesult=TIPO_DATO.VARCHAR
-                elif ((tipo1==TIPO_DATO.DATE or tipo1==TIPO_DATO.DATETIME) and (tipo2==TIPO_DATO.CHAR or tipo2==TIPO_DATO.VARCHAR )) or ((tipo2==TIPO_DATO.CHAR or tipo2 == TIPO_DATO.VARCHAR) and is_date_or_datetime(i)) or ((tipo1==TIPO_DATO.DATE or tipo1 == TIPO_DATO.DATETIME) and isinstance(j,str)) or (is_date_or_datetime(i) and isinstance(j,str)):
+                elif ((tipo1==TIPO_DATO.DATE or tipo1==TIPO_DATO.DATETIME) and (tipo2==TIPO_DATO.CHAR or tipo2==TIPO_DATO.VARCHAR )) :
                     dat = str(i) + str(j)
                     tiporesult=TIPO_DATO.VARCHAR
                 else:
@@ -376,34 +377,34 @@ def division_op(exp1,exp2,tipoE1,tipoE2):
                     b+=1
                     print("i: ",tipoE1[a]," j: ",tipoE2[b])
                     dat = 0
-                    if (tipoE1[a]==TIPO_DATO.BIT and tipoE2[b]==TIPO_DATO.INT) or (tipoE2[b]==TIPO_DATO.INT and (i==1 or i==0)) or (tipoE1[a]==TIPO_DATO.BIT and isinstance(j,int)) or ((i==1 or i==0) and isinstance(j,int)):
+                    if (tipoE1[a]==TIPO_DATO.BIT and tipoE2[b]==TIPO_DATO.INT) :
                         dat = int(i / j)
                         tiporesult = TIPO_DATO.INT
-                    elif (tipoE1[a]==TIPO_DATO.BIT and tipoE2[b]==TIPO_DATO.DECIMAL) or (tipoE2[b]==TIPO_DATO.DECIMAL and (i==1 or i==0)) or (tipoE1[a]==TIPO_DATO.BIT and isinstance(j,float)) or ((i==1 or i==0) and isinstance(j,float)):
+                    elif (tipoE1[a]==TIPO_DATO.BIT and tipoE2[b]==TIPO_DATO.DECIMAL) :
                         dat = round(float(i / j),2)
                         tiporesult = TIPO_DATO.DECIMAL
-                    elif (tipoE1[a]==TIPO_DATO.INT and tipoE2[b]==TIPO_DATO.BIT) or (tipoE2[b]==TIPO_DATO.BIT and isinstance(i,int)) or (tipoE1[a]==TIPO_DATO.INT and (j==1 or j==0)) or ((j==1 or j==0) and isinstance(i,int)):
+                    elif (tipoE1[a]==TIPO_DATO.INT and tipoE2[b]==TIPO_DATO.BIT) :
                         dat = int(i / j)
                         tiporesult = TIPO_DATO.INT
-                    elif (tipoE1[a]==TIPO_DATO.INT and tipoE2[b]==TIPO_DATO.INT) or (tipoE2[b]==TIPO_DATO.INT and isinstance(i,int)) or (tipoE1[a]==TIPO_DATO.INT and isinstance(j,int)) or (isinstance(i,int) and isinstance(j,int)):
+                    elif (tipoE1[a]==TIPO_DATO.INT and tipoE2[b]==TIPO_DATO.INT) :
                         dat = int(i / j)
                         tiporesult = TIPO_DATO.INT
-                    elif (tipoE1[a]==TIPO_DATO.INT and tipoE2[b]==TIPO_DATO.DECIMAL) or (tipoE2[b]==TIPO_DATO.DECIMAL and isinstance(i,int)) or (tipoE1[a]==TIPO_DATO.INT and isinstance(j,float)) or (isinstance(i,int) and isinstance(j,float)):
+                    elif (tipoE1[a]==TIPO_DATO.INT and tipoE2[b]==TIPO_DATO.DECIMAL) :
                         dat = round(float(i / j),2)
                         tiporesult = TIPO_DATO.DECIMAL
-                    elif (tipoE1[a]==TIPO_DATO.DECIMAL and tipoE2[b]==TIPO_DATO.BIT) or (tipoE2[b]==TIPO_DATO.BIT and isinstance(i,float)) or (tipoE1[a]==TIPO_DATO.DECIMAL and (j==1 or j==0)) or ((j==1 or j==0) and isinstance(i,float)):
+                    elif (tipoE1[a]==TIPO_DATO.DECIMAL and tipoE2[b]==TIPO_DATO.BIT) :
                         dat = round(float(i / j),2)
                         tiporesult = TIPO_DATO.DECIMAL
-                    elif (tipoE1[a]==TIPO_DATO.DECIMAL and tipoE2[b]==TIPO_DATO.INT) or (tipoE2[b]==TIPO_DATO.INT and isinstance(i,float)) or (tipoE1[a]==TIPO_DATO.DECIMAL and isinstance(j,int)) or (isinstance(i,float) and isinstance(j,int)):
+                    elif (tipoE1[a]==TIPO_DATO.DECIMAL and tipoE2[b]==TIPO_DATO.INT) :
                         dat = round(float(i / j),2)
                         tiporesult = TIPO_DATO.DECIMAL
-                    elif (tipoE1[a]==TIPO_DATO.DECIMAL and tipoE2[b]==TIPO_DATO.DECIMAL) or (tipoE2[b]==TIPO_DATO.DECIMAL and isinstance(i,float)) or (tipoE1[a]==TIPO_DATO.DECIMAL and isinstance(j,float)) or (isinstance(i,float) and isinstance(j,float)):
+                    elif (tipoE1[a]==TIPO_DATO.DECIMAL and tipoE2[b]==TIPO_DATO.DECIMAL) :
                         dat = round(float(i / j),2)
                         tiporesult = TIPO_DATO.DECIMAL
-                    elif ((tipoE1[a]==TIPO_DATO.CHAR or tipoE1[a]==TIPO_DATO.VARCHAR) and (tipoE2[b]==TIPO_DATO.DATE or tipoE2[b]==TIPO_DATO.DATETIME )) or ((tipoE2[b]==TIPO_DATO.DATE or tipoE2[b] == TIPO_DATO.DATETIME) and isinstance(i,str)) or ((tipoE1[a]==TIPO_DATO.CHAR or tipoE1[a] == TIPO_DATO.VARCHAR) and is_date_or_datetime(j)) or (is_date_or_datetime(i) and isinstance(j,str)):
+                    elif ((tipoE1[a]==TIPO_DATO.CHAR or tipoE1[a]==TIPO_DATO.VARCHAR) and (tipoE2[b]==TIPO_DATO.DATE or tipoE2[b]==TIPO_DATO.DATETIME )) :
                         dat = str(i) + str(j)
                         tiporesult=TIPO_DATO.VARCHAR
-                    elif ((tipoE1[a]==TIPO_DATO.DATE or tipoE1[a]==TIPO_DATO.DATETIME) and (tipoE2[b]==TIPO_DATO.CHAR or tipoE2[b]==TIPO_DATO.VARCHAR )) or ((tipoE2[b]==TIPO_DATO.CHAR or tipoE2[b] == TIPO_DATO.VARCHAR) and is_date_or_datetime(i)) or ((tipoE1[a]==TIPO_DATO.DATE or tipoE1[a] == TIPO_DATO.DATETIME) and isinstance(j,str)) or (is_date_or_datetime(i) and isinstance(j,str)):
+                    elif ((tipoE1[a]==TIPO_DATO.DATE or tipoE1[a]==TIPO_DATO.DATETIME) and (tipoE2[b]==TIPO_DATO.CHAR or tipoE2[b]==TIPO_DATO.VARCHAR )) :
                         dat = str(i) + str(j)
                         tiporesult=TIPO_DATO.VARCHAR
                     else:
