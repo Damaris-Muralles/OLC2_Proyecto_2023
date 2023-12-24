@@ -892,13 +892,13 @@ class XMLManejador:
     def UpdateTable(self, database, table, sets, listset, where ):
         baseDatosEncontrada = self.Existe_basedatos(database)
         if not baseDatosEncontrada[0]:
-            return {"dato":"La base de datos no existe.","tipo":"ERROR"}
+            return "La base de datos no existe."
         root = baseDatosEncontrada[1]
         database_element = baseDatosEncontrada[2]
          #buscar si existe la tabla con el idtabla, si no existe retorna error
         tablas_element = database_element.find('tablas')
         if tablas_element is None:
-            return {"dato":"No existe la tabla.","tipo":"ERROR"}
+            return "No se puede eliminar : No existe la tabla." 
         
         tabla_element = tablas_element.findall('tabla')
         existe = False
@@ -909,7 +909,7 @@ class XMLManejador:
                 break
         
         if not existe:
-            return {"dato":"No existe la tabla.","tipo":"ERROR"}
+            return "No se puede actualizar la tabla : No existe la tabla."
 
         columnas_element = tabla_element.find('columnas')
         columna_element = columnas_element.findall('columna')
@@ -935,7 +935,7 @@ class XMLManejador:
                         index+=1
                       
                         if (not isinstance(listset[intset], list)) and (where[index] == 1):
-                            
+                            print("no lista: ",listset[intset])
                             # eliminar el input que coincida con la posicion col
                             valor = str(listset[intset]).replace("'","").replace('"','')
                             input.text = valor
@@ -943,9 +943,13 @@ class XMLManejador:
                             print("lista else ",listset)
                             listset2 = listset[intset]
                             print("lista2 ",listset2)
-                            # eliminar el input que coincida con la posicion col
-                            valor = str(listset2[index]).replace("'","").replace('"','')
-                            input.text = valor
+                            if len(listset2) > 1:            
+                                # eliminar el input que coincida con la posicion col
+                                valor = str(listset2[index]).replace("'","").replace('"','')
+                                input.text = valor
+                            else:
+                                valor = str(listset2[0]).replace("'","").replace('"','')
+                                input.text = valor
 
                 
 

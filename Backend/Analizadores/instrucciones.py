@@ -34,6 +34,7 @@ class TIPO_INSTRUCCION(Enum):
   CWHILE = 30
   WHEN = 31
   ELSE = 32
+  LLAMAR_FUNCION = 33
   
 # enump para tipo dato
 class TIPO_DATO(Enum):
@@ -335,6 +336,12 @@ def DeclararVariable(id, tipo ,valor):
     "valor" : valor
   }
 
+def LlamarFuncion(id, parametros):
+  return {
+    "tipo" : TIPO_INSTRUCCION.LLAMAR_FUNCION,
+    "id" : id,
+    "parametros" : parametros
+  }
 def AsignacionVariable(id, valor):
   return {
     "tipo" : TIPO_INSTRUCCION.ASIGNACION_VARIABLE,
@@ -342,11 +349,12 @@ def AsignacionVariable(id, valor):
     "valor" : valor
   }
 
-def Parametro(id, tipo):
+def Parametro(id, tipo,valor):
   return {
     "tipo" : TIPO_INSTRUCCION.PARAMETRO,
     "id" : id,
-    "tipodato" : tipo
+    "tipodato" : tipo,
+    "valor" : valor
   }
 
 def sslprocedure(id, parametros, instrucciones):
@@ -362,7 +370,7 @@ def sslfunction(id, parametros, returns, instrucciones):
     "tipo" : TIPO_INSTRUCCION.FUNCTION,
     "id" : id,
     "parametros" : parametros,
-    "return" : returns,
+    "retornar" : returns,
     "instrucciones" : instrucciones
   }
 

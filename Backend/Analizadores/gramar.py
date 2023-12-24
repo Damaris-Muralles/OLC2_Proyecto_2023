@@ -256,8 +256,10 @@ def p_instruccion(t) :
                         | create_funcion
                         | retornar
                         | while_instr
+                        | llamar
+                        | if_instruccion
 
-
+                        
     '''
     t[0] = t[1]
 
@@ -508,6 +510,17 @@ def p_create_procedure(t):
     else:
         t[0] = sslprocedure(t[3],None,t[8])
 
+# SINTACIS IF 
+def p_if_instruccion(t):
+    '''
+    if_instruccion : IF1 PARIZQ expresiones PARDER BEGIN instrucciones END PTCOMA
+                    | IF1 PARIZQ expresiones PARDER BEGIN instrucciones END ELSE BEGIN instrucciones END PTCOMA
+    '''
+    if len(t)==9:
+        t[0] = sslIf(t[3],t[6],None)
+    else:
+        t[0] = sslIf(t[3],t[6],t[10])
+
 # SINTAXIS FUNCIONES
 def p_funciones(t):
     ''' create_funcion : CREATE FUNCTION IDENT PARIZQ listparam PARDER RETURN tipodato AS BEGIN instrucciones END PTCOMA
@@ -534,9 +547,9 @@ def p_param(t):
                | IDENTIFICADOR tipodato 
     '''
     if len(t)==4:
-        t[0] = Parametro(t[1],t[2])
+        t[0] = Parametro(t[1],t[2],None)
     else:
-        t[0] = Parametro(t[1],t[2])
+        t[0] = Parametro(t[1],t[2],None)
 
 #SINTAXIS PARA WHILE
 def p_while(t):
@@ -570,6 +583,7 @@ def p_expresiones(t):
                     | llaves
                     | if_instr
                     | case_instr
+                    | llamada
                     | FECHAHORA
                     | FECHA
                     | DECIMALES
@@ -686,6 +700,37 @@ def p_func_sistema(t):
     '''
     t[0] = t[1]
 
+def p_llamar(t):
+    '''llamar : IDENT PARIZQ PARDER PTCOMA
+                | IDENT PARIZQ entrada PARDER PTCOMA 
+                              
+    '''
+    if len(t)==5:
+        t[0] = LlamarFuncion(t[1],None)  
+    else:
+        t[0] = LlamarFuncion(t[1],t[3])
+
+def p_llamada(t):
+    '''llamada : IDENT PARIZQ PARDER
+                | IDENT PARIZQ entrada PARDER 
+                              
+    '''
+    if len(t)==4:
+        t[0] = LlamarFuncion(t[1],None)  
+    else:
+        t[0] = LlamarFuncion(t[1],t[3])
+   
+    
+def p_entrada(t):
+    '''entrada : entrada COMA expresiones
+                | expresiones
+    '''
+    if len(t)==4:
+        t[0] = t[1]
+        t[1].append(t[3])
+    else:
+        t[0] = [t[1]]
+
 # SINTAXIS PARA RETORNAR
 def p_retornarr(t):
     '''retornar : RETURN expresiones PTCOMA'''
@@ -693,7 +738,8 @@ def p_retornarr(t):
 
 
 def p_error(t):
-    print("Error sintactico en '%s', fila: %s, columna: %s" % (t.value, t.lineno, t.lexpos))
+    print(t)
+    print("Error sintactico en '%s'" % t.value)
 
 
 
@@ -711,7 +757,15 @@ def parse(input) :
 
 '''
 input = """
-DELETE FROM products where if(28>11,"Verdadero","falso");
+CREATE DATA BASE intento;
+
+USAR intento;
+
+Create Table Tabla1(
+    id int,
+    nombre nvarchar(100),
+    edad int
+);
 
 """
 
@@ -721,5 +775,4 @@ result = parser.parse(input.lower())
 for a in result:
     print(a)
     print("=====================================")
-
 '''
