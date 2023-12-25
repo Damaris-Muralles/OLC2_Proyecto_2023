@@ -38,6 +38,8 @@ def procesar_delete(instr,ActualBaseDatos,xml, entorno): # si esta referenciada 
 
 def procesar_update(instr,ActualBaseDatos,xml, entorno):
     print(instr)
+    if instr.get("id")!=None:
+        comprobador.agregar([instr.get("id")])
     whereupdate = procesar_where1(instr.get("where"),ActualBaseDatos, instr.get("id"), entorno)
     listset = []
     if listatipodatos and listatipodatos[-1] == "ERROR":

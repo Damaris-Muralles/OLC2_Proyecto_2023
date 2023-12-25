@@ -739,7 +739,7 @@ def p_retornarr(t):
 
 def p_error(t):
     print(t)
-    print("Error sintactico en '%s'" % t.value)
+    print("Error sintactico en '%s', fila: %s, columna: %s" % (t.value, str(t.lineno), str(t.lexpos)))
 
 
 
