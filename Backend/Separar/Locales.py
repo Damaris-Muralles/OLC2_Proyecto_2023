@@ -11,6 +11,7 @@ from Instrucciones.Funciones.Ciclo import *
 from Instrucciones.Funciones.Retornar import *
 from Instrucciones.Funciones.Llamar import *
 from Expresiones.Where import *
+from Instrucciones.Funciones.Caso import *
 
 def Local(instrucciones, entorno, xml,ActualBaseDatos, lsimbolo):
     retornar = ""
@@ -32,6 +33,7 @@ def Local(instrucciones, entorno, xml,ActualBaseDatos, lsimbolo):
         elif instr.get('tipo') == TIPO_INSTRUCCION.ASIGNACION_VARIABLE : asignarVariable(instr,entorno,lsimbolo)
         elif instr.get('tipo') == TIPO_INSTRUCCION.IF : Si(instr, entorno, lsimbolo, xml, ActualBaseDatos)
         elif instr.get('tipo') == TIPO_INSTRUCCION.CWHILE : CicloW(instr, entorno, lsimbolo, xml, ActualBaseDatos)
+        elif instr.get('tipo') == TIPO_INSTRUCCION.CASE : Caso(instr, entorno, lsimbolo, xml, ActualBaseDatos)
         elif instr.get('tipo') == TIPO_INSTRUCCION.RETORNAR : 
             retornar = RetornarI(instr, entorno, lsimbolo, xml, ActualBaseDatos)
             return retornar

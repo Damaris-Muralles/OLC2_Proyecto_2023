@@ -78,6 +78,21 @@ Begin
         update Tabla1 set nombre == @Prueba where ide == @comienzo;
         set @comienzo = @comienzo + 1;
     end;
+
+    CASE 
+            WHEN @IVA > 3 && @Prueba2 == 'Prueba1'
+				THEN SET @Palabra = 'SoyCase1';
+			WHEN @IVA > 3 && @Prueba2 == 'Pruebas2'
+				THEN SET @Palabra = 'SoyCase2';					
+			ELSE 
+				THEN SET @Palabra = 'SoyElse';
+	END;
+
+    update Tabla1 set nombre == @Palabra where nombre == 'datosnuevo';
+
+    
+
+
 end;
 
 Valores();

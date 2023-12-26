@@ -26,9 +26,11 @@ def Globales(instrucciones, entorno, xml, lsimbolo, lmetodo):
         elif instr.get('tipo') == TIPO_INSTRUCCION.INSERT_TABLE : procesar_insert(instr,ActualBaseDatos,xml)
         elif instr.get('tipo') == TIPO_INSTRUCCION.DELETE_TABLE : procesar_delete(instr,ActualBaseDatos,xml,entorno)
         elif instr.get('tipo') == TIPO_INSTRUCCION.UPDATE_TABLE : procesar_update(instr,ActualBaseDatos,xml,entorno)
+        elif instr.get('tipo') == TIPO_INSTRUCCION.SELECT_TABLE : procesar_select(instr,ActualBaseDatos,xml,entorno)
 
         elif instr.get('tipo') == TIPO_INSTRUCCION.PROCEDURE : DeclararMetodos(instr,entorno,lmetodo)
         elif instr.get('tipo') == TIPO_INSTRUCCION.FUNCTION : DeclararFuncion(instr,entorno,lmetodo)
+
         elif instr.get('tipo') == TIPO_INSTRUCCION.LLAMAR_FUNCION : Llama(instr,entorno,lsimbolo,xml,ActualBaseDatos)
         else : print('Error: instrucción no válida')
         print("==================================================================================================================")

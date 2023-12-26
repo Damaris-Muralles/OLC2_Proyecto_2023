@@ -258,6 +258,7 @@ def p_instruccion(t) :
                         | while_instr
                         | llamar
                         | if_instruccion
+                        | case_instrx
 
                         
     '''
@@ -611,6 +612,33 @@ def p_expresiones(t):
 def p_if_instr(t):
     '''if_instr : IF1 PARIZQ expresiones COMA expresiones COMA expresiones PARDER'''
     t[0] = sslIf(t[3],t[5],t[7])
+
+# SINTAXIS PARA CASE
+def p_case_instrx(t):
+    '''case_instrx : CASE sentenciasx END PTCOMA '''
+    t[0] = Case(t[2])
+
+def p_sentenciasx(t):
+    '''sentenciasx : sentenciasx sentenciax
+                    | sentenciax
+    '''
+    if len(t)==3:
+        t[0] = t[1]
+        t[1].append(t[2])
+    else:
+        t[0] = [t[1]]
+
+def p_sentenciax(t):
+    '''sentenciax : WHEN expresiones THEN instrucciones
+                    | ELSE THEN instrucciones
+                    | ELSE instrucciones
+    '''
+    if len(t)==5:
+        t[0] = Sentencia(t[1],t[2],t[4])
+    elif len(t)==4:
+        t[0] = Sentencia(t[1],None,t[3])
+    else:
+        t[0] = Sentencia(t[1],None,t[2])
 
 # SINTAXIS PARA CASE
 def p_case_instr(t):
