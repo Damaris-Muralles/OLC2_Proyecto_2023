@@ -14,6 +14,7 @@ from Expresiones.Where import *
 
 def Local(instrucciones, entorno, xml,ActualBaseDatos, lsimbolo):
     retornar = ""
+    comprobador.tabla.clear()
     for instr in instrucciones :
         #print("==================================================================================================================")
         #print("instruccion actual: ", instr)

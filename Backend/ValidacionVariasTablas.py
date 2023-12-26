@@ -2,7 +2,11 @@
 class ComprobarTabla():
     def __init__(self):
         self.tabla = []
+        self.ciclo=False
     def agregar(self, tabla):
+        if self.ciclo==True:
+            self.tabla.clear()
+            self.ciclo=False
         self.tabla.extend(tabla)
     def comprobar(self,columevaluar,xml,ActualBaseDatos):
         if self.tabla==None:

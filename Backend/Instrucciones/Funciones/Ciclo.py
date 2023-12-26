@@ -3,7 +3,7 @@ from Entornos.Entorno import *
 
 def CicloW(instrucciones, entorno, lsimbolos, xml, basedatos):
     print("instruccion: ", instrucciones)
-
+    comprobador.ciclo=True
     condicion = procesar_where1(instrucciones.get('condicion'),"",basedatos,entorno)
     respuesta = None
     print("entra: ", condicion)

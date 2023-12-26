@@ -12,7 +12,7 @@ from Expresiones.Where import *
 ActualBaseDatos = ""
 def Globales(instrucciones, entorno, xml, lsimbolo, lmetodo):
     global ActualBaseDatos
-
+    comprobador.tabla.clear()
     for instr in instrucciones :
         #print("==================================================================================================================")
         #print("instruccion actual: ", instr)
