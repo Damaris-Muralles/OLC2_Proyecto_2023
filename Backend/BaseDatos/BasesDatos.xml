@@ -76,6 +76,13 @@
       </tabla>
     </tablas>
     <funciones/>
-    <procedimientos/>
+    <procedimientos>
+      <procedure>
+        <nombre>valores</nombre>
+      </procedure>
+      <procedure>
+        <nombre>actualizar</nombre>
+      </procedure>
+    </procedimientos>
   </basedatos>
 </basesdedatos>

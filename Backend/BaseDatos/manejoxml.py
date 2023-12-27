@@ -916,39 +916,131 @@ class XMLManejador:
 
 
         intset = -1
-        print("sets ",sets)
-        print("listset ",listset)
+        #print("sets ",sets)
+        #print("listset ",listset)
         for col in sets:
-            print("col ",col)
+            #print("col ",col)
             intset += 1
-            print("intset ",listset[intset])
+            #print("intset ",listset[intset])
             index=-1
             nombrecol = col.get("exp1")
             #recorrer todas las columnas de la tabla
             for columna in columna_element:
-                print("columna ",nombrecol)
+                #print("columna ",nombrecol)
+                tipodato = int(columna.find('tipo').find('tipodato').text)
+                longitud = columna.find('tipo').find('longitud').text
+                if longitud != "None":
+                    longitud = int(longitud)
                 if columna.find('id').text == nombrecol:
-                    print("intset3 ",listset[intset])
+                    #print("intset3 ",listset[intset])
                     # buscar todos los inputs de la columna
                     inputs_element11 = columna.find('inputs')
                     for input in inputs_element11:
                         index+=1
                       
                         if (not isinstance(listset[intset], list)) and (where[index] == 1):
-                            print("no lista: ",listset[intset])
-                            # eliminar el input que coincida con la posicion col
-                            valor = str(listset[intset]).replace("'","").replace('"','')
+                            #print("no lista: ",listset[intset])                     
+                            valor = listset[intset]
+  
+                            if valor != "null":
+
+                                # verificamos que el tipo de dato sea el mismo que el valor a insertar
+                                if tipodato == TIPO_DATO.INT.value or tipodato == TIPO_DATO.BIT.value:
+                                    if not isinstance(valor, int):
+                                        return {"dato":f"No se puede insertar: El tipo de dato no coincide con la columna {col}." ,"tipo":"ERROR"}
+                                    
+                                    
+                                elif tipodato == TIPO_DATO.DECIMAL.value:
+                                    if not isinstance(valor, float):
+                                        return {"dato":f"No se puede insertar: Esta insertando un dato que no es {TIPO_DATO.DECIMAL.name} a la columna {col}","tipo":"ERROR"}
+                                elif tipodato == TIPO_DATO.CHAR.value or tipodato == TIPO_DATO.VARCHAR.value:
+ 
+                                    if not isinstance(valor, str):
+                                        return {"dato":f"No se puede insertar: El tipo de dato no coincide con la columna {col}." ,"tipo":"ERROR"}
+                                    else:
+                                        if len(valor) > longitud:
+                                            return {"dato":"No se puede insertar: La logintud del valor a insertar no coincide.","tipo":"ERROR"}
+                                        else:
+                                            # si es un char agregar espacios necesarios para que sea del tamaño de la longitud
+                                            if tipodato == TIPO_DATO.CHAR.value:
+                                                valor = valor.ljust(longitud)
+                                elif tipodato == TIPO_DATO.DATE.value  :
+                                    # verificar que el valor a insertar sea una fecha con formato de dd-mm-yyyy
+                                    if not isinstance(valor, str) or not re.match(r'\d{2}-\d{2}-\d{4}', valor):
+                                        return {"dato":f"No se puede insertar: Esta insertando un dato que no es {TIPO_DATO.DATE.name} a la columna {col}","tipo":"ERROR"}
+                                elif tipodato == TIPO_DATO.DATETIME.value:
+                                    if not isinstance(valor, str) or not re.match(r'\d{2}-\d{2}-\d{4} \d{2}:\d{2}:\d{2}', valor):
+                                        return {"dato":f"No se puede insertar: Esta insertando un dato que no es {TIPO_DATO.DATETIME.name} a la columna {col}","tipo":"ERROR"}
+                            valor = str(valor).replace("'","").replace('"','')   
                             input.text = valor
                         elif(where[index] == 1):
-                            print("lista else ",listset)
+                            #print("lista else ",listset)
                             listset2 = listset[intset]
-                            print("lista2 ",listset2)
+                            #print("lista2 ",listset2)
                             if len(listset2) > 1:            
                                 # eliminar el input que coincida con la posicion col
-                                valor = str(listset2[index]).replace("'","").replace('"','')
+                                valor = listset2[index]
+
+                                if valor != "null":
+                                # verificamos que el tipo de dato sea el mismo que el valor a insertar
+                                    if tipodato == TIPO_DATO.INT.value or tipodato == TIPO_DATO.BIT.value:
+                                        if not isinstance(valor, int):
+                                            return {"dato":f"No se puede insertar: El tipo de dato no coincide con la columna {col}." ,"tipo":"ERROR"}
+                                        
+                                        
+                                    elif tipodato == TIPO_DATO.DECIMAL.value:
+                                        if not isinstance(valor, float):
+                                            return {"dato":f"No se puede insertar: Esta insertando un dato que no es {TIPO_DATO.DECIMAL.name} a la columna {col}","tipo":"ERROR"}
+                                    elif tipodato == TIPO_DATO.CHAR.value or tipodato == TIPO_DATO.VARCHAR.value:
+                                        if not isinstance(valor, str):
+                                            return {"dato":f"No se puede insertar: El tipo de dato no coincide con la columna {col}." ,"tipo":"ERROR"}
+                                        else:
+                                            if len(valor) > longitud:
+                                                return {"dato":"No se puede insertar: La logintud del valor a insertar no coincide.","tipo":"ERROR"}
+                                            else:
+                                                # si es un char agregar espacios necesarios para que sea del tamaño de la longitud
+                                                if tipodato == TIPO_DATO.CHAR.value:
+                                                    valor = valor.ljust(longitud)
+                                    elif tipodato == TIPO_DATO.DATE.value  :
+                                        # verificar que el valor a insertar sea una fecha con formato de dd-mm-yyyy
+                                        if not isinstance(valor, str) or not re.match(r'\d{2}-\d{2}-\d{4}', valor):
+                                            return {"dato":f"No se puede insertar: Esta insertando un dato que no es {TIPO_DATO.DATE.name} a la columna {col}","tipo":"ERROR"}
+                                    elif tipodato == TIPO_DATO.DATETIME.value:
+                                        if not isinstance(valor, str) or not re.match(r'\d{2}-\d{2}-\d{4} \d{2}:\d{2}:\d{2}', valor):
+                                            return {"dato":f"No se puede insertar: Esta insertando un dato que no es {TIPO_DATO.DATETIME.name} a la columna {col}","tipo":"ERROR"}
+                                valor = str(valor).replace("'","").replace('"','')
                                 input.text = valor
                             else:
-                                valor = str(listset2[0]).replace("'","").replace('"','')
+                                valor = listset2[0]
+
+                                if valor != "null":
+                                    # verificamos que el tipo de dato sea el mismo que el valor a insertar
+                                    if tipodato == TIPO_DATO.INT.value or tipodato == TIPO_DATO.BIT.value:
+                                        if not isinstance(valor, int):
+                                            return {"dato":f"No se puede insertar: El tipo de dato no coincide con la columna {col}." ,"tipo":"ERROR"}
+                                        
+                                        
+                                    elif tipodato == TIPO_DATO.DECIMAL.value:
+                                        if not isinstance(valor, float):
+                                            return {"dato":f"No se puede insertar: Esta insertando un dato que no es {TIPO_DATO.DECIMAL.name} a la columna {col}","tipo":"ERROR"}
+                                    elif tipodato == TIPO_DATO.CHAR.value or tipodato == TIPO_DATO.VARCHAR.value:
+                                        if not isinstance(valor, str):
+                                            return {"dato":f"No se puede insertar: El tipo de dato no coincide con la columna {col}." ,"tipo":"ERROR"}
+                                        else:
+                                            if len(valor) > longitud:
+                                                return {"dato":"No se puede insertar: La logintud del valor a insertar no coincide.","tipo":"ERROR"}
+                                            else:
+                                                # si es un char agregar espacios necesarios para que sea del tamaño de la longitud
+                                                if tipodato == TIPO_DATO.CHAR.value:
+                                                    valor = valor.ljust(longitud)
+                                    elif tipodato == TIPO_DATO.DATE.value  :
+                                        # verificar que el valor a insertar sea una fecha con formato de dd-mm-yyyy
+                                        if not isinstance(valor, str) or not re.match(r'\d{2}-\d{2}-\d{4}', valor):
+                                            return {"dato":f"No se puede insertar: Esta insertando un dato que no es {TIPO_DATO.DATE.name} a la columna {col}","tipo":"ERROR"}
+                                    elif tipodato == TIPO_DATO.DATETIME.value:
+                                        if not isinstance(valor, str) or not re.match(r'\d{2}-\d{2}-\d{4} \d{2}:\d{2}:\d{2}', valor):
+                                            return {"dato":f"No se puede insertar: Esta insertando un dato que no es {TIPO_DATO.DATETIME.name} a la columna {col}","tipo":"ERROR"}
+                                valor = str(valor).replace("'","").replace('"','')
                                 input.text = valor
 
                 
@@ -961,7 +1053,53 @@ class XMLManejador:
 
         return {"dato":"Tabla actualizada con exito","tipo":"."}
     
+    def AgregarFuncion(self,database, instruccion):
+        baseDatosEncontrada = self.Existe_basedatos(database)
+        if not baseDatosEncontrada[0]:
+            return {"dato":"La base de datos no existe.","tipo":"ERROR"}
+        root = baseDatosEncontrada[1]
+        database_element = baseDatosEncontrada[2]
+        funciones_element = database_element.find('funciones')
 
+        funcion_element = ET.SubElement(funciones_element, "funcion")
+        funcion_nombre = ET.SubElement(funcion_element, "nombre")
+
+        funcion_nombre.text = instruccion.get("id")
+        # Guardar los cambios en el archivo
+        pretty_xml = self.prettify(root)
+
+        with open(self.filepath, 'w') as f:
+            f.write(pretty_xml)
+
+        return {"dato":"Funcion Creada Con Exito.","tipo":"."}
+
+    def AgregarPorcedure(self,database, instruccion):
+        baseDatosEncontrada = self.Existe_basedatos(database)
+        if not baseDatosEncontrada[0]:
+            return {"dato":"La base de datos no existe.","tipo":"ERROR"}
+        root = baseDatosEncontrada[1]
+        database_element = baseDatosEncontrada[2]
+        funciones_element = database_element.find('procedimientos')
+
+        funcion_element = ET.SubElement(funciones_element, "procedure")
+        funcion_nombre = ET.SubElement(funcion_element, "nombre")
+
+        funcion_nombre.text = instruccion.get("id")
+        # Guardar los cambios en el archivo
+        pretty_xml = self.prettify(root)
+
+        with open(self.filepath, 'w') as f:
+            f.write(pretty_xml)
+
+        return {"dato":"Funcion Creada Con Exito.","tipo":"."}
+    
+    
+
+    
+
+
+
+    
 
 
         

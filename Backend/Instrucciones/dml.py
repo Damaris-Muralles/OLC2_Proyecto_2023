@@ -50,14 +50,20 @@ def procesar_update(instr,ActualBaseDatos,xml, entorno):
             
              listset.append(procesar_where1(i.get("exp2"), ActualBaseDatos, instr.get("id"), entorno))
         else:
-            if i.get("exp2").startswith('@'):
-                variable=obtener_variable(i.get("exp2"),entorno)
-                print("error: ", variable)
-                if variable.get("tipo")[0]==TIPO_DATO.VARCHAR or variable.get("tipo")[0]==TIPO_DATO.CHAR:
-                    variable.get("dato")[0] = (variable.get("dato")[0])[1:-1]
-                    
-                resultado =variable.get("dato")
-                listset.append(resultado)
+            #If que valide que no sea tipo int o float
+            print (not(type(i.get("exp2"))) == int)
+            if type(i.get("exp2")) != int and type(i.get("exp2")) != float:
+                print(type(i.get("exp2")))
+                if i.get("exp2").startswith('@'):
+                    variable=obtener_variable(i.get("exp2"),entorno)
+                    print("error: ", variable)
+                    if variable.get("tipo")[0]==TIPO_DATO.VARCHAR or variable.get("tipo")[0]==TIPO_DATO.CHAR:
+                        variable.get("dato")[0] = (variable.get("dato")[0])[1:-1]
+                        
+                    resultado =variable.get("dato")
+                    listset.append(resultado)
+                else:
+                    listset.append(procesar_where1(i.get("exp2"), ActualBaseDatos, instr.get("id"), entorno))
             else:
                 listset.append(procesar_where1(i.get("exp2"), ActualBaseDatos, instr.get("id"), entorno))
             
