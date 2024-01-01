@@ -4,7 +4,7 @@ from Entornos.Simbolo import *
 def DeclararP(instruccion, entorno, simbolo, entornoN, xml, basedatos):
     print("decparam: ", instruccion)
 
-    valor = procesar_where1(instruccion.get('valor'),"","",entorno)
+    valor = procesar_where1(instruccion.get('valor'),"","",entorno,simbolo)
     print("resultado: ", valor)
     nuevo = Simbolo(instruccion.get('id'),valor, instruccion.get('tipodato'))
 

@@ -2,7 +2,7 @@ from Expresiones.Where import *
 def asignarVariable(instruccion, entorno, simbolo):
     #print("instruccion: ", instruccion)
 
-    resultado = procesar_where1(instruccion.get('valor'),"", "", entorno)
+    resultado = procesar_where1(instruccion.get('valor'),"", "", entorno, simbolo)
    
     resultado = resultado
     

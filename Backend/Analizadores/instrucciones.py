@@ -75,110 +75,129 @@ class TIPO_OPERACION(Enum):
 
 # funciones para encapsular las instrucciones
 # DDL
-def UseDatabase(id):
+def UseDatabase(id, linea, pos):
   return {
     "tipo" : TIPO_INSTRUCCION.USE_DATABASE,
-    "id" : id
+    "id" : id,
+    "linea": linea,
+    "pos": pos
   }
   
-def CreateDatabase(id):
+def CreateDatabase(id, linea, pos):
   return {
     "tipo" : TIPO_INSTRUCCION.CREATE_DATABASE,
-    "id" : id
+    "id" : id,
+    "linea": linea,
+    "pos": pos
   }
 
-def CreateTable(id_, columnas_):
+def CreateTable(id_, columnas_, linea, pos):
   return {
     "tipo" : TIPO_INSTRUCCION.CREATE_TABLE,
     "id" : id_,
-    "columnas" : columnas_
+    "columnas" : columnas_,
+    "linea": linea,
+    "pos": pos
   }
 
-def AlterAgregar(tabla, columna , tipodato, atributo):
+def AlterAgregar(tabla, columna , tipodato, atributo, linea, pos):
   return {
     "tipo" : TIPO_INSTRUCCION.ADD_COLUMNA,
     "idtabla" : tabla,
     "idcolumna" : columna,
     "tipodato" : tipodato,
-    "atributo" : atributo
+    "atributo" : atributo,
+    "linea": linea,
+    "pos": pos
   }
 
-def AlterDrop(tabla, columna):
+def AlterDrop(tabla, columna, linea, pos):
   return {
     "tipo" : TIPO_INSTRUCCION.DROP_COLUMNA,
     "idtabla" : tabla,
-    "idcolumna" : columna
+    "idcolumna" : columna,
+    "linea": linea,
+    "pos": pos
   }
 
-def TruncateTable(tabla):
+def TruncateTable(tabla, linea, pos):
   return{
     "tipo": TIPO_INSTRUCCION.TRUNCATE_TABLE,
-    "id":tabla
+    "id":tabla,
+    "linea": linea,
+    "pos": pos
   }
 
-def DropTable(tabla):
+def DropTable(tabla, linea, pos):
   return{
     "tipo": TIPO_INSTRUCCION.DROP_TABLE,
-    "id":tabla
+    "id":tabla,
+    "linea": linea,
+    "pos": pos
   }
 # DML
-def UpdateTable(tabla, set, where):
+def UpdateTable(tabla, set, where, linea, pos):
   return{
     "tipo": TIPO_INSTRUCCION.UPDATE_TABLE,
     "id":tabla,
     "set":set,
-    "where":where
+    "where":where,
+    "linea": linea,
+    "pos": pos
   }
 
-def DeleteTable(tabla, where):
+def DeleteTable(tabla, where, linea, pos):
   return{
     "tipo": TIPO_INSTRUCCION.DELETE_TABLE,
     "id":tabla,
-    "where":where
+    "where":where,
+    "linea": linea,
+    "pos": pos
   }
 
-def SelectTable(columnas, tablas, where):
+def SelectTable(columnas, tablas, where, linea, pos):
   return{
     "tipo": TIPO_INSTRUCCION.SELECT_TABLE,
     "columna":columnas,
     "tablas":tablas,
-    "where":where
+    "where":where,
+    "linea": linea,
+    "pos": pos
   }
-def tselect(col,encabezado):
+def tselect(col,encabezado,linea,pos):
   return{
     "colum":col,
-    "encabezado":encabezado
+    "encabezado":encabezado,
+    "linea": linea,
+    "pos": pos
   }
-def InsertTable(tabla,columnas , valores):
+def InsertTable(tabla,columnas , valores, linea, pos):
   return{
     "tipo": TIPO_INSTRUCCION.INSERT_TABLE,
     "id":tabla,
     "columnas":columnas,
-    "valores":valores
+    "valores":valores,
+    "linea": linea,
+    "pos": pos
   }
 
 
 def LlamarColumna( punto, idtabla, idcolumna):
   return idtabla+punto+idcolumna
-""""
-{
-    "tipo": TIPO_INSTRUCCION.LLAMARCOLUMNA,
-    "punto":punto,
-    "idtabla":idtabla,
-    "idcolumna":idcolumna
-  }"""
 
 
 # funciones para encapsular expresiones y datos
-def ColumnaTable(id, tdato, atributo):
+def ColumnaTable(id, tdato, atributo, linea, pos):
   return {
     "tipo" : TIPO_INSTRUCCION.COLUMNA,
     "id" : id,
     "tipodato" :tdato,
-    "atributo" :atributo
+    "atributo" :atributo,
+    "linea": linea,
+    "pos": pos
   }
 
-def TipoDato(tipo, longitud):
+def TipoDato(tipo, longitud, linea, pos):
   if tipo =="int":
     tipo = TIPO_DATO.INT
   elif tipo == "decimal":
@@ -195,10 +214,12 @@ def TipoDato(tipo, longitud):
     tipo = TIPO_DATO.BIT
   return {
     "tipo" :tipo,
-    "longitud" :longitud
+    "longitud" :longitud,
+    "linea": linea,
+    "pos": pos
   }
 
-def Atributo(nombre, tabla, columna):
+def Atributo(nombre, tabla, columna, linea, pos):
   if nombre == "primary":
     nombre = TIPO_ATRIBUTO.PRIMARY_KEY
   elif nombre == "reference":
@@ -210,51 +231,66 @@ def Atributo(nombre, tabla, columna):
   return {
     "tipo" :nombre,
     "idtabla_ref" :tabla,
-    "idcolumna_ref" :columna
+    "idcolumna_ref" :columna,
+    "linea": linea,
+    "pos": pos
   }
 
 
 #Funciones Sistema
-def Concatena(cadena1, cadena2):
+def Concatena(cadena1, cadena2, linea, pos):
   return {
     "tipo" : TIPO_INSTRUCCION.CONTATENACION,
     "cadena1" : cadena1,
-    "cadena2" : cadena2
+    "cadena2" : cadena2,
+    "linea": linea,
+    "pos": pos
   }
 
-def Substraer(cadena, inicio, fin):
+def Substraer(cadena, inicio, fin, linea, pos):
   return {
     "tipo" : TIPO_INSTRUCCION.SUBSTRER,
     "cadena" : cadena,
     "inicio" : inicio,
-    "fin" : fin
+    "fin" : fin,
+    "linea": linea,
+    "pos": pos
   }
 
-def Hoy():
+def Hoy(linea, pos):
   return {
-    "tipo" : TIPO_INSTRUCCION.HOY
+    "tipo" : TIPO_INSTRUCCION.HOY,
+    "linea": linea,
+    "pos": pos
+
   }
 
-def Contar(columna):
+def Contar(columna, linea, pos):
   return {
     "tipo" : TIPO_INSTRUCCION.CONTAR,
-    "columna" : columna
+    "columna" : columna,
+    "linea": linea,
+    "pos": pos
   }
 
-def Suma(columna):
+def Suma(columna, linea, pos):
   return {
     "tipo" : TIPO_INSTRUCCION.SUMA,
-    "columna" : columna
+    "columna" : columna,
+    "linea": linea,
+    "pos": pos
   }
 
-def Cast(columna, tipo):
+def Cast(columna, tipo, linea, pos):
   return {
     "tipo" : TIPO_INSTRUCCION.CAST,
     "columna" : columna,
-    "tipodato" : tipo
+    "tipodato" : tipo,
+    "linea": linea,
+    "pos": pos
   }
 
-def Expresion(exp1, operador, exp2):
+def Expresion(exp1, operador, exp2, linea, pos):
   if operador == "+":
     operador = TIPO_OPERACION.SUMA
   elif operador == "-":
@@ -291,25 +327,32 @@ def Expresion(exp1, operador, exp2):
     "tipo" : operador,
     "exp1" : exp1,
     "exp2" : exp2,
+    "linea": linea,
+    "pos": pos
+    
   }
 
 
 #SSL
-def Case(sentencia):
+def Case(sentencia, linea, pos):
   return{
     "tipo": TIPO_INSTRUCCION.CASE,
-    "sentencias":sentencia
+    "sentencias":sentencia,
+    "linea": linea,
+    "pos": pos
 
   }
 
-def CicloWhile(condicion, instrucciones):
+def CicloWhile(condicion, instrucciones, linea, pos):
   return {
     "tipo" : TIPO_INSTRUCCION.CWHILE,
     "condicion" : condicion,
-    "instrucciones" : instrucciones
+    "instrucciones" : instrucciones,
+    "linea": linea,
+    "pos": pos
   }
 
-def Sentencia(tipo,expresion,resultado):
+def Sentencia(tipo,expresion,resultado,linea,pos):
   if tipo=="when":
     tipo=TIPO_INSTRUCCION.WHEN
   elif tipo=="else":
@@ -317,66 +360,84 @@ def Sentencia(tipo,expresion,resultado):
   return{
     "tipodato":tipo,
     "condicion":expresion,
-    "resultado":resultado
+    "resultado":resultado,
+    "linea": linea,
+    "pos": pos
 }
 
-def sslIf(condicion, verdadero, falso):
+def sslIf(condicion, verdadero, falso, linea, pos):
   return {
     "tipo" : TIPO_INSTRUCCION.IF,
     "condicion" : condicion,
     "verdadero" : verdadero,
-    "falso" : falso
+    "falso" : falso,
+    "linea": linea,
+    "pos": pos
   }
 
-def DeclararVariable(id, tipo ,valor):
+def DeclararVariable(id, tipo ,valor, linea, pos):
   return {
     "tipo" : TIPO_INSTRUCCION.DECLARAR_VARIABLE,
     "id" : id,
     "tipodato" : tipo,
-    "valor" : valor
+    "valor" : valor,
+    "linea": linea,
+    "pos": pos
   }
 
-def LlamarFuncion(id, parametros):
+def LlamarFuncion(id, parametros, linea, pos):
   return {
     "tipo" : TIPO_INSTRUCCION.LLAMAR_FUNCION,
     "id" : id,
-    "parametros" : parametros
+    "parametros" : parametros,
+    "linea": linea,
+    "pos": pos
   }
-def AsignacionVariable(id, valor):
+def AsignacionVariable(id, valor, linea, pos):
   return {
     "tipo" : TIPO_INSTRUCCION.ASIGNACION_VARIABLE,
     "id" : id,
-    "valor" : valor
+    "valor" : valor,
+    "linea": linea,
+    "pos": pos
   }
 
-def Parametro(id, tipo,valor):
+def Parametro(id, tipo,valor, linea, pos):
   return {
     "tipo" : TIPO_INSTRUCCION.PARAMETRO,
     "id" : id,
     "tipodato" : tipo,
-    "valor" : valor
+    "valor" : valor,
+    "linea": linea,
+    "pos": pos
   }
 
-def sslprocedure(id, parametros, instrucciones):
+def sslprocedure(id, parametros, instrucciones, linea, pos):
   return {
     "tipo" : TIPO_INSTRUCCION.PROCEDURE,
     "id" : id,
     "parametros" : parametros,
-    "instrucciones" : instrucciones
+    "instrucciones" : instrucciones,
+    "linea": linea,
+    "pos": pos
   }
 
-def sslfunction(id, parametros, returns, instrucciones):
+def sslfunction(id, parametros, returns, instrucciones, linea, pos):
   return {
     "tipo" : TIPO_INSTRUCCION.FUNCTION,
     "id" : id,
     "parametros" : parametros,
     "retornar" : returns,
-    "instrucciones" : instrucciones
+    "instrucciones" : instrucciones,
+    "linea": linea,
+    "pos": pos
   }
 
-def Retornar(valor):
+def Retornar(valor, linea, pos):
   return {
     "tipo" : TIPO_INSTRUCCION.RETORNAR,
-    "valor" : valor
+    "valor" : valor,
+    "linea": linea,
+    "pos": pos
   }
 

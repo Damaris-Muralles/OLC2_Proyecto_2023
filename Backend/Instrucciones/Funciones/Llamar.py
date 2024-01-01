@@ -4,10 +4,9 @@ from Analizadores.instrucciones import *
 from Instrucciones.Funciones.DeclararParametro import *
 def Llama (instruccion, entorno, lsimbolos, xml, basedatos):
     print("llamr: ", instruccion)
-    salida = ""
+    respuesta={'dato':None,'tipo':None}
     buscar = entorno.getMetodo(instruccion.get('id'))
- 
-
+  
     if buscar != None :
         from Separar.Locales import Local
         entornoL = Entorno(entorno, instruccion.get('id'))

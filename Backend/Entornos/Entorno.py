@@ -10,6 +10,7 @@ class Entorno:
         self.tablaSimbolos[nombre.lower()] = simbolo
 
     def addMetodo(self, nombre, metodo):
+        print("nombre: ", metodo)
         self.tablaMetodos[nombre.lower()] = metodo
 
     def getSimbolo(self, nombre):

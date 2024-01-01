@@ -6,7 +6,7 @@ def Si(instrucciones, entorno, lsimbolos, xml, basedatos):
     print("instruccion: ", instrucciones)
 
     
-    condicion = procesar_where1(instrucciones.get('condicion'),"",basedatos,entorno)
+    condicion = procesar_where1(instrucciones.get('condicion'),basedatos,"",entorno,lsimbolos)
 
     #print("condicion: ", condicion)
 

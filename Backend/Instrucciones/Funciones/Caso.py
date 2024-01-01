@@ -7,7 +7,7 @@ def Caso(instruccion, entorno, simbolos, xml, BaseDatos):
     for caso in instruccion.get('sentencias'):
 
         if caso.get('condicion') != None:
-            condicion = procesar_where1(caso.get('condicion'),"",BaseDatos,entorno)
+            condicion = procesar_where1(caso.get('condicion'),BaseDatos,"",entorno,simbolos)
 
             if condicion[0] == 1:
                 from Separar.Locales import Local

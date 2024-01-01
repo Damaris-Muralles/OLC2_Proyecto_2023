@@ -5,6 +5,7 @@ from Entornos.Entorno import *
 from Entornos.ListaMetodo import *
 from Entornos.ListaSimbolos import *
 from Separar.Globales import *
+from Reportes.salidaconsola import *
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -16,14 +17,18 @@ lmetodo = ListaMetodo()
 
 def procesar_instrucciones(instrucciones) :
     ## lista de instrucciones recolectadas
+    imprimir = SalidaConsola()
     entornoG = Entorno(None, "global")
-    Globales(instrucciones, entornoG, xml, lsimbolo, lmetodo)
+    Globales(instrucciones, entornoG, xml, lsimbolo, lmetodo, imprimir)
+    print("salida")
+    print(imprimir.getSalida())
     return "Procesamiento exitoso"
     
     
     
 """
-
+use tbbanco
+SELECT idestado,estado FROM tbestado;
 CREATE DATA BASE intento;
 
 USE intento;
@@ -34,7 +39,8 @@ Create Table Tabla1(
     edad int
 );
 
-Create Procedure Valores()
+Create Function Valores()
+RETURN int
 AS
 Begin
 
@@ -49,6 +55,7 @@ Begin
     insert into Tabla1(ide, nombre, edad) values (3, 'Maria', 25);
     insert into Tabla1(ide, nombre, edad) values (4, 'Jose', 28);
     insert into Tabla1(ide, nombre, edad) values (5, 'Pedro', 30);
+    RETURN @IVA;
 end;
 
 
@@ -121,11 +128,9 @@ def procesar():
         data = request.get_json()
         entrada = data['entrada']
         da=g.lexico(entrada.lower())
-        print("tokens::::::::::::::::::::::::::::::::::")
-        print(da[0])
+        
         Gramatical=da[0]
-        print("errores::::::::::::::::::::::::::::::::::")
-        print(da[1])
+        
         Errorlexico=da[1]
             
 
@@ -134,6 +139,7 @@ def procesar():
         if instrucciones[0]!=None:
              
             imprimir = procesar_instrucciones(instrucciones[0])
+            
     except Exception as e:
         print(">>>>> entro en la excepcion")
         return jsonify({'message': 'Procesamiento fallido','lista':lista1,'imprimir':imprimir,'Errorlexico':Errorlexico,'ErrorSintactico':ErrorSintactico,'Gramatical':Gramatical,'tablasim':tablasimbolo,'tablamet':tablametodo,'arbol':arbol})

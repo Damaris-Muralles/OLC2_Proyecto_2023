@@ -9,12 +9,15 @@ def RetornarI(instruccion, entorno, simbolo, xml, BaseDatos):
                 if variable.get("tipo")[0]==TIPO_DATO.VARCHAR or variable.get("tipo")[0]==TIPO_DATO.CHAR:
                     variable.get("dato")[0] = (variable.get("dato")[0])[1:-1]
                 retorna = variable.get("dato")
+                print("retorna: ",retorna)
                 return retorna
             else:
-                retorna = procesar_where1(instruccion.get('valor'),BaseDatos,"",entorno)
+                retorna = procesar_where1(instruccion.get('valor'),BaseDatos,"",entorno, simbolo)
+                print("retorna: ",retorna)
                 return retorna
         else:
-            retorna = procesar_where1(instruccion.get('valor'),BaseDatos,"",entorno)
+            retorna = procesar_where1(instruccion.get('valor'),BaseDatos,"",entorno, simbolo)
+            print("retorna: ",retorna)
             return retorna
     else :
         retorna = None

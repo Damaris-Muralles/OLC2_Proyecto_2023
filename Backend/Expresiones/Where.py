@@ -8,6 +8,7 @@ from Expresiones.Ifs import *
 from Expresiones.FuncionesNativas import *
 from Expresiones.ExpCase import *
 from ValidacionVariasTablas import *
+from Instrucciones.Funciones.Llamar import *
 
 xml = XMLManejador("./BaseDatos/BasesDatos.xml") 
 comprobador=ComprobarTabla()
@@ -15,7 +16,7 @@ comprobador=ComprobarTabla()
 basedata = ""
 table = ""
 listatipodatos = []
-def procesar_where1(instr,base,tabla, entorno):
+def procesar_where1(instr,base,tabla, entorno,lsimbolo):
     global basedata
     basedata = base
     global table
@@ -25,7 +26,7 @@ def procesar_where1(instr,base,tabla, entorno):
     if isinstance(instr, dict):
         if instr.get("tipo") == TIPO_OPERACION.MAYOR_QUE:
             # procesando expresiones
-            exp1,exp2=procesar_expresiones(instr, base, tabla, entorno)
+            exp1,exp2=procesar_expresiones(instr, base, tabla, entorno,lsimbolo)
             if listatipodatos and listatipodatos[-1] == "ERROR":
                         return ["ERROR"]
             # imprimiendo expresiones
@@ -43,7 +44,7 @@ def procesar_where1(instr,base,tabla, entorno):
             return resultado.get("respuesta")
         elif instr.get("tipo") == TIPO_OPERACION.MENOR_QUE:
             # procesando expresiones
-            exp1,exp2=procesar_expresiones(instr, base, tabla, entorno)
+            exp1,exp2=procesar_expresiones(instr, base, tabla, entorno,lsimbolo)
             if listatipodatos and listatipodatos[-1] == "ERROR":
                         return ["ERROR"]
             # imprimiendo expresiones
@@ -62,7 +63,7 @@ def procesar_where1(instr,base,tabla, entorno):
         elif instr.get("tipo") == TIPO_OPERACION.IGUAL_IGUAL or instr.get("tipo") == TIPO_OPERACION.IGUAL:
             
             # procesando expresiones
-            exp1,exp2=procesar_expresiones(instr, base, tabla, entorno)
+            exp1,exp2=procesar_expresiones(instr, base, tabla, entorno,lsimbolo)
             if listatipodatos and listatipodatos[-1] == "ERROR":
                         return ["ERROR"]
             # imprimiendo expresiones
@@ -80,7 +81,7 @@ def procesar_where1(instr,base,tabla, entorno):
             return resultado.get("respuesta")
         elif instr.get("tipo") == TIPO_OPERACION.NO_IGUAL:
             # procesando expresiones
-            exp1,exp2=procesar_expresiones(instr, base, tabla, entorno)
+            exp1,exp2=procesar_expresiones(instr, base, tabla, entorno,lsimbolo)
             if listatipodatos and listatipodatos[-1] == "ERROR":
                         return ["ERROR"]
             # imprimiendo expresiones
@@ -99,7 +100,7 @@ def procesar_where1(instr,base,tabla, entorno):
         elif instr.get("tipo") == TIPO_OPERACION.MAYOR_IGUAL:
             
             # procesando expresiones
-            exp1,exp2=procesar_expresiones(instr, base, tabla, entorno)
+            exp1,exp2=procesar_expresiones(instr, base, tabla, entorno,lsimbolo)
             if listatipodatos and listatipodatos[-1] == "ERROR":
                         return ["ERROR"]
             # imprimiendo expresiones
@@ -117,7 +118,7 @@ def procesar_where1(instr,base,tabla, entorno):
             return resultado.get("respuesta")
         elif instr.get("tipo") == TIPO_OPERACION.MENOR_IGUAL:
             # procesando expresiones
-            exp1,exp2=procesar_expresiones(instr, base, tabla, entorno)
+            exp1,exp2=procesar_expresiones(instr, base, tabla, entorno,lsimbolo)
             if listatipodatos and listatipodatos[-1] == "ERROR":
                         return ["ERROR"]
             # imprimiendo expresiones
@@ -136,7 +137,7 @@ def procesar_where1(instr,base,tabla, entorno):
         elif instr.get("tipo") == TIPO_OPERACION.AND:
             
             # procesando expresiones
-            exp1,exp2=procesar_expresiones(instr, base, tabla, entorno)
+            exp1,exp2=procesar_expresiones(instr, base, tabla, entorno,lsimbolo)
             if listatipodatos and listatipodatos[-1] == "ERROR":
                         return ["ERROR"]
             # imprimiendo expresiones
@@ -155,7 +156,7 @@ def procesar_where1(instr,base,tabla, entorno):
         elif instr.get("tipo") == TIPO_OPERACION.OR:
           
             # procesando expresiones
-            exp1,exp2=procesar_expresiones(instr, base, tabla, entorno)
+            exp1,exp2=procesar_expresiones(instr, base, tabla, entorno,lsimbolo)
             if listatipodatos and listatipodatos[-1] == "ERROR":
                         return ["ERROR"]
             # imprimiendo expresiones
@@ -173,7 +174,7 @@ def procesar_where1(instr,base,tabla, entorno):
             return resultado.get("respuesta")            
         elif instr.get("tipo") == TIPO_OPERACION.NOT:
             
-            exp1=procesar_where1(instr.get("exp1"), base, tabla, entorno)
+            exp1=procesar_where1(instr.get("exp1"), base, tabla, entorno,lsimbolo)
             if listatipodatos and listatipodatos[-1] == "ERROR":
                 return ["ERROR"]
             if listatipodatos and listatipodatos[-1] == "noinstr":
@@ -197,17 +198,17 @@ def procesar_where1(instr,base,tabla, entorno):
             return resultado.get("respuesta")
         elif instr.get("tipo") == TIPO_OPERACION.BETWEEN:
             
-            exp1=procesar_where1(instr.get("exp1"), base, tabla, entorno)
+            exp1=procesar_where1(instr.get("exp1"), base, tabla, entorno,lsimbolo)
             if listatipodatos and listatipodatos[-1] == "ERROR":
                 return ["ERROR"]
             if listatipodatos and listatipodatos[-1] == "noinstr":
                 listatipodatos.pop()
-            exp2=procesar_where1(instr.get("exp2").get("exp1"), base, tabla, entorno)
+            exp2=procesar_where1(instr.get("exp2").get("exp1"), base, tabla, entorno,lsimbolo)
             if listatipodatos and listatipodatos[-1] == "ERROR":
                 return ["ERROR"]
             if listatipodatos and listatipodatos[-1] == "noinstr":
                 listatipodatos.pop()
-            exp3=procesar_where1(instr.get("exp2").get("exp2"), base, tabla, entorno)
+            exp3=procesar_where1(instr.get("exp2").get("exp2"), base, tabla, entorno,lsimbolo)
             if listatipodatos and listatipodatos[-1] == "ERROR":
                 return ["ERROR"]
             if listatipodatos and listatipodatos[-1] == "noinstr":
@@ -248,7 +249,7 @@ def procesar_where1(instr,base,tabla, entorno):
         elif instr.get("tipo") == TIPO_OPERACION.SUMA:
            
             # procesando expresiones
-            exp1,exp2=procesar_expresiones(instr, base, tabla, entorno)
+            exp1,exp2=procesar_expresiones(instr, base, tabla, entorno,lsimbolo)
             if listatipodatos and listatipodatos[-1] == "ERROR":
                         return ["ERROR"]
             # imprimiendo expresiones
@@ -268,7 +269,7 @@ def procesar_where1(instr,base,tabla, entorno):
         elif instr.get("tipo") == TIPO_OPERACION.RESTA:
             
             # procesando expresiones
-            exp1,exp2=procesar_expresiones(instr, base, tabla, entorno)
+            exp1,exp2=procesar_expresiones(instr, base, tabla, entorno,lsimbolo)
             if listatipodatos and listatipodatos[-1] == "ERROR":
                         return ["ERROR"]
             # imprimiendo expresiones
@@ -287,7 +288,7 @@ def procesar_where1(instr,base,tabla, entorno):
         elif instr.get("tipo") == TIPO_OPERACION.MULTIPLICACION:
             
             # procesando expresiones
-            exp1,exp2=procesar_expresiones(instr, base, tabla, entorno)
+            exp1,exp2=procesar_expresiones(instr, base, tabla, entorno,lsimbolo)
             if listatipodatos and listatipodatos[-1] == "ERROR":
                         return ["ERROR"]
             # imprimiendo expresiones
@@ -306,7 +307,7 @@ def procesar_where1(instr,base,tabla, entorno):
         elif instr.get("tipo") == TIPO_OPERACION.DIVISION:
         
             # procesando expresiones
-            exp1,exp2=procesar_expresiones(instr, base, tabla, entorno)
+            exp1,exp2=procesar_expresiones(instr, base, tabla, entorno,lsimbolo)
             if listatipodatos and listatipodatos[-1] == "ERROR":
                         return ["ERROR"]
             # imprimiendo expresiones
@@ -329,12 +330,12 @@ def procesar_where1(instr,base,tabla, entorno):
         elif instr.get("tipo")==TIPO_INSTRUCCION.CONTATENACION:
             
             # procesando expresiones
-            exp1=procesar_where1(instr.get("cadena1"), base, tabla, entorno)
+            exp1=procesar_where1(instr.get("cadena1"), base, tabla, entorno,lsimbolo)
             if listatipodatos and listatipodatos[-1] == "ERROR":
                 return ["ERROR"]
             if listatipodatos and listatipodatos[-1] == "noinstr":
                 listatipodatos.pop()
-            exp2=procesar_where1(instr.get("cadena2"), base, tabla, entorno)
+            exp2=procesar_where1(instr.get("cadena2"), base, tabla, entorno,lsimbolo)
             if listatipodatos and listatipodatos[-1] == "ERROR":
                 return ["ERROR"]
             if listatipodatos and listatipodatos[-1] == "noinstr":
@@ -355,17 +356,17 @@ def procesar_where1(instr,base,tabla, entorno):
             return resultado.get("respuesta")       
         elif instr.get("tipo")==TIPO_INSTRUCCION.SUBSTRER:
             
-            exp1=procesar_where1(instr.get("cadena"), base, tabla, entorno)
+            exp1=procesar_where1(instr.get("cadena"), base, tabla, entorno,lsimbolo)
             if listatipodatos and listatipodatos[-1] == "ERROR":
                 return ["ERROR"]
             if listatipodatos and listatipodatos[-1] == "noinstr":
                 listatipodatos.pop()
-            exp2=procesar_where1(instr.get("inicio"), base, tabla, entorno)
+            exp2=procesar_where1(instr.get("inicio"), base, tabla, entorno,lsimbolo)
             if listatipodatos and listatipodatos[-1] == "ERROR":
                 return ["ERROR"]
             if listatipodatos and listatipodatos[-1] == "noinstr":
                 listatipodatos.pop()
-            exp3=procesar_where1(instr.get("fin"), base, tabla, entorno)
+            exp3=procesar_where1(instr.get("fin"), base, tabla, entorno,lsimbolo)
             if listatipodatos and listatipodatos[-1] == "ERROR":
                 return ["ERROR"]
             if listatipodatos and listatipodatos[-1] == "noinstr":
@@ -403,7 +404,7 @@ def procesar_where1(instr,base,tabla, entorno):
             return resultado.get("respuesta")
         elif instr.get("tipo")==TIPO_INSTRUCCION.CAST:
             
-            exp1=procesar_where1(instr.get("columna"), base, tabla, entorno)
+            exp1=procesar_where1(instr.get("columna"), base, tabla, entorno,lsimbolo)
             if listatipodatos and listatipodatos[-1] == "ERROR":
                 return ["ERROR"]
             if listatipodatos and listatipodatos[-1] == "noinstr":
@@ -429,17 +430,17 @@ def procesar_where1(instr,base,tabla, entorno):
             return resultado.get("respuesta")
         elif instr.get("tipo")==TIPO_INSTRUCCION.IF:
             
-            exp1=procesar_where1(instr.get("condicion"), base, tabla, entorno)
+            exp1=procesar_where1(instr.get("condicion"), base, tabla, entorno,lsimbolo)
             if listatipodatos and listatipodatos[-1] == "ERROR":
                 return ["ERROR"]
             if listatipodatos and listatipodatos[-1] == "noinstr":
                 listatipodatos.pop()
-            exp2=procesar_where1(instr.get("verdadero"), base, tabla, entorno)
+            exp2=procesar_where1(instr.get("verdadero"), base, tabla, entorno,lsimbolo)
             if listatipodatos and listatipodatos[-1] == "ERROR":
                 return ["ERROR"]
             if listatipodatos and listatipodatos[-1] == "noinstr":
                 listatipodatos.pop()
-            exp3=procesar_where1(instr.get("falso"), base, tabla, entorno)
+            exp3=procesar_where1(instr.get("falso"), base, tabla, entorno,lsimbolo)
             if listatipodatos and listatipodatos[-1] == "ERROR":
                 return ["ERROR"]
             if listatipodatos and listatipodatos[-1] == "noinstr":
@@ -484,12 +485,12 @@ def procesar_where1(instr,base,tabla, entorno):
             for sentencia in instr.get("sentencias"):
                 
                 if sentencia.get("tipodato")==TIPO_INSTRUCCION.WHEN:
-                    exp1=procesar_where1(sentencia.get("condicion"), base, tabla, entorno)
+                    exp1=procesar_where1(sentencia.get("condicion"), base, tabla, entorno,lsimbolo)
                     if listatipodatos and listatipodatos[-1] == "ERROR":
                         return ["ERROR"]
                     if listatipodatos and listatipodatos[-1] == "noinstr":
                         listatipodatos.pop()
-                    exp2=procesar_where1(sentencia.get("resultado"), base, tabla, entorno)
+                    exp2=procesar_where1(sentencia.get("resultado"), base, tabla, entorno,lsimbolo)
                     if listatipodatos and listatipodatos[-1] == "ERROR":
                         return ["ERROR"]
                     if listatipodatos and listatipodatos[-1] == "noinstr":
@@ -513,7 +514,7 @@ def procesar_where1(instr,base,tabla, entorno):
                     print("exp1: ",exp1," exp2: ",exp2)
                     listacase.append([exp1,exp2,tipoE1,tipoE2])
                 elif sentencia.get("tipodato")==TIPO_INSTRUCCION.ELSE:
-                    exp1=procesar_where1(sentencia.get("resultado"), base, tabla, entorno)
+                    exp1=procesar_where1(sentencia.get("resultado"), base, tabla, entorno,lsimbolo)
                     if listatipodatos and listatipodatos[-1] == "ERROR":
                         return ["ERROR"]
                     if listatipodatos and listatipodatos[-1] == "noinstr":
@@ -535,6 +536,9 @@ def procesar_where1(instr,base,tabla, entorno):
             resultado = funcion_case(listacase)
             listatipodatos.append(resultado.get("tipo"))
             return resultado.get("respuesta")                  
+        
+        
+
         else:
             print("Error: instruccion no valida")
             listatipodatos.append("ERROR")
@@ -543,17 +547,17 @@ def procesar_where1(instr,base,tabla, entorno):
         listatipodatos.append("noinstr")
         return instr
 
-def procesar_expresiones(instr, base, tabla, entorno):
+def procesar_expresiones(instr, base, tabla, entorno,lsimbolo):
     global listatipodatos
     # procesando expresion derecha y validando que no sea error
-    exp1=procesar_where1(instr.get("exp1"), base, tabla, entorno)
+    exp1=procesar_where1(instr.get("exp1"), base, tabla, entorno,lsimbolo)
     if listatipodatos and listatipodatos[-1] == "ERROR":
         return ["ERROR"],""
     if listatipodatos and listatipodatos[-1] == "noinstr":
         listatipodatos.pop()
 
     # procesando expresion izquierda y validando que no sea error
-    exp2=procesar_where1(instr.get("exp2"), base, tabla, entorno)
+    exp2=procesar_where1(instr.get("exp2"), base, tabla, entorno,lsimbolo)
     if listatipodatos and listatipodatos[-1] == "ERROR":
         return ["ERROR"],""
     if listatipodatos and listatipodatos[-1] == "noinstr":
@@ -607,7 +611,8 @@ def Obtener_valor(cadena, entorno):
             return colum    
         else:
             # quitar las comillas
-            cadena = cadena[1:-1]
+            if cadena.startswith('\"') and cadena.endswith('\"'):
+                cadena = cadena[1:-1]
             tip=TIPO_DATO.VARCHAR
             try:
                 # Intenta convertir la cadena en una fecha

@@ -28,6 +28,69 @@
           <columna>
             <id>estado</id>
             <tipo>
+              <tipodato>6</tipodato>
+              <longitud>50</longitud>
+            </tipo>
+            <atributo>
+              <primaria/>
+              <foranea/>
+              <nulo/>
+              <nonulo>True</nonulo>
+              <tablaref/>
+              <columnaref/>
+            </atributo>
+            <inputs>
+              <input>HOLACOMO</input>
+              <input>HOLAdddCOMO</input>
+            </inputs>
+          </columna>
+        </columnas>
+      </tabla>
+    </tablas>
+    <funciones/>
+    <procedimientos/>
+  </basedatos>
+  <basedatos>
+    <nombre>intento</nombre>
+    <tablas>
+      <tabla>
+        <nombre>tabla1</nombre>
+        <columnas>
+          <columna>
+            <id>ide</id>
+            <tipo>
+              <tipodato>1</tipodato>
+              <longitud>None</longitud>
+            </tipo>
+            <atributo>
+              <primaria>True</primaria>
+              <foranea/>
+              <nulo/>
+              <nonulo/>
+              <tablaref/>
+              <columnaref/>
+            </atributo>
+            <inputs/>
+          </columna>
+          <columna>
+            <id>nombre</id>
+            <tipo>
+              <tipodato>6</tipodato>
+              <longitud>100</longitud>
+            </tipo>
+            <atributo>
+              <primaria/>
+              <foranea/>
+              <nulo/>
+              <nonulo/>
+              <tablaref/>
+              <columnaref/>
+            </atributo>
+            <inputs/>
+          </columna>
+          <columna>
+            <id>edad</id>
+            <tipo>
               <tipodato>1</tipodato>
               <longitud>None</longitud>
             </tipo>
@@ -39,15 +102,16 @@
               <tablaref/>
               <columnaref/>
             </atributo>
-            <inputs>
-              <input>1</input>
-              <input>1</input>
-            </inputs>
+            <inputs/>
           </columna>
         </columnas>
       </tabla>
     </tablas>
-    <funciones/>
+    <funciones>
+      <funcion>
+        <nombre>valores</nombre>
+      </funcion>
+    </funciones>
     <procedimientos/>
   </basedatos>
 </basesdedatos>

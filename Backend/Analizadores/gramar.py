@@ -5,7 +5,8 @@ from Reportes.Rgramar import *
 from Reportes.RErrores import *
 
 listaError=ListaError()
-
+columno=0
+data=""
 # Lista de palabras reservadas
 reservadas = {
     # instrucciones
@@ -146,7 +147,7 @@ def t_DECIMALES(t):
         t.value = float(t.value)
     except ValueError:
         print("El valor float es muy largo %d", t.value)
-        listaError.insertar("Lexico",f"El valor float es muy largo {t.value}",t.lineno,t.lexpos)
+        listaError.insertar("Lexico",f"El valor float es muy largo {t.value}",t.lineno,t.lexpos-columno)
         t.value = 0
     return t
 
@@ -156,7 +157,7 @@ def t_ENTERO(t):
         t.value = int(t.value)
     except ValueError:
         print("El valor del entero es muy largo %d", t.value)
-        listaError.insertar("Lexico",f"El valor del entero es muy largo {t.value}",t.lineno,t.lexpos)
+        listaError.insertar("Lexico",f"El valor del entero es muy largo {t.value}",t.lineno,t.lexpos-columno)
         t.value = 0
     return t
 
@@ -179,13 +180,16 @@ def t_IDENT(t):
 t_ignore = " \t"
 
 def t_newline(t):
+    
     r'\n+'
     t.lexer.lineno += t.value.count("\n")
+    global columno
+    columno = t.lexer.lexpos
 
     
 def t_error(t):
     print("Error lexico: Caracter '%s' no es valido" % t.value[0])
-    listaError.insertar("Lexico",f"Caracter {t.value[0]} no es permitido",t.lineno,t.lexpos)
+    listaError.insertar("Lexico",f"Caracter {t.value[0]} no es permitido",t.lineno,t.lexpos-columno)
     t.lexer.skip(1)
     
 # Construyendo el analizador lexico
@@ -193,43 +197,23 @@ import ply.lex as lex
 lexer = lex.lex()
 
 def lexico(data):
+    global columno
     list1=ListaGramar()
     lexer.input(data)
     lexer.lineno = 1
     lexer.lexpos = 0
+    columno = 0
     while True:
         tok = lexer.token()
+        
         if not tok:
             break
         #guardar en la lista de rgramar
-        list1.insertar(tok.type, tok.value, tok.lineno, tok.lexpos)
+        list1.insertar(tok.type, tok.value, tok.lineno, tok.lexpos-columno)
     lexer.lineno = 1
     lexer.lexpos = 0
+    columno = 0
     return [list1.graficar(),listaError.graficarLex()]
-
-# prueba del analizador lexico
-'''
-data="""
-CREATE FUNCTION Retornasuma(@ProductID int)
-RETURN int
-AS
-BEGIN
-    DECLARE @ret int;
-    SELECT @ret == SUM(Cantidad) FROM inventario WHERE ProductoId == @ProductID; 
-
-    IF (@ret == NULL)
-        SET @ret = 0;
-    END;
-
-    RETURN @ret;
-END;
-"""
-lexer.input(data)
-while True:
-    tok = lexer.token()
-    if not tok: break
-    print(tok)
-'''
 
 
 # Asociacion de operadores y precedencia
@@ -303,25 +287,26 @@ def p_tipodato(t):
                 
     '''
     if len(t)==2:
-        t[0] = TipoDato(t[1],None)
+        t[0] = TipoDato(t[1],None, str(t.lineno(1)),str(find_column(t.lexpos(1))))
     elif len(t)==5:
-        t[0] = TipoDato(t[1],t[3])
+        t[0] = TipoDato(t[1],t[3], str(t.lineno(1)),str(find_column(t.lexpos(1))))
 
 
 # SINTAXIS PARA USAR BASE DE DATOS
 def p_use_database(t):
     'use_database : USAR IDENT PTCOMA'
-    t[0] = UseDatabase(t[2])
+    
+    t[0] = UseDatabase(t[2], str(t.lineno(1)),str(find_column(t.lexpos(1))))
 
 # SINTAXIS PARA CREAR BASE DE DATOS
 def p_createbase_instr(t):
     'createbase_instr : CREATE DATA BASE IDENT PTCOMA'
-    t[0] = CreateDatabase(t[4])
+    t[0] = CreateDatabase(t[4], str(t.lineno(1)),str(find_column(t.lexpos(1))))
 
 # SINTAXIS PARA CREATE TABLE
 def p_create_table_instr(t) :
     'createtab_instr     : CREATE TABLE IDENT PARIZQ listacolumnas PARDER PTCOMA'
-    t[0] = CreateTable(t[3], t[5])
+    t[0] = CreateTable(t[3], t[5], str(t.lineno(1)),str(find_column(t.lexpos(1))))
 
 def p_listacolumnas(t) :
     ''' listacolumnas   : listacolumnas columna
@@ -340,14 +325,14 @@ def p_columna(t):
                 | IDENT tipodato
     '''
     if len(t)==5:
-        t[0] = ColumnaTable(t[1],t[2],t[3])
+        t[0] = ColumnaTable(t[1],t[2],t[3], str(t.lineno(1)),str(find_column(t.lexpos(1))))
     elif len(t)==4:
         if t[3] != ',':
-            t[0] = ColumnaTable(t[1],t[2],t[3])
+            t[0] = ColumnaTable(t[1],t[2],t[3], str(t.lineno(1)),str(find_column(t.lexpos(1))))
         else:
-            t[0] = ColumnaTable(t[1],t[2],None)
+            t[0] = ColumnaTable(t[1],t[2],None, str(t.lineno(1)),str(find_column(t.lexpos(1))))
     else:
-        t[0] = ColumnaTable(t[1],t[2],None)
+        t[0] = ColumnaTable(t[1],t[2],None, str(t.lineno(1)),str(find_column(t.lexpos(1))))
 
 def p_lista_atributos(t):
     '''lista_atributos : lista_atributos atributo
@@ -368,11 +353,11 @@ def p_atributo(t):
                 | NOT NULL
     '''
     if len(t)==3:
-        t[0] = Atributo(t[1],None, None)
+        t[0] = Atributo(t[1],None, None,  str(t.lineno(1)),str(find_column(t.lexpos(1))))
     elif len(t)==6:
-        t[0] = Atributo(t[1],t[2],t[4])
+        t[0] = Atributo(t[1],t[2],t[4], str(t.lineno(1)),str(find_column(t.lexpos(1))))
     else:
-        t[0] = Atributo(t[1],None,None)
+        t[0] = Atributo(t[1],None,None, str(t.lineno(1)),str(find_column(t.lexpos(1))))
 
 
 # SINTAXIS PARA ALTER TABLE
@@ -382,48 +367,49 @@ def p_alter_table_instr(t) :
                         | ALTER TABLE IDENT DROP COLUMN IDENT PTCOMA
     '''
     if len(t) == 9:
-        t[0] = AlterAgregar(t[3], t[6], t[7], None)
+        t[0] = AlterAgregar(t[3], t[6], t[7], None,  str(t.lineno(1)),str(find_column(t.lexpos(1))))
     elif len(t) == 10:
-        t[0] = AlterAgregar(t[3], t[6], t[7], t[8])
+        t[0] = AlterAgregar(t[3], t[6], t[7], t[8],  str(t.lineno(1)),str(find_column(t.lexpos(1))))
     else:
-        t[0] = AlterDrop(t[3], t[6])                   
+        t[0] = AlterDrop(t[3], t[6],  str(t.lineno(1)),str(find_column(t.lexpos(1))))                   
 
 # SINTAXIS PARA TRUNCATE TABLE
 def p_truncate_instr(t):
     'truncate_instr : TRUNCATE TABLE IDENT PTCOMA'
-    t[0] = TruncateTable(t[3])
+    t[0] = TruncateTable(t[3], str(t.lineno(1)),str(find_column(t.lexpos(1))))
 
 # SINTAXIS DROP TABLE
 def p_drop_instr(t):
     '''drop_instr : DROP TABLE IDENT PTCOMA
     '''
-    t[0] = DropTable(t[3])
+    t[0] = DropTable(t[3], str(t.lineno(1)),str(find_column(t.lexpos(1))))
 
 # SINTAXIS PARAUPDATE
 def p_update_instr(t):
     '''update_instr : UPDATE IDENT SET tablavalor WHERE expresiones PTCOMA
                     '''
-    t[0] = UpdateTable(t[2], t[4], t[6])
+    t[0] = UpdateTable(t[2], t[4], t[6], str(t.lineno(1)),str(find_column(t.lexpos(1))))
 
 
 # SINTAXIS PARA DELETE
 def p_delete_instr(t):
     '''delete_instr : DELETE FROM IDENT WHERE expresiones PTCOMA
                     '''
-    t[0] = DeleteTable(t[3], t[5])
+    t[0] = DeleteTable(t[3], t[5], str(t.lineno(1)),str(find_column(t.lexpos(1))))
 
 # SINTAXIS PARA SELECT le falta
 def p_select(t):
+    
     '''select_instr :   SELECT tablaselect1 FROM tablaselect WHERE expresiones PTCOMA
                         | SELECT tablaselect1 FROM tablaselect PTCOMA
                         | SELECT tablaselect1 PTCOMA
     '''
     if len(t)==6:
-        t[0] = SelectTable(t[2],t[4],None)
+        t[0] = SelectTable(t[2],t[4],None, str(t.lineno(1)),str(find_column(t.lexpos(1))))
     elif len(t)==4:
-        t[0] = SelectTable(t[2],None,None)
+        t[0] = SelectTable(t[2],None,None, str(t.lineno(1)),str(find_column(t.lexpos(1))))
     else:
-        t[0] = SelectTable(t[2],t[4],t[6])
+        t[0] = SelectTable(t[2],t[4],t[6],str(t.lineno(1)),str(find_column(t.lexpos(1))))
 
 def  p_tablaselect1(t):
     '''tablaselect1 : tablaselect1 tablas1
@@ -443,16 +429,16 @@ def p_tablas1(t):
     | expresiones
     '''
     if t[1] == '*':
-        t[0] = tselect(t[1],None)
+        t[0] = tselect(t[1],None, str(t.lineno(1)),str(find_column(t.lexpos(1))))
     elif len(t)==4:
-        t[0] = tselect(t[1],t[2])
+        t[0] = tselect(t[1],t[2], str(t.lineno(1)),str(find_column(t.lexpos(1))))
     elif len(t)==3:
         if t[2] != ',':
-            t[0] = tselect(t[1],t[2])
+            t[0] = tselect(t[1],t[2], str(t.lineno(1)),str(find_column(t.lexpos(1))))
         else:
-            t[0] = tselect(t[1],None)
+            t[0] = tselect(t[1],None, str(t.lineno(1)),str(find_column(t.lexpos(1))))
     else:
-        t[0] = tselect(t[1],None)
+        t[0] = tselect(t[1],None, str(t.lineno(1)),str(find_column(t.lexpos(1))))
 
 def  p_tablaselect(t):
     '''tablaselect : tablaselect tablas
@@ -477,9 +463,9 @@ def p_insert(t):
                     | INSERT INTO IDENT PARIZQ tablainsert PARDER VALUES PARIZQ tablavalor PARDER PTCOMA
     '''
     if len(t)==9:
-        t[0] = InsertTable(t[3],None,t[6])
+        t[0] = InsertTable(t[3],None,t[6], str(t.lineno(1)),str(find_column(t.lexpos(1))))
     else:
-        t[0] = InsertTable(t[3],t[5],t[9])
+        t[0] = InsertTable(t[3],t[5],t[9], str(t.lineno(1)),str(find_column(t.lexpos(1))))
 
 def p_tablainsert(t):
     '''tablainsert : tablainsert COMA IDENT
@@ -510,19 +496,19 @@ def p_declaracion(t):
                             
     '''
     if len(t)==5:
-        t[0] = DeclararVariable(t[2],t[3],None)
+        t[0] = DeclararVariable(t[2],t[3],None, str(t.lineno(1)),str(find_column(t.lexpos(1))))
     elif len(t)==6:
-        t[0] = DeclararVariable(t[2],t[4])
+        t[0] = DeclararVariable(t[2],t[5],None, str(t.lineno(1)),str(find_column(t.lexpos(1))))
     elif len(t)==7:
-        t[0] = DeclararVariable(t[2],t[3],t[5])
+        t[0] = DeclararVariable(t[2],t[3],t[5], str(t.lineno(1)),str(find_column(t.lexpos(1))))
     else:
-        t[0] = DeclararVariable(t[2],t[4],t[6])
+        t[0] = DeclararVariable(t[2],t[4],t[6], str(t.lineno(1)),str(find_column(t.lexpos(1))))
 
 # SINTAXIS PARA ASIGNACION DE VARIABLES
 def p_asignacion(t):
     '''asignacionvariable : SET IDENTIFICADOR IGUALSIMPLE expresiones PTCOMA
     '''
-    t[0] = AsignacionVariable(t[2],t[4])
+    t[0] = AsignacionVariable(t[2],t[4], str(t.lineno(1)),str(find_column(t.lexpos(1))))
 
 
 # SINTAXIS CREAR PROCEDURE 
@@ -531,9 +517,9 @@ def p_create_procedure(t):
                         | CREATE PROCEDURE IDENT PARIZQ PARDER AS BEGIN instrucciones END PTCOMA
     '''
     if len(t)==12:
-        t[0] = sslprocedure(t[3],t[5],t[9])
+        t[0] = sslprocedure(t[3],t[5],t[9], str(t.lineno(1)),str(find_column(t.lexpos(1))))
     else:
-        t[0] = sslprocedure(t[3],None,t[8])
+        t[0] = sslprocedure(t[3],None,t[8], str(t.lineno(1)),str(find_column(t.lexpos(1))))
 
 # SINTACIS IF 
 def p_if_instruccion(t):
@@ -542,9 +528,9 @@ def p_if_instruccion(t):
                     | IF1 PARIZQ expresiones PARDER BEGIN instrucciones END ELSE BEGIN instrucciones END PTCOMA
     '''
     if len(t)==9:
-        t[0] = sslIf(t[3],t[6],None)
+        t[0] = sslIf(t[3],t[6],None, str(t.lineno(1)),str(find_column(t.lexpos(1))))
     else:
-        t[0] = sslIf(t[3],t[6],t[10])
+        t[0] = sslIf(t[3],t[6],t[10], str(t.lineno(1)),str(find_column(t.lexpos(1))))
 
 # SINTAXIS FUNCIONES
 def p_funciones(t):
@@ -552,9 +538,9 @@ def p_funciones(t):
                         | CREATE FUNCTION IDENT PARIZQ PARDER RETURN tipodato AS BEGIN instrucciones END PTCOMA
     '''
     if len(t)==14:
-        t[0] = sslfunction(t[3],t[5],t[8],t[11])
+        t[0] = sslfunction(t[3],t[5],t[8],t[11], str(t.lineno(1)),str(find_column(t.lexpos(1))))
     else:
-        t[0] = sslfunction(t[3],None,t[7],t[10])
+        t[0] = sslfunction(t[3],None,t[7],t[10], str(t.lineno(1)),str(find_column(t.lexpos(1))))
 
 # SINTAXIS PARA PARAMETROS
 def p_listparam(t):
@@ -572,14 +558,14 @@ def p_param(t):
                | IDENTIFICADOR tipodato 
     '''
     if len(t)==4:
-        t[0] = Parametro(t[1],t[2],None)
+        t[0] = Parametro(t[1],t[2],None, str(t.lineno(1)),str(find_column(t.lexpos(1))))
     else:
-        t[0] = Parametro(t[1],t[2],None)
+        t[0] = Parametro(t[1],t[2],None, str(t.lineno(1)),str(find_column(t.lexpos(1))))
 
 #SINTAXIS PARA WHILE
 def p_while(t):
     '''while_instr : WHILE expresiones BEGIN instrucciones END PTCOMA '''
-    t[0] = CicloWhile(t[2],t[4])
+    t[0] = CicloWhile(t[2],t[4], str(t.lineno(1)),str(find_column(t.lexpos(1))))
 
 
 # EXPRESIONES
@@ -624,23 +610,23 @@ def p_expresiones(t):
     if t[1] == '(':
         t[0] = t[2]
     elif len(t)==3:
-        t[0] = Expresion(t[2],t[1],None)
+        t[0] = Expresion(t[2],t[1],None, str(t.lineno(1)),str(find_column(t.lexpos(1))))
     elif len(t)==4: 
-        t[0] = Expresion(t[1],t[2],t[3])
+        t[0] = Expresion(t[1],t[2],t[3], str(t.lineno(1)),str(find_column(t.lexpos(1))))
     elif len(t)==5:
-        t[0] = Expresion(t[1],"NOT_BET",t[4])
+        t[0] = Expresion(t[1],"NOT_BET",t[4], str(t.lineno(1)),str(find_column(t.lexpos(1))))
     elif len(t)==2:
         t[0] = t[1]
 
 # SINTAXIS PARA IF
 def p_if_instr(t):
     '''if_instr : IF1 PARIZQ expresiones COMA expresiones COMA expresiones PARDER'''
-    t[0] = sslIf(t[3],t[5],t[7])
+    t[0] = sslIf(t[3],t[5],t[7], str(t.lineno(1)),str(find_column(t.lexpos(1))))
 
 # SINTAXIS PARA CASE
 def p_case_instrx(t):
     '''case_instrx : CASE sentenciasx END PTCOMA '''
-    t[0] = Case(t[2])
+    t[0] = Case(t[2], str(t.lineno(1)),str(find_column(t.lexpos(1))))
 
 def p_sentenciasx(t):
     '''sentenciasx : sentenciasx sentenciax
@@ -658,16 +644,16 @@ def p_sentenciax(t):
                     | ELSE instrucciones
     '''
     if len(t)==5:
-        t[0] = Sentencia(t[1],t[2],t[4])
+        t[0] = Sentencia(t[1],t[2],t[4], str(t.lineno(1)),str(find_column(t.lexpos(1))))
     elif len(t)==4:
-        t[0] = Sentencia(t[1],None,t[3])
+        t[0] = Sentencia(t[1],None,t[3], str(t.lineno(1)),str(find_column(t.lexpos(1))))
     else:
-        t[0] = Sentencia(t[1],None,t[2])
+        t[0] = Sentencia(t[1],None,t[2], str(t.lineno(1)),str(find_column(t.lexpos(1))))
 
 # SINTAXIS PARA CASE
 def p_case_instr(t):
     '''case_instr : CASE sentencias END '''
-    t[0] = Case(t[2])
+    t[0] = Case(t[2], str(t.lineno(1)),str(find_column(t.lexpos(1))))
 
 def p_sentencias(t):
     '''sentencias : sentencias sentencia
@@ -685,16 +671,16 @@ def p_sentencia(t):
                     | ELSE expresiones
     '''
     if len(t)==5:
-        t[0] = Sentencia(t[1],t[2],t[4])
+        t[0] = Sentencia(t[1],t[2],t[4], str(t.lineno(1)),str(find_column(t.lexpos(1))))
     elif len(t)==4:
-        t[0] = Sentencia(t[1],None,t[3])
+        t[0] = Sentencia(t[1],None,t[3], str(t.lineno(1)),str(find_column(t.lexpos(1))))
     else:
-        t[0] = Sentencia(t[1],None,t[2])
+        t[0] = Sentencia(t[1],None,t[2], str(t.lineno(1)),str(find_column(t.lexpos(1))))
    
 # ALIAS
 def p_llaves(t):
     '''llaves : IDENT PUNTO IDENT'''
-    t[0] = LlamarColumna(t[2],t[1],t[3])
+    t[0] = LlamarColumna(t[2],t[1],t[3], str(t.lineno(1)),str(find_column(t.lexpos(1))))
 
 def p_variable_funcion(t):
     '''variable_funcion : IDENT
@@ -707,38 +693,38 @@ def p_variable_funcion(t):
 # SINTAXIS CONCATENAR
 def p_concater(t):
     '''concater : CONCATENA PARIZQ variable_funcion COMA variable_funcion PARDER '''
-    t[0] = Concatena(t[3], t[5])
+    t[0] = Concatena(t[3], t[5],  str(t.lineno(1)),str(find_column(t.lexpos(1))))
 
 # SITAXIS SUBSTRAER
 def p_substraer(t):
     '''subtrae : SUBSTRAER PARIZQ variable_funcion COMA expresiones COMA expresiones PARDER '''
-    t[0] = Substraer(t[3], t[5], t[7])
+    t[0] = Substraer(t[3], t[5], t[7],  str(t.lineno(1)),str(find_column(t.lexpos(1))))
 
 # SINTAXIS PARA HOY
 def p_hoy(t):
     '''hoyy : HOY PARIZQ PARDER'''
-    t[0] = Hoy()
+    t[0] = Hoy( str(t.lineno(1)),str(find_column(t.lexpos(1))))
 
 # SINTAXIS PARA CONTAR
 def p_contar(t):
     '''contarr : CONTAR PARIZQ POR PARDER
                 | CONTAR PARIZQ IDENT PARDER
                 | CONTAR PARIZQ llaves PARDER'''
-    t[0] = Contar(t[3])
+    t[0] = Contar(t[3], str(t.lineno(1)),str(find_column(t.lexpos(1))))
 
 # SINTAXIS PARA SUMA
 def p_suma(t):
     '''sumaa : SUMA PARIZQ IDENT PARDER
                 | SUMA PARIZQ POR PARDER
                 | SUMA PARIZQ llaves PARDER'''
-    t[0] = Suma(t[3])
+    t[0] = Suma(t[3], str(t.lineno(1)),str(find_column(t.lexpos(1))))
 
 # SINTAXIS PARA CAST
 def p_cast(t):
     '''castt : CAST PARIZQ IDENT AS tipodato PARDER 
                 | CAST PARIZQ llaves AS tipodato PARDER
                 | CAST PARIZQ IDENTIFICADOR AS tipodato PARDER'''
-    t[0] = Cast(t[3], t[5])
+    t[0] = Cast(t[3], t[5], str(t.lineno(1)),str(find_column(t.lexpos(1))))
 
 
 # FUNCIONES SISTEMA
@@ -758,9 +744,9 @@ def p_llamar(t):
                               
     '''
     if len(t)==5:
-        t[0] = LlamarFuncion(t[1],None)  
+        t[0] = LlamarFuncion(t[1],None, str(t.lineno(1)),str(find_column(t.lexpos(1))))  
     else:
-        t[0] = LlamarFuncion(t[1],t[3])
+        t[0] = LlamarFuncion(t[1],t[3], str(t.lineno(1)),str(find_column(t.lexpos(1))))
 
 def p_llamada(t):
     '''llamada : IDENT PARIZQ PARDER
@@ -768,9 +754,9 @@ def p_llamada(t):
                               
     '''
     if len(t)==4:
-        t[0] = LlamarFuncion(t[1],None)  
+        t[0] = LlamarFuncion(t[1],None, str(t.lineno(1)),str(find_column(t.lexpos(1))))  
     else:
-        t[0] = LlamarFuncion(t[1],t[3])
+        t[0] = LlamarFuncion(t[1],t[3], str(t.lineno(1)),str(find_column(t.lexpos(1))))
    
     
 def p_entrada(t):
@@ -786,17 +772,22 @@ def p_entrada(t):
 # SINTAXIS PARA RETORNAR
 def p_retornarr(t):
     '''retornar : RETURN expresiones PTCOMA'''
-    t[0] = Retornar(t[2])
+    t[0] = Retornar(t[2], str(t.lineno(1)),str(find_column(t.lexpos(1))))
 
 
 def p_error(t):
  
     print("Error sintactico en '%s', fila: %s, columna: %s" % (t.value, str(t.lineno), str(t.lexpos)))
-    listaError.insertar("Sintactico",f"Error de sintaxis en: {t.value}",t.lineno,t.lexpos)
+    listaError.insertar("Sintactico",f"Error de sintaxis en: {t.value}",str(t.lineno), str(find_column(t.lexpos)))
 
-
-
-
+def find_column(col):
+    last_cr = data.rfind('\n', 0, col)
+    if last_cr < 0:
+        last_cr = 0
+    
+    column = ( col- (last_cr+1))
+    return column
+# Función au
 
 # Construyendo el analizador sintactico
 import ply.yacc as yacc
@@ -804,29 +795,9 @@ parser = yacc.yacc()
 
 
 def parse(input) :
+    global data
+    data = input
     return [parser.parse(input),listaError.graficarSint()]
 
 
 
-
-'''
-input = """
-CREATE DATA BASE intento;
-
-USAR intento;
-
-Create Table Tabla1(
-    id int,
-    nombre nvarchar(100),
-    edad int
-);
-
-"""
-
-result = parser.parse(input.lower())
-
-#recorrer la matriz y diccionario
-for a in result:
-    print(a)
-    print("=====================================")
-'''

@@ -18,11 +18,12 @@ def procesar_insert(instr,ActualBaseDatos,xml):#arreglar lo de atributos
                 else:
                     valoreslist[i]=int(valor.get("dato"))
   
-    print(xml.insert_data(ActualBaseDatos,instr.get("id"),instr.get("columnas"),valoreslist))
+    mens=xml.insert_data(ActualBaseDatos,instr.get("id"),instr.get("columnas"),valoreslist)
+    print(mens)
 
-def procesar_delete(instr,ActualBaseDatos,xml, entorno): # si esta referenciada en otra tabla
+def procesar_delete(instr,ActualBaseDatos,xml, entorno,lsimbolo): # si esta referenciada en otra tabla
     print("lista de tipos actual: ",listatipodatos)
-    eliminar=procesar_where1(instr.get("where"),ActualBaseDatos, instr.get("id"), entorno)
+    eliminar=procesar_where1(instr.get("where"),ActualBaseDatos, instr.get("id"), entorno,lsimbolo)
    
     if listatipodatos and listatipodatos[-1] == "ERROR":
         return {"datos": "Error en sentenica where", "tipo": "ERROR"}
@@ -31,16 +32,17 @@ def procesar_delete(instr,ActualBaseDatos,xml, entorno): # si esta referenciada 
         #si todos los elementos en la lista son tipo_dato.bit ejectua el xml si no, error de tipos
         if all(x == TIPO_DATO.BIT for x in datos):
 
-            print(xml.delete_registro(ActualBaseDatos, instr.get("id"),eliminar))
+            mens=xml.delete_registro(ActualBaseDatos, instr.get("id"),eliminar)
+            print(mens)
         else:
             return {"datos": "La condicion en where debe ser de tipo boolean", "tipo": "ERROR"}
           
 
-def procesar_update(instr,ActualBaseDatos,xml, entorno):
+def procesar_update(instr,ActualBaseDatos,xml, entorno, lsimbolo):
     print(instr)
     if instr.get("id")!=None:
         comprobador.agregar([instr.get("id")])
-    whereupdate = procesar_where1(instr.get("where"),ActualBaseDatos, instr.get("id"), entorno)
+    whereupdate = procesar_where1(instr.get("where"),ActualBaseDatos, instr.get("id"), entorno, lsimbolo)
     listset = []
     if listatipodatos and listatipodatos[-1] == "ERROR":
         return {"datos": "Error en sentenica where", "tipo": "ERROR"}
@@ -48,7 +50,7 @@ def procesar_update(instr,ActualBaseDatos,xml, entorno):
     for i in instr.get("set"):
         if isinstance(i.get("exp2"),dict):
             
-             listset.append(procesar_where1(i.get("exp2"), ActualBaseDatos, instr.get("id"), entorno))
+             listset.append(procesar_where1(i.get("exp2"), ActualBaseDatos, instr.get("id"), entorno, lsimbolo))
         else:
             #If que valide que no sea tipo int o float
             print (not(type(i.get("exp2"))) == int)
@@ -63,9 +65,9 @@ def procesar_update(instr,ActualBaseDatos,xml, entorno):
                     resultado =variable.get("dato")
                     listset.append(resultado)
                 else:
-                    listset.append(procesar_where1(i.get("exp2"), ActualBaseDatos, instr.get("id"), entorno))
+                    listset.append(procesar_where1(i.get("exp2"), ActualBaseDatos, instr.get("id"), entorno,lsimbolo))
             else:
-                listset.append(procesar_where1(i.get("exp2"), ActualBaseDatos, instr.get("id"), entorno))
+                listset.append(procesar_where1(i.get("exp2"), ActualBaseDatos, instr.get("id"), entorno,lsimbolo))
             
     if listatipodatos and listatipodatos[-1] == "ERROR":
         return {"datos": "Error en sentenica where", "tipo": "ERROR"}    
@@ -74,7 +76,7 @@ def procesar_update(instr,ActualBaseDatos,xml, entorno):
 
     print(xml.UpdateTable(ActualBaseDatos, instr.get("id"),instr.get("set"), listset,whereupdate))
 
-def procesar_select(instr,ActualBaseDatos,xml, entorno):
+def procesar_select(instr,ActualBaseDatos,xml, entorno, lsimbolo,imprimir,bandera): # si esta referenciada en otra tabla
     print("lista de tipos actual: ",listatipodatos)
     columna=instr.get("columna")  
     tabla=instr.get("tablas")
@@ -138,7 +140,7 @@ def procesar_select(instr,ActualBaseDatos,xml, entorno):
     if where!=None and tabla==None:
         print("Error en sentenica where")
     if where!=None and tabla!=None:
-        condiciones=procesar_where1(where,ActualBaseDatos,tabla[0], entorno)
+        condiciones=procesar_where1(where,ActualBaseDatos,tabla[0], entorno,lsimbolo)
         if listatipodatos and listatipodatos[-1] == "ERROR":
             print("Error en sentenica where")
     
@@ -207,7 +209,7 @@ def procesar_select(instr,ActualBaseDatos,xml, entorno):
                     if tabla!=None:
                         t=tabla[0]
                    
-                    result=procesar_where1( i.get("colum"),ActualBaseDatos,t, entorno)
+                    result=procesar_where1( i.get("colum"),ActualBaseDatos,t, entorno,lsimbolo)
                     
                     if isinstance(result,list):
                         result=result
@@ -274,7 +276,7 @@ def procesar_select(instr,ActualBaseDatos,xml, entorno):
         print("------------------------------------") 
 
 
-
-
-
+    if bandera==1:
+        imprimir.agregarTabla(tablarespuesta,instr.get("linea"),instr.get("pos"))
+        
     print("tabla respuesta: ",tablarespuesta)

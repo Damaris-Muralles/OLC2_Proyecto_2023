@@ -21,7 +21,7 @@ def DeclararVariables(instruccion, entorno, entornoNombre, simbolo):
         valor = '00-00-0000 00:00:00'
 
     if instruccion.get('valor') != None:
-        resultado = procesar_where1(instruccion.get('valor'),"", "", entorno)
+        resultado = procesar_where1(instruccion.get('valor'),"", "", entorno, simbolo)
         #si resultado no es una lista
         print("comillas: ", resultado)
         valor = resultado
