@@ -1,13 +1,13 @@
 <?xml version="1.0" ?>
 <basesdedatos>
   <basedatos>
-    <nombre>intento</nombre>
+    <nombre>tbbanco</nombre>
     <tablas>
       <tabla>
-        <nombre>tabla1</nombre>
+        <nombre>tbestado</nombre>
         <columnas>
           <columna>
-            <id>ide</id>
+            <id>idestado</id>
             <tipo>
               <tipodato>1</tipodato>
               <longitud>None</longitud>
@@ -23,35 +23,10 @@
             <inputs>
               <input>1</input>
               <input>2</input>
-              <input>3</input>
-              <input>4</input>
-              <input>5</input>
             </inputs>
           </columna>
           <columna>
-            <id>nombre</id>
-            <tipo>
-              <tipodato>6</tipodato>
-              <longitud>100</longitud>
-            </tipo>
-            <atributo>
-              <primaria/>
-              <foranea/>
-              <nulo/>
-              <nonulo/>
-              <tablaref/>
-              <columnaref/>
-            </atributo>
-            <inputs>
-              <input>juan</input>
-              <input>soycase2</input>
-              <input>soycase2</input>
-              <input>soycase2</input>
-              <input>pedro</input>
-            </inputs>
-          </columna>
-          <columna>
-            <id>edad</id>
+            <id>estado</id>
             <tipo>
               <tipodato>1</tipodato>
               <longitud>None</longitud>
@@ -65,24 +40,14 @@
               <columnaref/>
             </atributo>
             <inputs>
-              <input>20</input>
-              <input>32</input>
-              <input>25</input>
-              <input>28</input>
-              <input>30</input>
+              <input>1</input>
+              <input>1</input>
             </inputs>
           </columna>
         </columnas>
       </tabla>
     </tablas>
     <funciones/>
-    <procedimientos>
-      <procedure>
-        <nombre>valores</nombre>
-      </procedure>
-      <procedure>
-        <nombre>actualizar</nombre>
-      </procedure>
-    </procedimientos>
+    <procedimientos/>
   </basedatos>
 </basesdedatos>

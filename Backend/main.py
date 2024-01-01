@@ -4,8 +4,11 @@ from BaseDatos.manejoxml import *
 from Entornos.Entorno import *
 from Entornos.ListaMetodo import *
 from Entornos.ListaSimbolos import *
-
 from Separar.Globales import *
+
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+
 
 xml = XMLManejador("./BaseDatos/BasesDatos.xml")  
 lsimbolo = ListaSimbolo()
@@ -15,18 +18,11 @@ def procesar_instrucciones(instrucciones) :
     ## lista de instrucciones recolectadas
     entornoG = Entorno(None, "global")
     Globales(instrucciones, entornoG, xml, lsimbolo, lmetodo)
-
+    return "Procesamiento exitoso"
     
     
     
-
-#f = open("./entrada.txt", "r")
-
-#input = f.read()
-# otras pruebas de entrada
-
-
-input = """
+"""
 
 CREATE DATA BASE intento;
 
@@ -99,10 +95,95 @@ Valores();
 actualizar('datosnuevo', 'Pruebas2');
 """
 
-instrucciones = g.parse(input.lower())
-if instrucciones!=None:
 
-    procesar_instrucciones(instrucciones)
+app = Flask(__name__)
+CORS(app)
+@app.route('/a', methods=['POST'])
+def procesar():
+    global lsimbolo
+
+      
+    global lmetodo
+    lsimbolo = ListaSimbolo()
+    lmetodo = ListaMetodo()
+    imprimir=""
+    Errorlexico=""
+    ErrorSintactico=""
+    Gramatical=""
+    tablasimbolo=""
+    tablametodo=""
+    arbol=""
+    lista1=[]
+
+    
+    try:
+
+        data = request.get_json()
+        entrada = data['entrada']
+        da=g.lexico(entrada.lower())
+        print("tokens::::::::::::::::::::::::::::::::::")
+        print(da[0])
+        Gramatical=da[0]
+        print("errores::::::::::::::::::::::::::::::::::")
+        print(da[1])
+        Errorlexico=da[1]
+            
+
+        instrucciones = g.parse(entrada.lower())
+        ErrorSintactico=instrucciones[1]
+        if instrucciones[0]!=None:
+             
+            imprimir = procesar_instrucciones(instrucciones[0])
+    except Exception as e:
+        print(">>>>> entro en la excepcion")
+        return jsonify({'message': 'Procesamiento fallido','lista':lista1,'imprimir':imprimir,'Errorlexico':Errorlexico,'ErrorSintactico':ErrorSintactico,'Gramatical':Gramatical,'tablasim':tablasimbolo,'tablamet':tablametodo,'arbol':arbol})
+
+
+    #lista1=xml.recorridoarbol()
+    return jsonify({'message': 'Procesado con éxito','lista':lista1,'imprimir':imprimir,'Errorlexico':Errorlexico,'ErrorSintactico':ErrorSintactico,'Gramatical':Gramatical,'tablasim':tablasimbolo,'tablamet':tablametodo,'arbol':arbol})
+
+
+@app.route('/crear', methods=['POST'])
+def creardb():
+    data = request.get_json()
+    entrada = data['entrada']
+    lista1=[]
+    try:
+        print(xml.add_database(entrada))
+    except Exception as e:
+        print(">>>>> entro en la excepcion")
+        return jsonify({'message': 'Creado fallido','lista':lista1})
+        
+    lista1=xml.recorridoarbol()
+    return jsonify({'message': 'Creado con éxito','lista':lista1})
+
+
+@app.route('/eliminar', methods=['POST'])
+def eliminado():
+    data = request.get_json()
+    entrada = data['entrada']
+    lista1=[]
+    try:
+        print( xml.eliminardb(entrada))  
+    except Exception as e:
+            print(">>>>> entro en la excepcion")
+            return jsonify({'message': 'Creado fallido','lista':lista1})
+    
+    lista1=xml.recorridoarbol()
+    return jsonify({'message': 'Eliminado con éxito','lista':lista1})
+
+
+@app.route('/get_data', methods=['GET'])
+def get_data():
+    # Simulando datos del backend
+    data = xml.recorridoarbol()
+    return jsonify(data)
+
+
+
+if __name__ == '__main__':
+  app.run(port=5000)
+
 
 
 

@@ -1,59 +1,49 @@
-/*
-    Autor: DM
-    Año:2023
-*/
-
 
 // FUNCIONES PARA HACER DINAMICA LA INTERFAZ
 
 let grapharbol="";
 let graphts="";
-let grapherror="";
+let graphtsmetodo="";
+let grapherrorsint="";
+let grapherrorlex="";
+let graphgramar="";
 let cadena="";
+
+
 // Para el Navbar
-let navLinks = document.querySelectorAll('.nav-link');
+let navLinks = document.querySelectorAll('.navbar-nav .nav-link'); // Seleccionar solo los elementos del navbar
 navLinks[0].classList.add('active');
-window.addEventListener('scroll', function() {
+
+window.addEventListener('scroll', function () {
   var logo = document.querySelector('.logoapp img');
   var navbar = document.querySelector('.navbar');
 
   if (window.scrollY > 30) {
-      logo.src = 'Img/logoicon.ico';
-      navbar.classList.add('bg-dark');
+    logo.src = 'Img/logoicon.ico';
+    navbar.classList.add('bg-dark');
   } else {
-      logo.src = 'Img/logoicon.ico';
-      navbar.classList.remove('bg-dark');
+    logo.src = 'Img/logoicon.ico';
+    navbar.classList.remove('bg-dark');
   }
-  // Obtener todas las secciones
-  let sections = document.querySelectorAll('section');
-
-  // Obtener todos los enlaces del navbar
-  navLinks = document.querySelectorAll('.nav-link');
-  let index = sections.length;
-  console.log(index)
-  let offset = 150;
-
-  while(--index && window.scrollY + offset < sections[index].offsetTop) {}
 
  
-
-  navLinks.forEach((link) => link.classList.remove('active'));
-  navLinks[index].classList.add('active');
+  
 });
 
-// Posicionar las secciones antes de la seccion al dar click
+// Posicionar las secciones antes de la sección al dar clic
 var links = document.querySelectorAll('.navbar-nav .nav-link');
-for (var i = 0; i < links.length; i++) {
-links[i].addEventListener('click', function(event) {
-  event.preventDefault();
-  var targetId = this.getAttribute('href').slice(1);
-  var target = document.querySelector('#' + targetId);
-  if (target) {
-    var targetPosition = target.getBoundingClientRect().top + window.pageYOffset;
-    window.scrollTo(0, targetPosition - 130);
-  }
-});
+for (var i = 0; i < 3; i++) {
+  links[i].addEventListener('click', function (event) {
+    event.preventDefault();
+    var targetId = this.getAttribute('href').slice(1);
+    var target = document.querySelector('#' + targetId);
+    if (target) {
+      var targetPosition = target.getBoundingClientRect().top + window.pageYOffset;
+      window.scrollTo(0, targetPosition - 130);
+    }
+  });
 }
+
 
 // Cambio de manuales
 function changePDF(file, link) {
@@ -75,16 +65,28 @@ function showOffcanvas(event) {
   var offcanvas = new bootstrap.Offcanvas(offcanvasElement);
   offcanvas.show();
 }
+function showOffcanvas1(event) {
+  event.preventDefault();
+  var offcanvasElement = document.getElementById('menu1');
+  var offcanvas = new bootstrap.Offcanvas(offcanvasElement);
+  offcanvas.show();
+}
 
 // Cambiar imagen de reporte segun lo seleccionado
 function changeImage(text) {
 
    if (text=="1"){ 
-       cadena=grapherror;
+       cadena=grapherrorlex;
    }else if(text=="2"){
+      cadena=grapherrorsint;
+    }else if(text=="3"){
       cadena=graphts;
+    }else if (text=="4"){
+      cadena=graphtsmetodo;
+    }else if (text=="5"){
+      cadena=grapharbol;
    }else{
-      cadena= grapharbol;
+      cadena= graphgramar;
    }
   d3.select("#imagenrep").graphviz()
   .width("1000px")
@@ -95,6 +97,73 @@ function changeImage(text) {
   offcanvas.hide();
 
 }
+
+// Funciones de Importar y Exportar
+function exportar() {
+  console.log("Haciendo clic en Exportar");
+}
+
+function importar() {
+  console.log("Haciendo clic en Importar");
+}
+
+function CrearDump(){
+  console.log("Haciendo clic en Crear Dump");
+} 
+
+function CrearBase(){
+  console.log("Haciendo clic en Crear Base");
+  const fileName = prompt('Ingrese el nombre de la base de datos:');
+  if (!fileName) {
+    // El usuario hizo clic en Cancelar o dejó el campo vacío
+    return;
+  }
+  fetch('http://localhost:5000/crear', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ entrada: fileName })
+  })
+  .then(response => response.json())
+  .then(data => {
+      console.log(data['message']);
+      // Puedes manejar la respuesta del backend aquí
+  })
+  .catch(error => {
+      console.error('Error:', error);
+  });
+}
+
+function EliminarBase(){
+  console.log("Haciendo clic en Eliminar Base");
+  // Obtener el nombre del archivo del usuario usando prompt
+  const fileName = prompt('Ingrese el nombre de la base de datos a eliminar:');
+  if (!fileName) {
+    // El usuario hizo clic en Cancelar o dejó el campo vacío
+    return;
+  }
+  fetch('http://localhost:5000/eliminar', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ entrada: fileName })
+  })
+  .then(response => response.json())
+  .then(data => {
+      console.log(data['message']);
+      // Puedes manejar la respuesta del backend aquí
+  })
+  .catch(error => {
+      console.error('Error:', error);
+  });
+}
+
+
+
+
+
 
 
 // FUNCIONES PARA EL EDITOR
@@ -120,7 +189,7 @@ addTabBtn.addEventListener('click', () => {
   const newTab = document.createElement('div');
   newTab.classList.add('tab');
   newTab.setAttribute('data-tab', newTabNum);
-  newTab.innerHTML = `Tab ${newTabNum} <span class="close">×</span>`;
+  newTab.innerHTML = `Query ${newTabNum} <span class="close">×</span>`;
   tabsContainer.insertBefore(newTab, addTabBtn);
   
   // Crear el contenido de la nueva pestaña
@@ -130,7 +199,8 @@ addTabBtn.addEventListener('click', () => {
 
   newTabContent.innerHTML = `<button type="button" class="btn btn-info">Abrir</button>
     <button type="button" class="btn btn-info">Guardar</button>
-    <button type="button" class="btn btn-info">Ejecutar</button>
+    <button type="button" class="btn btn-info">Guardar como</button>
+    <button type="button" class="btn btn-info">Ejecutar Query</button>
     <div class="contenedorgeneral">
       <div class="editorcontainer">
         <textarea id="myeditor${newTabNum}"></textarea>
@@ -220,7 +290,7 @@ if (event.key === 'Enter') {
  openBtn.addEventListener('click', () => {
    const input = document.createElement('input');
    input.type = 'file';
-   input.accept = '.tw';
+   input.accept = '.sql';
    input.onchange = () => {
      const file = input.files[0];
      if (file) {
@@ -251,11 +321,37 @@ saveBtn.addEventListener('click', () => {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `Archivo${newTabNum}.tw`;
+  a.download = `Query${newTabNum}.sql`;
+  a.click();
+});
+const saveAsBtn = newTabContent.querySelector('.btn-info:nth-child(3)');
+saveAsBtn.addEventListener('click', () => {
+  const text = editor.getValue();
+  if (!text) {
+    Swal.fire(
+      'No hay contenido para guardar',
+      'Click en ok para salir',
+      'info'
+    );
+    return;
+  }
+
+  // Obtener el nombre del archivo del usuario usando prompt
+  const fileName = prompt('Ingrese el nombre del archivo:');
+  if (!fileName) {
+    // El usuario hizo clic en Cancelar o dejó el campo vacío
+    return;
+  }
+
+  const blob = new Blob([text], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${fileName}.sql`;
   a.click();
 });
   // Agregar acción al botón "Ejecutar"
-  const executeBtn = newTabContent.querySelector('.btn-info:nth-child(3)');
+  const executeBtn = newTabContent.querySelector('.btn-info:nth-child(4)');
   executeBtn.addEventListener('click', () => {
     const editorContent = editor.getValue();
     ejecutaranalizador(editorContent,consoleEditor);
@@ -319,7 +415,7 @@ function selectTab(tabNum) {
 const firstTab = document.createElement('div');
 firstTab.classList.add('tab', 'active');
 firstTab.setAttribute('data-tab', '1');
-firstTab.innerHTML = `Tab 1 <span class="close">×</span>`;
+firstTab.innerHTML = `Query 1 <span class="close">×</span>`;
 tabsContainer.insertBefore(firstTab, addTabBtn);
 
 const firstTabContent = document.createElement('div');
@@ -327,7 +423,8 @@ firstTabContent.classList.add('tab-content', 'active','activetab');
 firstTabContent.setAttribute('data-tab', '1');
 firstTabContent.innerHTML = `<button type="button" class="btn btn-info">Abrir</button>
 <button type="button" class="btn btn-info">Guardar</button>
-<button type="button" class="btn btn-info">Ejecutar</button>
+<button type="button" class="btn btn-info">Guardar como</button>
+<button type="button" class="btn btn-info">Ejecutar Query</button>
 <div class="contenedorgeneral">
   <div class="editorcontainer">
     <textarea id="myeditor1"></textarea>
@@ -416,7 +513,7 @@ if (event.key === 'Enter') {
     openBtn.addEventListener('click', () => {
       const input = document.createElement('input');
       input.type = 'file';
-      input.accept = '.tw';
+      input.accept = '.sql';
       input.onchange = () => {
         const file = input.files[0];
         if (file) {
@@ -446,11 +543,38 @@ if (event.key === 'Enter') {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'Archivo1.tw';
+      a.download = 'Query1.sql';
+      a.click();
+    });
+    const saveAsBtn = firstTabContent.querySelector('.btn-info:nth-child(3)');
+    console.log(saveAsBtn);
+    saveAsBtn.addEventListener('click', () => {
+      const text = editor.getValue();
+      if (!text) {
+        Swal.fire(
+          'No hay contenido para guardar',
+          'Click en ok para salir',
+          'info'
+        );
+        return;
+      }
+
+      // Obtener el nombre del archivo del usuario usando prompt
+      const fileName = prompt('Ingrese el nombre del archivo:');
+      if (!fileName) {
+        // El usuario hizo clic en Cancelar o dejó el campo vacío
+        return;
+      }
+
+      const blob = new Blob([text], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${fileName}.sql`;
       a.click();
     });
     // Agregar acción al botón "Ejecutar"
-    const executeBtn = firstTabContent.querySelector('.btn-info:nth-child(3)');
+    const executeBtn = firstTabContent.querySelector('.btn-info:nth-child(4)');
     console.log(executeBtn)
     executeBtn.addEventListener('click', () => {
       const editorContent = editor.getValue();
@@ -468,11 +592,7 @@ firstTab.addEventListener('click', () => {
   const tabNum = firstTab.dataset.tab;
   selectTab(tabNum);
 });
-// funcion de cerrar primera pestaña
-/*
-* esta funcion lo que realmente hace es borrar el contenido de la pestaña 
-* haciendo como que fuera una nueva pestaña en blanco
-*/ 
+
 const firstCloseBtn = firstTab.querySelector('.close');
 firstCloseBtn.addEventListener('click', e => {
   e.stopPropagation();
@@ -482,7 +602,8 @@ firstCloseBtn.addEventListener('click', e => {
 
     firstTabContent.innerHTML = `<button type="button" class="btn btn-info">Abrir</button>
     <button type="button" class="btn btn-info">Guardar</button>
-    <button type="button" class="btn btn-info">Ejecutar</button>
+    <button type="button" class="btn btn-info">Guardar como</button>
+    <button type="button" class="btn btn-info">Ejecutar Query</button>
     <div class="contenedorgeneral">
       <div class="editorcontainer">
         <textarea id="myeditor${tabNum}"></textarea>
@@ -569,7 +690,7 @@ if (event.key === 'Enter') {
     openBtn.addEventListener('click', () => {
       const input = document.createElement('input');
       input.type = 'file';
-      input.accept = '.tw';
+      input.accept = '.sql';
       input.onchange = () => {
         const file = input.files[0];
         if (file) {
@@ -600,12 +721,39 @@ if (event.key === 'Enter') {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `Archivo${tabNum}.tw`;
+      a.download = `Query${tabNum}.sql`;
+      a.click();
+    });
+    const saveAsBtn = firstTabContent.querySelector('.btn-info:nth-child(3)');
+    console.log(saveAsBtn);
+    saveAsBtn.addEventListener('click', () => {
+      const text = editor.getValue();
+      if (!text) {
+        Swal.fire(
+          'No hay contenido para guardar',
+          'Click en ok para salir',
+          'info'
+        );
+        return;
+      }
+
+      // Obtener el nombre del archivo del usuario usando prompt
+      const fileName = prompt('Ingrese el nombre del archivo:');
+      if (!fileName) {
+        // El usuario hizo clic en Cancelar o dejó el campo vacío
+        return;
+      }
+
+      const blob = new Blob([text], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${fileName}.sql`;
       a.click();
     });
 
     // Agregar acción al botón "Ejecutar"
-    const executeBtn = firstTabContent.querySelector('.btn-info:nth-child(3)');
+    const executeBtn = firstTabContent.querySelector('.btn-info:nth-child(4)');
     console.log(executeBtn)
     executeBtn.addEventListener('click', () => {
       const editorContent = editor.getValue();
@@ -630,50 +778,43 @@ if (event.key === 'Enter') {
 
 // FUNCIONES PARA EL ANALIZADOR
 function ejecutaranalizador (entrada,consoleEditor){
-  let ast=null;
-  try {
-      grapharbol="";
-      graphts="";
-      grapherror="";
-      erroreslist=[];
-      entorno="Global";
-      tsReporte = [];
-      tipofuncion=null;
-      funcionactual=null;
-      ciclo=null;
-      cadena="";
-      errores=[];
-      ast = gramatica.parse(entrada.toString());
-      
-      // imrimimos en un archivo el contendio del AST en formato JSON
-      /*const blob = new Blob([JSON.stringify(ast, null, 2)], {type: 'application/json'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'ast.json';
-      a.click();*/
-  } catch (e) {
-      console.error(e);
-  }
+  // limpiando consola
+  consoleEditor.setValue("hola");
+  // limpiando variables globales
+  grapharbol="";
+  graphts="";
+  graphtsmetodo="";
+  grapherrorsint="";
+  grapherrorlex="";
+  graphgramar="";
+  cadena="";
+  // limpiando variables de tabla de simbolos
+  tablaSimbolos=[];
 
-
-  // Crear una tabla de símbolos para el ámbito global
-  var tsGlobal = new TS([], null);
-
-
-  if (errores.length>0){
-    const stringd = errores.map(item => item.consola).join("\n");
-    consoleEditor.setValue("");
-    consoleEditor.setValue(stringd);
-    grapherror=generateERRORES(errores, 0) ;
-  }else{
-  // Procesamos las instrucciones reconocidas en nuestro AST
-    grapharbol=generateDot(ast);
-    consoleEditor.setValue("");
-    let res=procesarInstrucionesGlobales(ast, tsGlobal,consoleEditor);
-    graphts= res.ts;
-    grapherror=res.errort;
-  }
+  fetch('http://localhost:5000/a', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ entrada: entrada })
+  })
+  .then(response => response.json())
+  .then(data => {
+      console.log(data['message']);
+      console.log(data['Errorlexico']);
+      console.log(data['ErrorSintactico']);
+      console.log(data['Gramatical']);
+      // {'message': 'Procesado con éxito','lista':lista1,'imprimir':imprimir,'Errorlexico':Errorlexico,'ErrorSintactico':ErrorSintactico,'Gramatical':Gramatical,'tablasim':tablasimbolo,'tablamet':tablametodo,'arbol':arbol}
+      grapherrorlex=data['Errorlexico'];
+      graphgramar=data['Gramatical'];
+      grapherrorsint=data['ErrorSintactico'];
+      graphts=data['tablasim'];
+      graphtsmetodo=data['tablamet'];
+      grapharbol=data['arbol'];
+  })
+  .catch(error => {
+      console.error('Error:', error);
+  });
 
 }
 

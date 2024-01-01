@@ -1,5 +1,11 @@
 
 from Analizadores.instrucciones import *
+# IMPORTAR RGRAMAR
+from Reportes.Rgramar import *
+from Reportes.RErrores import *
+
+listaError=ListaError()
+
 # Lista de palabras reservadas
 reservadas = {
     # instrucciones
@@ -140,6 +146,7 @@ def t_DECIMALES(t):
         t.value = float(t.value)
     except ValueError:
         print("El valor float es muy largo %d", t.value)
+        listaError.insertar("Lexico",f"El valor float es muy largo {t.value}",t.lineno,t.lexpos)
         t.value = 0
     return t
 
@@ -149,6 +156,7 @@ def t_ENTERO(t):
         t.value = int(t.value)
     except ValueError:
         print("El valor del entero es muy largo %d", t.value)
+        listaError.insertar("Lexico",f"El valor del entero es muy largo {t.value}",t.lineno,t.lexpos)
         t.value = 0
     return t
 
@@ -173,15 +181,31 @@ t_ignore = " \t"
 def t_newline(t):
     r'\n+'
     t.lexer.lineno += t.value.count("\n")
+
     
 def t_error(t):
     print("Error lexico: Caracter '%s' no es valido" % t.value[0])
+    listaError.insertar("Lexico",f"Caracter {t.value[0]} no es permitido",t.lineno,t.lexpos)
     t.lexer.skip(1)
     
 # Construyendo el analizador lexico
 import ply.lex as lex
 lexer = lex.lex()
 
+def lexico(data):
+    list1=ListaGramar()
+    lexer.input(data)
+    lexer.lineno = 1
+    lexer.lexpos = 0
+    while True:
+        tok = lexer.token()
+        if not tok:
+            break
+        #guardar en la lista de rgramar
+        list1.insertar(tok.type, tok.value, tok.lineno, tok.lexpos)
+    lexer.lineno = 1
+    lexer.lexpos = 0
+    return [list1.graficar(),listaError.graficarLex()]
 
 # prueba del analizador lexico
 '''
@@ -766,8 +790,9 @@ def p_retornarr(t):
 
 
 def p_error(t):
-    print(t)
+ 
     print("Error sintactico en '%s', fila: %s, columna: %s" % (t.value, str(t.lineno), str(t.lexpos)))
+    listaError.insertar("Sintactico",f"Error de sintaxis en: {t.value}",t.lineno,t.lexpos)
 
 
 
@@ -777,8 +802,9 @@ def p_error(t):
 import ply.yacc as yacc
 parser = yacc.yacc()
 
+
 def parse(input) :
-    return parser.parse(input)
+    return [parser.parse(input),listaError.graficarSint()]
 
 
 

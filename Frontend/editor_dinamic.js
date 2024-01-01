@@ -17,43 +17,23 @@ CodeMirror.defineMode("typewise", function() {
         } else if (stream.match("/*")) {
           state.enComentario = true;
           return "comentario";
-        }else if  ((stream.sol() || /\s/.test(stream.string.charAt(stream.start - 1))) &&(stream.match(/int/i) || stream.match(/double/i) || stream.match(/boolean/i) || stream.match(/char/i) || stream.match(/string/i))) {
-          return "property";
-        } else if  ((stream.sol() || /\s/.test(stream.string.charAt(stream.start - 1))) && (stream.match(/switch/i) || stream.match(/if/i) || stream.match(/else/i) || stream.match(/do/i) || stream.match(/while/i) || stream.match(/for/i)) ){
-          return "keyword";
-        } else if  ((stream.sol() || /\s/.test(stream.string.charAt(stream.start - 1))) && (stream.match(/break/i) || stream.match(/continue/i) || stream.match(/return/i) || stream.match(/case/i) || stream.match(/default/i))) {
-          return "atom";
-        } else if  ((stream.sol() || /\s/.test(stream.string.charAt(stream.start - 1))) &&(stream.match(/main/i) || stream.match(/void/i)) ){
+        }else if  ((stream.sol() || /\s/.test(stream.string.charAt(stream.start - 1))) &&(stream.match(/create/i) || stream.match(/alter/i) || stream.match(/use/i) || stream.match(/drop/i) || stream.match(/truncate/i)|| stream.match(/select/i)|| stream.match(/update/i)|| stream.match(/delete/i)|| stream.match(/insert/i)|| stream.match(/function/i)|| stream.match(/procedure/i)|| stream.match(/data base/i)|| stream.match(/into/i)|| stream.match(/table/i)|| stream.match(/where/i)|| stream.match(/from/i) || stream.match(/values/i)|| stream.match(/colum/i)|| stream.match(/;/i)|| stream.match(/ ;/i))) {
           return "variable-2";
-        } else if ((stream.sol() || /\s/.test(stream.string.charAt(stream.start - 1))) && (stream.match(/length/i) || stream.match(/tochararray/i) || stream.match(/tolower/i) || stream.match(/toupper/i) || stream.match(/round/i) || stream.match(/tostring/i) || stream.match(/truncate/i) || stream.match(/typeof/i))) {
-          return "def";
-        } else if ((stream.sol() || /\s/.test(stream.string.charAt(stream.start - 1))) && (stream.match(/list/i)) ){
+        } else if  ((stream.sol() || /\s/.test(stream.string.charAt(stream.start - 1))) && (stream.match(/primary key/i) || stream.match(/reference/i) ) ){
+          return "keyword";
+        }else if ((stream.sol() || /\s/.test(stream.string.charAt(stream.start - 1))) &&(stream.match(/cast/i) || stream.match(/suma/i) || stream.match(/contar/i) || stream.match(/concatena/i) || stream.match(/hoy/i)|| stream.match(/substraer/i))){
           return "property";
-        }else if  ((stream.sol() || /\s/.test(stream.string.charAt(stream.start - 1))) &&(stream.match(/print/i) || stream.match(/add/i)|| stream.match(/new/i))) {
-          return "fucionnt";
-        } else  if (stream.match(/\d+/)) {
-        return "number";
-        } else if (stream.match(/\d+\.\d+/)) {
-          
+        }else if ((stream.sol() || /\s/.test(stream.string.charAt(stream.start - 1))) &&(stream.match(/int/i) || stream.match(/decimal/i) || stream.match(/nchar/i) || stream.match(/nvarchar/i) || stream.match(/bit/i)|| stream.match(/date/i)|| stream.match(/datetime/i))){
+          return "variable-2";
+        }else if ((stream.sol() || /\s/.test(stream.string.charAt(stream.start - 1))) &&(stream.match(/set/i) || stream.match(/declare/i) || stream.match(/exc/i) || stream.match(/as/i)|| stream.match(/and/i)|| stream.match(/or/i)|| stream.match(/not/i)|| stream.match(/between/i)|| stream.match(/null/i) )){
+          return "variable-2";
+        }else if ((stream.sol() || /\s/.test(stream.string.charAt(stream.start - 1))) &&(stream.match(/begin/i) || stream.match(/when/i) || stream.match(/then/i) || stream.match(/else/i) || stream.match(/if/i)|| stream.match(/case/i)|| stream.match(/while/i)|| stream.match(/end/i)|| stream.match(/return/i))){
           return "atom";
-        } else if  ((stream.sol() || /\s/.test(stream.string.charAt(stream.start - 1))) && (stream.match(/true/i) || stream.match(/false/i))) {
-            return "variable-2";
-        } else if (stream.match("//")) {
-        stream.skipToEnd();
-        return "comentario";
-        } else if (stream.match(/\'[^\']\'/)) {
-            return "texto";
+        
+        }else if (stream.match(/\'[^\']\'/)) {
+            return "string";
         } else if (stream.match(/\"(\\.|[^"\\])*\"/)) {
-            return "texto";
-        } else if (stream.match(/\w+\s*\(/)) {
-          state.enFuncion = true;
-          stream.backUp(1);
-          return "llamada";
-        } else if (state.enFuncion && stream.match("(")) {
-          return "bracket1";
-        } else if (state.enFuncion && stream.match(")")) {
-          state.enFuncion = false;
-          return "bracket1";
+            return "string";
           
         }
 
@@ -77,7 +57,7 @@ function myHint(editor, options) {
     const start = token.start;
     const end = cursor.ch;
     const currentWord = token.string.slice(0, end - start);
-    const suggestions = ["int","double","boolean","char","string"	,"switch"	,"case"	,"default","if"		,"else","do"	,"while","for","list"	,"add","new","break","continue","return","true"	,"false","print","void","length","typeof","tolower","toupper","tostring","tochararray","truncate","round","main"].filter(function(item) {
+    const suggestions = ["use", "int", "procedure", "create", "alter", "drop", "truncate", "select", "update", "delete", "insert", "function", "procedure", "if", "case", "while", "data", "base", "into", "table", "declare", "add", "set", "exc", "begin", "when", "then", "else", "from", "where", "end", "as", "key", "values", "primary", "reference", "column", "cast", "suma", "contar", "return", "concatena", "hoy", "substraer", "and", "or", "not", "between", "null", "nvarchar", "nchar", "int", "decimal", "bit", "date", "datetime"].filter(function(item) {
       return item.toLowerCase().indexOf(currentWord.toLowerCase()) == 0;
     });
     return {
