@@ -101,14 +101,89 @@ function changeImage(text) {
 // Funciones de Importar y Exportar
 function exportar() {
   console.log("Haciendo clic en Exportar");
+  // que pida al usuario que ingrese de que base de datos se va a importar y que con un fech lo mande al backend
+  const fileName = prompt('Ingrese la base de datos a exportar:');
+  if (!fileName) {
+    // El usuario hizo clic en Cancelar o dejó el campo vacío
+    return;
+  }
+  fetch('http://localhost:5000/exportar', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ entrada: fileName })
+  })
+  // que saque una alerta con el contenido que se mando del backend
+  .then(response => response.json())
+  .then(data => {
+      // colocar el contenido en una alerta de bootstrap
+      Swal.fire({
+        title: 'Contenido del Dump',
+        html: '<textarea style="width:100%; height:200px; overflow:auto">' + data['message'] + '</textarea>',
+        icon: 'info',
+        confirmButtonText: 'Ok'
+      })
+  })
 }
 
-function importar() {
-  console.log("Haciendo clic en Importar");
-}
+document.getElementById('import').addEventListener('click', () => {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.sql';
+
+  input.onchange = () => {
+    const file = input.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const contenido = reader.result;
+        fetch('http://localhost:5000/a', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ entrada: contenido })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data['message']);
+            console.log(data['imprimir']);
+            // Puedes manejar la respuesta del backend aquí
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+      };
+      reader.readAsText(file);
+    }
+  };
+
+  // Simula un clic en el elemento de entrada
+  input.click();
+});
 
 function CrearDump(){
-  console.log("Haciendo clic en Crear Dump");
+  console.log("Haciendo clic en Crear Dump"); 
+  //lo mismo que exportar  pero no pide nombre de base de datos y se muestra mensaje en alerta de bootstrap
+  fetch('http://localhost:5000/dump', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ entrada: "" })
+  })
+  .then(response => response.json())
+  .then(data => {
+      // colocar el contenido en una alerta de bootstrap pero que lo muestre en un textarea con un scroll
+      Swal.fire({
+        title: 'Contenido del Dump',
+        html: '<textarea style="width:100%; height:200px; overflow:auto">' + data['message'] + '</textarea>',
+        icon: 'info',
+        confirmButtonText: 'Ok'
+      })
+  })
+
 } 
 
 function CrearBase(){
@@ -160,6 +235,84 @@ function EliminarBase(){
   });
 }
 
+
+
+
+document.addEventListener('DOMContentLoaded', function () {
+  // Function to fetch data from the backend
+  function fetchDataFromBackend() {
+    return fetch('http://localhost:5000/get_data') // Assuming your Flask app is running on the same domain
+      .then(response => response.json())
+      .catch(error => console.error('Error fetching data:', error));
+  }
+
+  function buildDynamicMenu(data) {
+    const databasesSubmenu = document.getElementById('databases-submenu');
+
+    // Clear existing content
+    databasesSubmenu.innerHTML = '';
+
+    // Iterate over the data and build the menu dynamically
+    data.forEach(database => {
+      const databaseItem = document.createElement('li');
+      databaseItem.className = 'menu-item';
+      databaseItem.textContent = database.name;
+
+      const databaseSubmenu = document.createElement('ul');
+      databaseSubmenu.className = 'submenu';
+
+      // Add tables
+      appendSubMenu(database.tables, 'Tablas', databaseSubmenu);
+
+      // Add procedures
+      appendSubMenu(database.procedures, 'Procedimientos', databaseSubmenu);
+
+      // Add functions
+      appendSubMenu(database.functions, 'Funciones', databaseSubmenu);
+
+      // Append the submenu to the database item
+      databaseItem.appendChild(databaseSubmenu);
+
+      // Append the database item to the main menu
+      databasesSubmenu.appendChild(databaseItem);
+    });
+  }
+
+  // Function to append a submenu to the parent
+  function appendSubMenu(items, label, parent) {
+    const submenuItem = document.createElement('li');
+    submenuItem.className = 'menu-item';
+    submenuItem.textContent = label;
+
+    const submenuUl = document.createElement('ul');
+    submenuUl.className = 'submenu';
+
+    items.forEach(item => {
+      const itemElement = document.createElement('li');
+      itemElement.className = 'menu-item';
+      itemElement.textContent = item;
+      submenuUl.appendChild(itemElement);
+    });
+
+    // Append the submenu to the parent
+    submenuItem.appendChild(submenuUl);
+    parent.appendChild(submenuItem);
+  }
+
+  // Fetch data from the backend and build the menu on page load
+  fetchDataFromBackend().then(buildDynamicMenu);
+});
+
+document.querySelectorAll('.menu-item').forEach(item => {
+  item.addEventListener('click', event => {
+    event.preventDefault(); // Esto evita el comportamiento predeterminado del clic
+
+    const submenu = event.target.querySelector('.submenu');
+    if (submenu) {
+      submenu.style.display = submenu.style.display === 'none' ? 'block' : 'none';
+    }
+  });
+});
 
 
 
@@ -779,7 +932,7 @@ if (event.key === 'Enter') {
 // FUNCIONES PARA EL ANALIZADOR
 function ejecutaranalizador (entrada,consoleEditor){
   // limpiando consola
-  consoleEditor.setValue("hola");
+  consoleEditor.setValue("");
   // limpiando variables globales
   grapharbol="";
   graphts="";
@@ -801,9 +954,7 @@ function ejecutaranalizador (entrada,consoleEditor){
   .then(response => response.json())
   .then(data => {
       console.log(data['message']);
-      console.log(data['Errorlexico']);
-      console.log(data['ErrorSintactico']);
-      console.log(data['Gramatical']);
+      console.log(data['imprimir']);
       // {'message': 'Procesado con éxito','lista':lista1,'imprimir':imprimir,'Errorlexico':Errorlexico,'ErrorSintactico':ErrorSintactico,'Gramatical':Gramatical,'tablasim':tablasimbolo,'tablamet':tablametodo,'arbol':arbol}
       grapherrorlex=data['Errorlexico'];
       graphgramar=data['Gramatical'];
@@ -811,6 +962,7 @@ function ejecutaranalizador (entrada,consoleEditor){
       graphts=data['tablasim'];
       graphtsmetodo=data['tablamet'];
       grapharbol=data['arbol'];
+      consoleEditor.setValue(data['imprimir']);
   })
   .catch(error => {
       console.error('Error:', error);

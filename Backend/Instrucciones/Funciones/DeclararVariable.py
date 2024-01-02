@@ -4,7 +4,7 @@ from Entornos.Simbolo import *
 from Expresiones.Where import *
 from Analizadores.instrucciones import *
 
-def DeclararVariables(instruccion, entorno, entornoNombre, simbolo):
+def DeclararVariables(instruccion, entorno, entornoNombre, simbolo,imprimir):
     #print("instruccion: ", instruccion)
     valor = None
     if instruccion.get('tipodato').get('tipo') == TIPO_DATO.INT  :
@@ -21,7 +21,7 @@ def DeclararVariables(instruccion, entorno, entornoNombre, simbolo):
         valor = '00-00-0000 00:00:00'
 
     if instruccion.get('valor') != None:
-        resultado = procesar_where1(instruccion.get('valor'),"", "", entorno, simbolo)
+        resultado = procesar_where1(instruccion.get('valor'),"", "", entorno, simbolo,imprimir)
         #si resultado no es una lista
         print("comillas: ", resultado)
         valor = resultado

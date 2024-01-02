@@ -2,13 +2,14 @@ from Expresiones.Where import *
 from Analizadores.instrucciones import *
 
 
-def procesar_insert(instr,ActualBaseDatos,xml):#arreglar lo de atributos
+def procesar_insert(instr,ActualBaseDatos,xml,imprimir):#arreglar lo de atributos
     
     valoreslist=instr.get("valores")
     for i in range(len(valoreslist)):
         if str(valoreslist[i]).startswith('@'):
             valor=obtener_variable(valoreslist[i])
             if valor.get("tipo")=="ERROR":
+                imprimir.agregar("ERROR:\nConsulta: Insert Fila: "+str(instr.get('linea'))+" Columna: "+str(instr.get('pos'))+f"\n{valor.get('dato')}")
                 return {"datos": "Error en la variable", "tipo": "ERROR"}
             else:
                 if valor.get("tipo")==TIPO_DATO.CHAR or valor.get("tipo")==TIPO_DATO.VARCHAR or valor.get("tipo")==TIPO_DATO.DATE or valor.get("tipo")==TIPO_DATO.DATETIME:
@@ -19,13 +20,16 @@ def procesar_insert(instr,ActualBaseDatos,xml):#arreglar lo de atributos
                     valoreslist[i]=int(valor.get("dato"))
   
     mens=xml.insert_data(ActualBaseDatos,instr.get("id"),instr.get("columnas"),valoreslist)
-    print(mens)
+    if mens.get("tipo") == "ERROR":
+        print("ERROR")
+        imprimir.agregar("ERROR:\nConsulta: Insert Fila: "+str(instr.get('linea'))+" Columna: "+str(instr.get('pos'))+f"\n{mens.get('dato')}")
 
-def procesar_delete(instr,ActualBaseDatos,xml, entorno,lsimbolo): # si esta referenciada en otra tabla
+def procesar_delete(instr,ActualBaseDatos,xml, entorno,lsimbolo,imprimir): # si esta referenciada en otra tabla
     print("lista de tipos actual: ",listatipodatos)
     eliminar=procesar_where1(instr.get("where"),ActualBaseDatos, instr.get("id"), entorno,lsimbolo)
    
     if listatipodatos and listatipodatos[-1] == "ERROR":
+        imprimir.agregar("ERROR:\nConsulta: Delete Fila: "+str(instr.get('linea'))+" Columna: "+str(instr.get('pos'))+f"\nError en sentenica where")
         return {"datos": "Error en sentenica where", "tipo": "ERROR"}
     else:
         datos=listatipodatos.pop()
@@ -33,18 +37,21 @@ def procesar_delete(instr,ActualBaseDatos,xml, entorno,lsimbolo): # si esta refe
         if all(x == TIPO_DATO.BIT for x in datos):
 
             mens=xml.delete_registro(ActualBaseDatos, instr.get("id"),eliminar)
-            print(mens)
+            if mens.get("tipo") == "ERROR":
+                print("ERROR")
+                imprimir.agregar("ERROR:\nConsulta: Delete Fila: "+str(instr.get('linea'))+" Columna: "+str(instr.get('pos'))+f"\n{mens.get('dato')}")
         else:
+            imprimir.agregar("ERROR:\nConsulta: Delete Fila: "+str(instr.get('linea'))+" Columna: "+str(instr.get('pos'))+f"\nError en sentenica where")
             return {"datos": "La condicion en where debe ser de tipo boolean", "tipo": "ERROR"}
           
-
-def procesar_update(instr,ActualBaseDatos,xml, entorno, lsimbolo):
+def procesar_update(instr,ActualBaseDatos,xml, entorno, lsimbolo,imprimir):
     print(instr)
     if instr.get("id")!=None:
         comprobador.agregar([instr.get("id")])
     whereupdate = procesar_where1(instr.get("where"),ActualBaseDatos, instr.get("id"), entorno, lsimbolo)
     listset = []
     if listatipodatos and listatipodatos[-1] == "ERROR":
+        imprimir.agregar("ERROR:\nConsulta: Update Fila: "+str(instr.get('linea'))+" Columna: "+str(instr.get('pos'))+f"\nError en sentenica where")
         return {"datos": "Error en sentenica where", "tipo": "ERROR"}
     tipodatolist=listatipodatos.pop()
     for i in instr.get("set"):
@@ -70,12 +77,16 @@ def procesar_update(instr,ActualBaseDatos,xml, entorno, lsimbolo):
                 listset.append(procesar_where1(i.get("exp2"), ActualBaseDatos, instr.get("id"), entorno,lsimbolo))
             
     if listatipodatos and listatipodatos[-1] == "ERROR":
+        imprimir.agregar("ERROR:\nConsulta: Update Fila: "+str(instr.get('linea'))+" Columna: "+str(instr.get('pos'))+f"\nError en sentenica where")
         return {"datos": "Error en sentenica where", "tipo": "ERROR"}    
         
     #print(listset)
 
-    print(xml.UpdateTable(ActualBaseDatos, instr.get("id"),instr.get("set"), listset,whereupdate))
-
+    mens=xml.UpdateTable(ActualBaseDatos, instr.get("id"),instr.get("set"), listset,whereupdate)
+    if mens.get("tipo") == "ERROR":
+        print("ERROR")
+        imprimir.agregar("ERROR:\nConsulta: Update Fila: "+str(instr.get('linea'))+" Columna: "+str(instr.get('pos'))+f"\n{mens.get('dato')}")
+        
 def procesar_select(instr,ActualBaseDatos,xml, entorno, lsimbolo,imprimir,bandera): # si esta referenciada en otra tabla
     print("lista de tipos actual: ",listatipodatos)
     columna=instr.get("columna")  
@@ -95,7 +106,8 @@ def procesar_select(instr,ActualBaseDatos,xml, entorno, lsimbolo,imprimir,bander
                     c=c+1
             if c>0:
                 print("Error en select, no se puede usar * con otras columnas")
-                return
+                imprimir.agregar("ERROR:\nConsulta: Select Fila: "+str(instr.get('linea'))+" Columna: "+str(instr.get('pos'))+"\nNo se puede usar * con otras columnas definidas")
+                return {"datos": "Error en select, no se puede usar * con otras columnas", "tipo": "ERROR"}
 
     if tabla!=None:
         comprobador.agregar(tabla)
@@ -111,14 +123,15 @@ def procesar_select(instr,ActualBaseDatos,xml, entorno, lsimbolo,imprimir,bander
             if isinstance(col.get("colum"),dict):
                 columnascomprobadas+=1
             else:
-                igualcolum,tabref,comp1=comprobador.comprobar(col.get("colum"),xml,ActualBaseDatos)
+                igualcolum,tabref,comp1=comprobador.comprobar(col.get("colum"),xml,ActualBaseDatos,imprimir)
             if igualcolum==-1:
                 print("ERROR")
-                return
+                return igualcolum
             columnascomprobadas+=comp1
             if igualcolum>1:
                 print("Error en el select, la columna ",col.get("colum")," esta en mas de una de las tablas usadas")
-                return
+                imprimir.agregar("ERROR:\nConsulta: Select Fila: "+str(instr.get('linea'))+" Columna: "+str(instr.get('pos'))+"\nLa columna "+col.get("colum")+" esta en mas de una de las tablas usadas")
+                return {"datos": "Error en el select, la columna "+col.get("colum")+" esta en mas de una de las tablas usadas", "tipo": "ERROR"}
             elif igualcolum==1:
                 
                 if ("." in col.get("colum"))!=True:
@@ -131,7 +144,8 @@ def procesar_select(instr,ActualBaseDatos,xml, entorno, lsimbolo,imprimir,bander
         print("columnas comprobadas: ",columnascomprobadas," columnas: ",len(columna))
         if columnascomprobadas!=len(columna):
             print("Error en el select, no se encontraron todas las columnas")
-            return    
+            imprimir.agregar("ERROR:\nConsulta: Select Fila: "+str(instr.get('linea'))+" Columna: "+str(instr.get('pos'))+"\nNo se encontraron todas las columnas")
+            return  {"datos": "Error en el select, no se encontraron todas las columnas", "tipo": "ERROR"}
 
     
 
@@ -139,10 +153,13 @@ def procesar_select(instr,ActualBaseDatos,xml, entorno, lsimbolo,imprimir,bander
     condiciones=[]
     if where!=None and tabla==None:
         print("Error en sentenica where")
+        imprimir.agregar("ERROR:\nConsulta: Select Fila: "+str(instr.get('linea'))+" Columna: "+str(instr.get('pos'))+"\nError en sentenica where")
+        return {"datos": "Error en sentenica where", "tipo": "ERROR"}
     if where!=None and tabla!=None:
         condiciones=procesar_where1(where,ActualBaseDatos,tabla[0], entorno,lsimbolo)
         if listatipodatos and listatipodatos[-1] == "ERROR":
             print("Error en sentenica where")
+
     
     # obtener los datos de la tabla
     
@@ -159,7 +176,8 @@ def procesar_select(instr,ActualBaseDatos,xml, entorno, lsimbolo,imprimir,bander
             result1=xml.obtener_registros(ActualBaseDatos,tabla[0],"*todo*")
             if result1.get("tipo") == "ERROR":
                 print("ERROR")
-                return
+                imprimir.agregar("ERROR:\nConsulta: Select Fila: "+str(instr.get('linea'))+" Columna: "+str(instr.get('pos'))+f"\n{result1.get('dato')}")
+                return result1
             for j,k,l in zip(result1.get("dato"),result1.get("tipo"),result1.get("ids")):
                 
                 if where!=None:
@@ -184,11 +202,13 @@ def procesar_select(instr,ActualBaseDatos,xml, entorno, lsimbolo,imprimir,bander
                     tipodsuma=[]
                     if tabla==None:
                         print("Se requiere de un from para sumar la columna ")
-                        return "ERROR"
+                        imprimir.agregar("ERROR:\nConsulta: Select Fila: "+str(instr.get('linea'))+" Columna: "+str(instr.get('pos'))+"\nSe requiere de un from para sumar la columna ")
+                        return {"datos": "Se requiere de un from para sumar la columna ", "tipo": "ERROR"}
                     result=funcion_sumar( i.get("colum").get("columna"),condiciones,ActualBaseDatos,comprobador,xml)
                     if result.get("tipo") == "ERROR":
                             print("ERROR")
-                            return
+                            imprimir.agregar("ERROR:\nConsulta: Select Fila: "+str(instr.get('linea'))+" Columna: "+str(instr.get('pos'))+f"\n{result.get('dato')}")
+                            return result
                     tipodsuma=result.get("tipo")
                     result=result.get("respuesta")
                     tablarespuesta.append([encabezado,result,tipodsuma])
@@ -196,11 +216,13 @@ def procesar_select(instr,ActualBaseDatos,xml, entorno, lsimbolo,imprimir,bander
                     tipodcont=[]
                     if tabla==None and len(tabla)!=1:
                         print("ERROR: Se requiere 1 tabla de referencia para sumar la columna ")
-                        return "ERROR"
+                        imprimir.agregar("ERROR:\nConsulta: Select Fila: "+str(instr.get('linea'))+" Columna: "+str(instr.get('pos'))+"\nSe requiere 1 tabla de referencia para sumar la columna ")
+                        return {"datos": "Se requiere 1 tabla de referencia para sumar la columna ", "tipo": "ERROR"}
                     result=funcion_contar( i.get("colum").get("columna"),condiciones,ActualBaseDatos,tabla[0],xml)
                     if result.get("tipo") == "ERROR":
                             print("ERROR")
-                            return
+                            imprimir.agregar("ERROR:\nConsulta: Select Fila: "+str(instr.get('linea'))+" Columna: "+str(instr.get('pos'))+f"\n{result.get('dato')}")
+                            return result
                     tipodsuma=result.get("tipo")
                     result=result.get("respuesta")
                     tablarespuesta.append([encabezado,result,tipodsuma])
@@ -219,7 +241,8 @@ def procesar_select(instr,ActualBaseDatos,xml, entorno, lsimbolo,imprimir,bander
                     ttipo=[]
                     if listatipodatos and listatipodatos[-1] == "ERROR":
                             print("ERROR")
-                            return
+                            imprimir.agregar("ERROR:\nConsulta: Select Fila: "+str(instr.get('linea'))+" Columna: "+str(instr.get('pos'))+f"\nError en sentenica where")
+                            return {"datos": "Error en sentenica where", "tipo": "ERROR"}
                     else:
                         ttipo=listatipodatos.pop()
                     
@@ -261,18 +284,21 @@ def procesar_select(instr,ActualBaseDatos,xml, entorno, lsimbolo,imprimir,bander
                         tablarespuesta.append([encabezado,colum.get("dato"),colum.get("tipo")])
                 else:
                     print("ERROR:No es posible realizar el select")
-                    return   
+                    imprimir.agregar("ERROR:\nConsulta: Select Fila: "+str(instr.get('linea'))+" Columna: "+str(instr.get('pos'))+"\nNo es posible realizar el select")
+                    return   {"datos": "No es posible realizar el select", "tipo": "ERROR"}
             else:
                 print("Se requiere de un from para la columna ",i.get("colum"))
-                return
+                imprimir.agregar("ERROR:\nConsulta: Select Fila: "+str(instr.get('linea'))+" Columna: "+str(instr.get('pos'))+"\nSe requiere de un from para la columna "+i.get("colum"))
+                return {"datos": "Se requiere de un from para la columna "+i.get("colum"), "tipo": "ERROR"}
         
         
         
         
         
         else:
-            print("ERROR:No es posible realizar el select")
-            return
+            print("ERROR:No se encontro la columna ",i.get("colum"))
+            imprimir.agregar("ERROR:\nConsulta: Select Fila: "+str(instr.get('linea'))+" Columna: "+str(instr.get('pos'))+"\nNo se encontro la columna "+i.get("colum"))
+            return  {"datos": "No es posible realizar el select", "tipo": "ERROR"}
         print("------------------------------------") 
 
 

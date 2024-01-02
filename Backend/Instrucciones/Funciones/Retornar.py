@@ -1,5 +1,5 @@
 from Expresiones.Where import *
-def RetornarI(instruccion, entorno, simbolo, xml, BaseDatos):
+def RetornarI(instruccion, entorno, simbolo, xml, BaseDatos,imprimir):
     print("instruccion: ", instruccion)
     if instruccion.get('valor') != None :
 
@@ -12,11 +12,11 @@ def RetornarI(instruccion, entorno, simbolo, xml, BaseDatos):
                 print("retorna: ",retorna)
                 return retorna
             else:
-                retorna = procesar_where1(instruccion.get('valor'),BaseDatos,"",entorno, simbolo)
+                retorna = procesar_where1(instruccion.get('valor'),BaseDatos,"",entorno, simbolo,imprimir)
                 print("retorna: ",retorna)
                 return retorna
         else:
-            retorna = procesar_where1(instruccion.get('valor'),BaseDatos,"",entorno, simbolo)
+            retorna = procesar_where1(instruccion.get('valor'),BaseDatos,"",entorno, simbolo,imprimir)
             print("retorna: ",retorna)
             return retorna
     else :

@@ -779,6 +779,7 @@ def p_error(t):
  
     print("Error sintactico en '%s', fila: %s, columna: %s" % (t.value, str(t.lineno), str(t.lexpos)))
     listaError.insertar("Sintactico",f"Error de sintaxis en: {t.value}",str(t.lineno), str(find_column(t.lexpos)))
+    
 
 def find_column(col):
     last_cr = data.rfind('\n', 0, col)

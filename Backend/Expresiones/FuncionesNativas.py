@@ -16,15 +16,15 @@ def funcion_concatena(exp1,exp2,tipoE1,tipoE2):
             print("i: ",tipo1," j: ",tipo2)
             if i is None or j is None:
                 print("Error: no se puede concatenar con un valor nulo")
-                return {"respuesta":"ERROR","tipo":"ERROR"}
+                return {"respuesta":"no se puede concatenar con un valor nulo","tipo":"ERROR"}
             # si tienen formato de fecha o fecha hora, error
             elif is_date_or_datetime(i) or is_date_or_datetime(j):
                 print("Error: no se puede concatenar con un valor de tipo fecha o fecha hora")
-                return {"respuesta":"ERROR","tipo":"ERROR"}
+                return {"respuesta":"no se puede concatenar con un valor de tipo fecha o fecha hora","tipo":"ERROR"}
             # si son int o float, error
             elif tipo1==TIPO_DATO.INT or tipo1==TIPO_DATO.DECIMAL or tipo2==TIPO_DATO.INT or tipo2==TIPO_DATO.DECIMAL:
                 print("Error: no se puede concatenar con un valor de tipo entero o decimal")
-                return {"respuesta":"ERROR","tipo":"ERROR"}
+                return {"respuesta":"no se puede concatenar con un valor de tipo entero o decimal","tipo":"ERROR"}
             
             c1=str(i)
             c2=str(j)
@@ -42,15 +42,15 @@ def funcion_concatena(exp1,exp2,tipoE1,tipoE2):
                 print("i: ",tipoE1[a]," j: ",tipoE2[b])
                 if i is None or j is None:
                     print("Error: no se puede concatenar con un valor nulo")
-                    return {"respuesta":"ERROR","tipo":"ERROR"}
+                    return {"respuesta":"no se puede concatenar con un valor nulo","tipo":"ERROR"}
                 # si tienen formato de fecha o fecha hora, error
                 elif is_date_or_datetime(i) or is_date_or_datetime(j):
                     print("Error: no se puede concatenar con un valor de tipo fecha o fecha hora")
-                    return {"respuesta":"ERROR","tipo":"ERROR"}
+                    return {"respuesta":"no se puede concatenar con un valor de tipo fecha o fecha hora","tipo":"ERROR"}
                 # si son int o float, error
                 elif tipoE1[a]==TIPO_DATO.INT or tipoE1[a]==TIPO_DATO.DECIMAL or tipoE2[b]==TIPO_DATO.INT or tipoE2[b]==TIPO_DATO.DECIMAL:
                     print("Error: no se puede concatenar con un valor de tipo entero o decimal")
-                    return {"respuesta":"ERROR","tipo":"ERROR"}
+                    return {"respuesta":"no se puede concatenar con un valor de tipo entero o decimal","tipo":"ERROR"}
                 
                 c1=str(i)
                 c2=str(j)
@@ -69,27 +69,27 @@ def funcion_substraer(exp1,exp2,exp3,tipoE1,tipoE2,tipoE3):
         for i, j,k,tipo1,tipo2,tipo3 in zip(exp1, exp2,exp3,tipoE1,tipoE2,tipoE3 ):
             if i is None :
                 print("Error: no se puede substraer de un valor nulo")
-                return {"respuesta":"ERROR","tipo":"ERROR"}
+                return {"respuesta":"no se puede substraer de un valor nulo","tipo":"ERROR"}
             # si tienen formato de fecha o fecha hora, error
             elif is_date_or_datetime(i) :
                 print("Error: no se puede substraer de un valor de tipo fecha o fecha hora")
-                return {"respuesta":"ERROR","tipo":"ERROR"}
+                return {"respuesta":"no se puede substraer de un valor de tipo fecha o fecha hora","tipo":"ERROR"}
             elif tipo1 == TIPO_DATO.INT or tipo1 == TIPO_DATO.DECIMAL:
                 print("Error: no se puede substraer de un valor de tipo entero o decimal")
-                return {"respuesta":"ERROR","tipo":"ERROR"}
+                return {"respuesta":"no se puede substraer de un valor de tipo entero o decimal","tipo":"ERROR"}
             # si son int o float, error
             elif isinstance(i,int) or isinstance(i,float):
                 print("Error: no se puede substraer de un valor de tipo entero o decimal")
-                return {"respuesta":"ERROR","tipo":"ERROR"}
+                return {"respuesta":"no se puede substraer de un valor de tipo entero o decimal","tipo":"ERROR"}
             
             elif tipo2 != TIPO_DATO.INT or tipo3 != TIPO_DATO.INT:
                 print("Error: Para substraer se necesita de dos valores enteros como parametros")
-                return {"respuesta":"ERROR","tipo":"ERROR"}
+                return {"respuesta":"Para substraer se necesita de dos valores enteros como parametros","tipo":"ERROR"}
             
             try:
                 if j-1<0:
                     print("Error: no se puede substraer el valor "+str(j)+" esta fuera de rango")
-                    return {"respuesta":"ERROR","tipo":"ERROR"}
+                    return {"respuesta":"no se puede substraer el valor "+str(j)+" esta fuera de rango","tipo":"ERROR"}
                 c1=i[j-1:k]
                 
                 # añadir a la respuesta
@@ -97,7 +97,7 @@ def funcion_substraer(exp1,exp2,exp3,tipoE1,tipoE2,tipoE3):
                 tiporesult.append(TIPO_DATO.VARCHAR)
             except:
                 print("Error: no se puede substraer de desde el caracter "+str(j)+" hasta el caracter "+str(k)+" de la cadena "+str(i))
-                return {"respuesta":"ERROR","tipo":"ERROR"}
+                return {"respuesta":"no se puede substraer de desde el caracter "+str(j)+" hasta el caracter "+str(k)+" de la cadena "+str(i),"tipo":"ERROR"}
                 
     else:
         cont=-1
@@ -105,26 +105,26 @@ def funcion_substraer(exp1,exp2,exp3,tipoE1,tipoE2,tipoE3):
             cont+=1
             if i is None :
                 print("Error: no se puede substraer de un valor nulo")
-                return {"respuesta":"ERROR","tipo":"ERROR"}
+                return {"respuesta":"no se puede substraer de un valor nulo","tipo":"ERROR"}
             # si tienen formato de fecha o fecha hora, error
             elif is_date_or_datetime(i) :
                 print("Error: no se puede substraer de un valor de tipo fecha o fecha hora")
-                return {"respuesta":"ERROR","tipo":"ERROR"}
+                return {"respuesta":"no se puede substraer de un valor de tipo fecha o fecha hora","tipo":"ERROR"}
             elif tipoE1[cont] == TIPO_DATO.INT or tipoE1[cont] == TIPO_DATO.DECIMAL:
                 print("Error: no se puede substraer de un valor de tipo entero o decimal")
-                return {"respuesta":"ERROR","tipo":"ERROR"}
+                return {"respuesta":"no se puede substraer de un valor de tipo entero o decimal","tipo":"ERROR"}
             # si son int o float, error
             elif isinstance(i,int) or isinstance(i,float):
                 print("Error: no se puede substraer de un valor de tipo entero o decimal")
-                return {"respuesta":"ERROR","tipo":"ERROR"}
+                return {"respuesta":"no se puede substraer de un valor de tipo entero o decimal","tipo":"ERROR"}
             
             elif tipoE2[0] != TIPO_DATO.INT or tipoE3[0] != TIPO_DATO.INT:
                 print("Error: Para substraer se necesita de dos valores enteros como parametros")
-                return {"respuesta":"ERROR","tipo":"ERROR"}
+                return {"respuesta":"Para substraer se necesita de dos valores enteros como parametros","tipo":"ERROR"}
             try:
                 if exp2[0]-1<0:
                     print("Error: no se puede substraer el valor "+str(exp2[0])+" esta fuera de rango")
-                    return {"respuesta":"ERROR","tipo":"ERROR"}
+                    return {"respuesta":"no se puede substraer el valor "+str(exp2[0])+" esta fuera de rango","tipo":"ERROR"}
                 c1=i[exp2[0]-1:exp3[0]]
                 
                 # añadir a la respuesta
@@ -132,7 +132,7 @@ def funcion_substraer(exp1,exp2,exp3,tipoE1,tipoE2,tipoE3):
                 tiporesult.append(TIPO_DATO.VARCHAR)
             except:
                 print("Error: no se puede substraer de desde el caracter "+str(exp2[0])+" hasta el caracter "+str(exp3[0])+" de la cadena "+str(i))
-                return {"respuesta":"ERROR","tipo":"ERROR"}
+                return {"respuesta":"no se puede substraer de desde el caracter "+str(exp2[0])+" hasta el caracter "+str(exp3[0])+" de la cadena "+str(i),"tipo":"ERROR"}
     
     print("respuesta: ",respuesta,"tipo:",tiporesult)
     return {"respuesta":respuesta,"tipo":tiporesult}  
@@ -146,7 +146,7 @@ def funcion_cast(exp1,tipoE1,tipo2,longitud):
             print("i: ",tipoE1[i]," tipo2: ",tipo2)
             if exp1[i] is None :
                 print("Error: no se puede castear un valor nulo")
-                return {"respuesta":"ERROR","tipo":"ERROR"}
+                return {"respuesta":"no se puede castear un valor nulo","tipo":"ERROR"}
             elif (tipoE1[i]==TIPO_DATO.INT or tipoE1[i]==TIPO_DATO.DECIMAL) and tipo2==TIPO_DATO.BIT:
                 if int(exp1[i])==0 :
                     respuesta.append(0)
@@ -219,7 +219,7 @@ def funcion_cast(exp1,tipoE1,tipo2,longitud):
                 
                 if error:
                     print("Error: no se puede castear el valor "+str(exp1[i])+" a tipo DATE")
-                    return {"respuesta":"ERROR","tipo":"ERROR"}
+                    return {"respuesta":"no se puede castear el valor "+str(exp1[i])+" a tipo DATE","tipo":"ERROR"}
                 else:
                     respuesta.append(str(fecha))        
             elif (tipoE1[i]==TIPO_DATO.CHAR or tipoE1[i]==TIPO_DATO.VARCHAR) and tipo2==TIPO_DATO.DATETIME:
@@ -239,7 +239,7 @@ def funcion_cast(exp1,tipoE1,tipo2,longitud):
                 
                 if error:
                     print("Error: no se puede castear el valor "+str(exp1[i])+" a tipo DATETIME")
-                    return {"respuesta":"ERROR","tipo":"ERROR"}
+                    return {"respuesta":"no se puede castear el valor "+str(exp1[i])+" a tipo DATETIME","tipo":"ERROR"}
                 else:
                     respuesta.append(str(fecha))
             elif tipoE1[i]==TIPO_DATO.DATE and (tipo2==TIPO_DATO.CHAR or tipo2==TIPO_DATO.VARCHAR):
@@ -249,7 +249,7 @@ def funcion_cast(exp1,tipoE1,tipo2,longitud):
                     
                 except ValueError:
                     print("Error: no se puede castear el valor "+str(exp1[i])+" a tipo ",tipo2.name)
-                    return {"respuesta":"ERROR","tipo":"ERROR"}
+                    return {"respuesta":"no se puede castear el valor "+str(exp1[i])+" a tipo "+tipo2.name,"tipo":"ERROR"}
                 if len(str(fecha))>longitud:
                     respuesta.append(str(fecha)[:longitud])
                 else:
@@ -265,7 +265,7 @@ def funcion_cast(exp1,tipoE1,tipo2,longitud):
                     
                 except ValueError:
                     print("Error: no se puede castear el valor "+str(exp1[i])+" a tipo DATETIME")
-                    return {"respuesta":"ERROR","tipo":"ERROR"}
+                    return {"respuesta":"no se puede castear el valor "+str(exp1[i])+" a tipo DATETIME","tipo":"ERROR"}
                 respuesta.append(str(fecha))
             elif tipoE1[i]==TIPO_DATO.DATETIME and (tipo2==TIPO_DATO.CHAR or tipo2==TIPO_DATO.VARCHAR):
                 fecha=""
@@ -274,7 +274,7 @@ def funcion_cast(exp1,tipoE1,tipo2,longitud):
                     
                 except ValueError:
                     print("Error: no se puede castear el valor "+str(exp1[i])+" a tipo ",tipo2.name)
-                    return {"respuesta":"ERROR","tipo":"ERROR"}
+                    return {"respuesta":"no se puede castear el valor "+str(exp1[i])+" a tipo "+tipo2.name,"tipo":"ERROR"}
                 if len(str(fecha))>longitud:
                     respuesta.append(str(fecha)[:longitud])
                 else:
@@ -290,11 +290,11 @@ def funcion_cast(exp1,tipoE1,tipo2,longitud):
                     
                 except ValueError:
                     print("Error: no se puede castear el valor "+str(exp1[i])+" a tipo DATE")
-                    return {"respuesta":"ERROR","tipo":"ERROR"}
+                    return {"respuesta":"no se puede castear el valor "+str(exp1[i])+" a tipo DATE","tipo":"ERROR"}
                 respuesta.append(str(fecha))
             else:
                 print("Error: no se puede castear el valor "+str(exp1[i])+" a tipo "+str(tipo2))
-                return {"respuesta":"ERROR","tipo":"ERROR"}
+                return {"respuesta":"no se puede castear el valor "+str(exp1[i])+" a tipo "+str(tipo2),"tipo":"ERROR"}
 
             
             tiporesult.append(tipo2)

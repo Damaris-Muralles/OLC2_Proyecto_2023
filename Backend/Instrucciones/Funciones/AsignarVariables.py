@@ -1,8 +1,8 @@
 from Expresiones.Where import *
-def asignarVariable(instruccion, entorno, simbolo):
+def asignarVariable(instruccion, entorno, simbolo,imprimir):
     #print("instruccion: ", instruccion)
 
-    resultado = procesar_where1(instruccion.get('valor'),"", "", entorno, simbolo)
+    resultado = procesar_where1(instruccion.get('valor'),"", "", entorno, simbolo,imprimir)
    
     resultado = resultado
     

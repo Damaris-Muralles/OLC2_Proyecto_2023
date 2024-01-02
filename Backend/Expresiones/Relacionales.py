@@ -24,7 +24,7 @@ def mayor_que(exp1,exp2,tipoE1,tipoE2):
                 tiporesult.append(TIPO_DATO.BIT)
             else:
                 print("Error: no se puede comparar los valores "+str(i)+" y "+str(j))
-                return {"respuesta":"ERROR","tipo":"ERROR"}
+                return {"respuesta":"no se puede comparar los valores "+str(i)+" y "+str(j),"tipo":"ERROR"}
     else:
         a=-1
         for i in exp1:
@@ -48,7 +48,7 @@ def mayor_que(exp1,exp2,tipoE1,tipoE2):
                 else:
                     print("Error: no se puede comparar los valores "+str(i)+" y "+str(j))
                  
-                    return {"respuesta":"ERROR","tipo":"ERROR"}
+                    return {"respuesta":"no se puede comparar los valores "+str(i)+" y "+str(j),"tipo":"ERROR"}
     
     print("respuesta: ",respuesta,"tipo:",tiporesult)
     return {"respuesta":respuesta,"tipo":tiporesult}
@@ -72,7 +72,7 @@ def menor_que(exp1,exp2,tipoE1,tipoE2):
                     respuesta.append(0)
             else:
                 print("Error: no se puede comparar los valores "+str(i)+" y "+str(j))
-                return {"respuesta":"ERROR","tipo":"ERROR"} 
+                return {"respuesta":"no se puede comparar los valores "+str(i)+" y "+str(j),"tipo":"ERROR"} 
             
             tiporesult.append(TIPO_DATO.BIT) 
     else:
@@ -96,7 +96,7 @@ def menor_que(exp1,exp2,tipoE1,tipoE2):
                 else:
                     print("Error: no se puede comparar los valores "+str(i)+" y "+str(j))
                     
-                    return {"respuesta":"ERROR","tipo":"ERROR"}   
+                    return {"respuesta":"no se puede comparar los valores "+str(i)+" y "+str(j),"tipo":"ERROR"}   
                 tiporesult.append(TIPO_DATO.BIT)   
     
     print("respuesta: ",respuesta,"tipo:",tiporesult)
@@ -122,7 +122,7 @@ def menor_igual_que(exp1,exp2,tipoE1,tipoE2):
             else:
                 print("Error: no se puede comparar los valores "+str(i)+" y "+str(j))
                 
-                return {"respuesta":"ERROR","tipo":"ERROR"}  
+                return {"respuesta":"no se puede comparar los valores "+str(i)+" y "+str(j),"tipo":"ERROR"}  
             tiporesult.append(TIPO_DATO.BIT)
     else:
         a=-1
@@ -145,7 +145,7 @@ def menor_igual_que(exp1,exp2,tipoE1,tipoE2):
                 else:
                     print("Error: no se puede comparar los valores "+str(i)+" y "+str(j))
                     
-                    return {"respuesta":"ERROR","tipo":"ERROR"}    
+                    return {"respuesta":"no se puede comparar los valores "+str(i)+" y "+str(j),"tipo":"ERROR"}    
                 tiporesult.append(TIPO_DATO.BIT)  
     
     
@@ -172,7 +172,7 @@ def mayor_igual_que(exp1,exp2,tipoE1,tipoE2):
             else:
                 print("Error: no se puede comparar los valores "+str(i)+" y "+str(j))
                 
-                return {"respuesta":"ERROR","tipo":"ERROR"}  
+                return {"respuesta":"no se puede comparar los valores "+str(i)+" y "+str(j),"tipo":"ERROR"}  
             tiporesult.append(TIPO_DATO.BIT)
     else:
         a=-1
@@ -195,7 +195,7 @@ def mayor_igual_que(exp1,exp2,tipoE1,tipoE2):
                 else:
                     print("Error: no se puede comparar los valores "+str(i)+" y "+str(j))
                     
-                    return {"respuesta":"ERROR","tipo":"ERROR"}      
+                    return {"respuesta":"no se puede comparar los valores "+str(i)+" y "+str(j),"tipo":"ERROR"}      
             tiporesult.append(TIPO_DATO.BIT)
     
     
@@ -222,7 +222,7 @@ def igual_que(exp1,exp2,tipoE1,tipoE2):
             else:
                 print("Error: no se puede comparar los valores "+str(i)+" y "+str(j))
                 
-                return {"respuesta":"ERROR","tipo":"ERROR"}  
+                return {"respuesta":"no se puede comparar los valores "+str(i)+" y "+str(j),"tipo":"ERROR"}  
             tiporesult.append(TIPO_DATO.BIT)
     else:
         a=-1
@@ -245,7 +245,7 @@ def igual_que(exp1,exp2,tipoE1,tipoE2):
                 else:
                     print("Error: no se puede comparar los valores "+str(i)+" y "+str(j))
                     
-                    return {"respuesta":"ERROR","tipo":"ERROR"} 
+                    return {"respuesta":"no se puede comparar los valores "+str(i)+" y "+str(j),"tipo":"ERROR"} 
                 tiporesult.append(TIPO_DATO.BIT)     
     
     
@@ -272,7 +272,7 @@ def diferente_que(exp1,exp2,tipoE1,tipoE2):
             else:
                 print("Error: no se puede comparar los valores "+str(i)+" y "+str(j))
                 
-                return {"respuesta":"ERROR","tipo":"ERROR"}  
+                return {"respuesta":"no se puede comparar los valores "+str(i)+" y "+str(j),"tipo":"ERROR"}  
             tiporesult.append(TIPO_DATO.BIT)
     else:
         a=-1
@@ -295,7 +295,7 @@ def diferente_que(exp1,exp2,tipoE1,tipoE2):
                 else:
                     print("Error: no se puede comparar los valores "+str(i)+" y "+str(j))
                     
-                    return {"respuesta":"ERROR","tipo":"ERROR"}   
+                    return {"respuesta":"no se puede comparar los valores "+str(i)+" y "+str(j),"tipo":"ERROR"}   
                 tiporesult.append(TIPO_DATO.BIT)   
     
     print("respuesta: ",respuesta,"tipo:",tiporesult)

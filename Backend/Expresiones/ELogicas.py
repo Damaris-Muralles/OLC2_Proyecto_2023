@@ -14,7 +14,7 @@ def and_logico(exp1,exp2):
             tiporesult=[TIPO_DATO.BIT for i in exp1 for j in exp2]
     except:
         print("Error: no se puede comparar los valores "+str(exp1)+" y "+str(exp2))
-        return {"respuesta":"ERROR","tipo":"ERROR"}
+        return {"respuesta":"no se puede comparar los valores "+str(exp1)+" y "+str(exp2),"tipo":"ERROR"}
 
     print("respuesta: ",respuesta,"tipo:",tiporesult)
     return {"respuesta":respuesta,"tipo":tiporesult}
@@ -31,7 +31,7 @@ def or_logico(exp1,exp2):
             tiporesult=[TIPO_DATO.BIT for i in exp1 for j in exp2]
     except:
         print("Error: no se puede comparar los valores "+str(exp1)+" y "+str(exp2))
-        return {"respuesta":"ERROR","tipo":"ERROR"}
+        return {"respuesta":"no se puede comparar los valores "+str(exp1)+" y "+str(exp2),"tipo":"ERROR"}
 
     
     print("respuesta: ",respuesta,"tipo:",tiporesult)
@@ -47,7 +47,7 @@ def not_logico(exp1):
             tiporesult.append(TIPO_DATO.BIT)
     except:
         print("Error: no se puede negar el valor "+str(exp1))
-        return {"respuesta":"ERROR","tipo":"ERROR"}
+        return {"respuesta":"no se puede negar el valor "+str(exp1),"tipo":"ERROR"}
     
     print("respuesta: ",respuesta,"tipo:",tiporesult)
     return {"respuesta":respuesta,"tipo":tiporesult}
@@ -71,7 +71,7 @@ def procesar_beetwen(exp1,exp2,exp3,tipoE1,tipoE2,tipoE3):
                     respuesta.append(0)
             else:
                 print("Error: no se puede evaluar si "+str(i)+" esta entre "+str(j)+" y "+str(k))
-                return {"respuesta":"ERROR","tipo":"ERROR"}
+                return {"respuesta":"no se puede evaluar si "+str(i)+" esta entre "+str(j)+" y "+str(k),"tipo":"ERROR"}
             
             tiporesult.append(TIPO_DATO.BIT)
     else:
@@ -91,7 +91,7 @@ def procesar_beetwen(exp1,exp2,exp3,tipoE1,tipoE2,tipoE3):
                     respuesta.append(0)
             else:
                 print("Error: no se puede evaluar si  "+str(i)+" esta entre "+str(exp2[0])+" y "+str(exp3[0]))
-                return {"respuesta":"ERROR","tipo":"ERROR"}
+                return {"respuesta":"no se puede evaluar si  "+str(i)+" esta entre "+str(exp2[0])+" y "+str(exp3[0]),"tipo":"ERROR"}
                  
             tiporesult.append(TIPO_DATO.BIT)
 

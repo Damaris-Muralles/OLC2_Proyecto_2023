@@ -34,12 +34,12 @@ def funcion_case(listacase):
                         pass
                     else:
                         print("Error: No se puede realizar la operacion case")
-                        return {"respuesta":"ERROR","tipo":"ERROR"}
+                        return {"respuesta":"No se puede realizar la operacion case","tipo":"ERROR"}
                 
                     
     else:
         print("Error: No se ha ingresado una lista de casos")
-        return {"respuesta":"ERROR","tipo":"ERROR"}
+        return {"respuesta":"No se ha ingresado una lista de casos","tipo":"ERROR"}
     
     print ("respuesta: ",respuesta," tipo: ",tiporesult)
     return {"respuesta":respuesta,"tipo":tiporesult}

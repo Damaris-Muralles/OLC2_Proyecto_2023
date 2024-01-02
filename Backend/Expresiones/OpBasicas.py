@@ -62,7 +62,7 @@ def suma_op(exp1,exp2,tipoE1,tipoE2):
                 tiporesult=TIPO_DATO.VARCHAR
             else:
                 print("Error: no se puede sumar los valores "+str(i)+" y "+str(j))
-                return {"respuesta":"ERROR","tipo":"ERROR"}
+                return {"respuesta":"no se puede sumar los valores "+str(i)+" y "+str(j),"tipo":"ERROR"}
                 
             tipres.append(tiporesult)
             respuesta.append(dat)
@@ -126,7 +126,7 @@ def suma_op(exp1,exp2,tipoE1,tipoE2):
                     tiporesult=TIPO_DATO.VARCHAR
                 else:
                     print("Error: no se puede sumar los valores "+str(i)+" y "+str(j))
-                    return {"respuesta":"ERROR","tipo":"ERROR"}
+                    return {"respuesta":"no se puede sumar los valores "+str(i)+" y "+str(j),"tipo":"ERROR"}
                     
                 tipres.append(tiporesult)
                 respuesta.append(dat)   
@@ -171,7 +171,7 @@ def resta_op(exp1,exp2,tipoE1,tipoE2):
                     tiporesult = TIPO_DATO.DECIMAL
                 else:
                     print("Error: no se puede restar los valores "+str(i)+" y "+str(j))
-                    return {"respuesta":"ERROR","tipo":"ERROR"}
+                    return {"respuesta":"no se puede restar los valores "+str(i)+" y "+str(j),"tipo":"ERROR"}
                     
                 tipres.append(tiporesult)
                 respuesta.append(dat)  
@@ -210,7 +210,7 @@ def resta_op(exp1,exp2,tipoE1,tipoE2):
                     tiporesult = TIPO_DATO.DECIMAL
                 else:
                     print("Error: no se puede restar los valores "+str(i)+" y "+str(j))
-                    return {"respuesta":"ERROR","tipo":"ERROR"}
+                    return {"respuesta":"no se puede restar los valores "+str(i)+" y "+str(j),"tipo":"ERROR"}
                     
                 tipres.append(tiporesult)
                 respuesta.append(dat)   
@@ -262,7 +262,7 @@ def multiplicacion_op(exp1,exp2,tipoE1,tipoE2):
                     tiporesult=TIPO_DATO.VARCHAR
                 else:
                     print("Error: no se puede multiplicar los valores "+str(i)+" y "+str(j))
-                    return {"respuesta":"ERROR","tipo":"ERROR"}
+                    return {"respuesta":"no se puede multiplicar los valores "+str(i)+" y "+str(j),"tipo":"ERROR"}
                     
                 tipres.append(tiporesult)
                 respuesta.append(dat)  
@@ -310,7 +310,7 @@ def multiplicacion_op(exp1,exp2,tipoE1,tipoE2):
                     tiporesult=TIPO_DATO.VARCHAR
                 else:
                     print("Error: no se puede multiplicar los valores "+str(i)+" y "+str(j))
-                    return {"respuesta":"ERROR","tipo":"ERROR"}
+                    return {"respuesta":"no se puede multiplicar los valores "+str(i)+" y "+str(j),"tipo":"ERROR"}
                     
                 tipres.append(tiporesult)
                 respuesta.append(dat)   
@@ -360,13 +360,13 @@ def division_op(exp1,exp2,tipoE1,tipoE2):
                     tiporesult=TIPO_DATO.VARCHAR
                 else:
                     print("Error: no se puede dividir los valores "+str(i)+" y "+str(j))
-                    return {"respuesta":"ERROR","tipo":"ERROR"}
+                    return {"respuesta":"no se puede dividir los valores "+str(i)+" y "+str(j),"tipo":"ERROR"}
                     
                 tipres.append(tiporesult)
                 respuesta.append(dat) 
             except ZeroDivisionError:
                 print("¡Error! División por cero.") 
-                return {"respuesta":"ERROR","tipo":"ERROR"}
+                return {"respuesta":"No es valida la division por 0","tipo":"ERROR"}
     else:
         a=-1
         for i in exp1:
@@ -409,13 +409,13 @@ def division_op(exp1,exp2,tipoE1,tipoE2):
                         tiporesult=TIPO_DATO.VARCHAR
                     else:
                         print("Error: no se puede dividir los valores "+str(i)+" y "+str(j))
-                        return {"respuesta":"ERROR","tipo":"ERROR"}
+                        return {"respuesta":"no se puede dividir los valores "+str(i)+" y "+str(j),"tipo":"ERROR"}
                             
                     tipres.append(tiporesult)
                     respuesta.append(dat) 
             except ZeroDivisionError:
                 print("¡Error! División por cero.") 
-                return {"respuesta":"ERROR","tipo":"ERROR"}
+                return {"respuesta":"No es valida la division por 0","tipo":"ERROR"}
             
     print("respuesta: ",respuesta,"tipo:",tipres)
     return {"respuesta":respuesta,"tipo":tipres}

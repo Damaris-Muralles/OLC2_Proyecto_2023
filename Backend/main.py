@@ -14,7 +14,7 @@ from flask_cors import CORS
 xml = XMLManejador("./BaseDatos/BasesDatos.xml")  
 lsimbolo = ListaSimbolo()
 lmetodo = ListaMetodo()
-
+consolas=""
 def procesar_instrucciones(instrucciones) :
     ## lista de instrucciones recolectadas
     imprimir = SalidaConsola()
@@ -22,12 +22,12 @@ def procesar_instrucciones(instrucciones) :
     Globales(instrucciones, entornoG, xml, lsimbolo, lmetodo, imprimir)
     print("salida")
     print(imprimir.getSalida())
-    return "Procesamiento exitoso"
+    return "Procesamiento exitoso",str(imprimir.getSalida())
     
     
     
 """
-use tbbanco
+use tbbanco;
 SELECT idestado,estado FROM tbestado;
 CREATE DATA BASE intento;
 
@@ -138,7 +138,7 @@ def procesar():
         ErrorSintactico=instrucciones[1]
         if instrucciones[0]!=None:
              
-            imprimir = procesar_instrucciones(instrucciones[0])
+           n_,imprimir= procesar_instrucciones(instrucciones[0])
             
     except Exception as e:
         print(">>>>> entro en la excepcion")
@@ -179,13 +179,25 @@ def eliminado():
     return jsonify({'message': 'Eliminado con éxito','lista':lista1})
 
 
+
 @app.route('/get_data', methods=['GET'])
 def get_data():
     # Simulando datos del backend
     data = xml.recorridoarbol()
     return jsonify(data)
 
+@app.route('/dump', methods=['POST'])
+def dump():
+    data = request.get_json()
+    dumpg=xml.crearDump()
+    return jsonify({'message':dumpg})
 
+@app.route('/exportar', methods=['POST'])
+def exportar():
+    data = request.get_json()
+    entrada = data['entrada']
+    exp=xml.crearExport(entrada)
+    return jsonify({'message': exp})
 
 if __name__ == '__main__':
   app.run(port=5000)

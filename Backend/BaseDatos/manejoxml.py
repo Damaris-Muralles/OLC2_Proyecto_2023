@@ -102,13 +102,13 @@ class XMLManejador:
         
         baseDatosEncontrada = self.Existe_basedatos(database)
         if not baseDatosEncontrada[0]:
-            return {"dato":"Base de datos no existe.","tipo":"ERROR"}
+            return {"dato":f"Base de datos {database} no existe.","tipo":"ERROR"}
         root = baseDatosEncontrada[1]
         database_element = baseDatosEncontrada[2]
         #buscar si existe la tabla con el idtabla, si no existe retorna error
         tablass_element = database_element.find('tablas')
         if tablass_element is None:
-            return {"dato":"No se pueden obtener los datos: no existe la tabla.","tipo":"ERROR"}
+            return {"dato":f"No existe la tabla {table}.","tipo":"ERROR"}
         tablas_element = tablass_element.findall('tabla')
         existe = False
         tabla_element = None
@@ -118,7 +118,7 @@ class XMLManejador:
                 tabla_element = tabla
                 break
         if not existe:
-            return {"dato":"No se pueden obtener los datos: no existe la tabla.","tipo":"ERROR"} 
+            return {"dato":f"No existe la tabla {table}.","tipo":"ERROR"} 
 
         columnas_element = tabla_element.find('columnas')
         columna_element = columnas_element.findall('columna')
@@ -177,7 +177,7 @@ class XMLManejador:
                   
                 return {"dato":lista,"tipo":tipolist}
             
-        return {"dato":"No se pueden obtener los datos: no existe la columna.","tipo":"ERROR"}
+        return {"dato":"No existe la columna.","tipo":"ERROR"}
     
     def add_database(self, database):
         
@@ -185,7 +185,7 @@ class XMLManejador:
         # Comprueba si el nombre de la base de datos ya existe
         baseEncontrada = self.Existe_basedatos(database)
         if baseEncontrada[0]:
-            return {"dato":"La base de datos ya existe.","tipo":"ERROR"}
+            return {"dato":f"La base de datos {database} ya existe.","tipo":"ERROR"}
         
         root = baseEncontrada[1]
         
@@ -211,7 +211,7 @@ class XMLManejador:
     def eliminardb(self, database):
         baseEncontrada = self.Existe_basedatos(database)
         if not baseEncontrada[0]:
-            return {"dato":"La base de datos no existe.","tipo":"ERROR"}
+            return {"dato":f"La base de datos {database} no existe.","tipo":"ERROR"}
         root = baseEncontrada[1]
         database_element = baseEncontrada[2]
         root.remove(database_element)
@@ -221,13 +221,14 @@ class XMLManejador:
             f.write(pretty_xml)
         
         return {"dato":"Base de datos eliminada con éxito.","tipo":"."}         
+    
     def add_table_info(self, database, table):
 
 
         # Buscar la base de datos
         baseEncontrada = self.Existe_basedatos(database)
         if not baseEncontrada[0]:
-            return {"dato":"La base de datos no existe.","tipo":"ERROR"}
+            return {"dato":f"La base de datos {database} no existe.","tipo":"ERROR"}
         root = baseEncontrada[1]
         database_element = baseEncontrada[2]
 
@@ -243,7 +244,7 @@ class XMLManejador:
         # Validar que no exista una tabla con el mismo nombre
         existing_tables = [tabla.find('nombre').text for tabla in tablas_element.findall('tabla')]
         if table.get("id") in existing_tables:
-            return {"dato":"Ya existe una tabla con el mismo nombre.","tipo":"ERROR"}
+            return {"dato":f"Ya existe una tabla con el nombre {table.get('id')}.","tipo":"ERROR"}
 
         # Crear una nueva etiqueta <tabla> con la etiqueta <nombre> dentro
         new_table_element = ET.SubElement(tablas_element, "tabla")
@@ -260,7 +261,7 @@ class XMLManejador:
 
             # comprobacion de que no exista una columna con el mismo nombre
             if listacolumnas.count(columna.get("id")) > 0:
-                return {"dato":"No se pudo crear tabla: Ya existe una columna con el mismo nombre.","tipo":"ERROR"}
+                return {"dato":f"Ya existe una columna con el nombre {columna.get('id')}.","tipo":"ERROR"}
             
             listacolumnas.append(columna.get("id"))
 
@@ -303,23 +304,23 @@ class XMLManejador:
                             null_d=True
                             atributo_nulo_element.text = str(null_d)
                         if primarykey_d and null_d:
-                            return {"dato":"No se pudo crear tabla: Una columna no puede ser primary key y null.","tipo":"ERROR"}
+                            return {"dato":"Una columna no puede ser primary key y null.","tipo":"ERROR"}
                         if null_d and notnull_d:
-                            return {"dato":"No se pudo crear tabla: Una columna no puede ser null y not null.","tipo":"ERROR"}
+                            return {"dato":"Una columna no puede ser null y not null.","tipo":"ERROR"}
                         if atribevaluar == "2":
                             if foranea_d:
-                                return {"dato":"No se pudo crear tabla: Una columna no puede tener mas de un atributo de llave foranea.","tipo":"ERROR"}
+                                return {"dato":"Una columna no puede tener mas de un atributo de llave foranea.","tipo":"ERROR"}
                             foranea_d=True
                             atributo_foranea_element.text = str(foranea_d)
                             tablaref.text = atributo.get("idtabla_ref")
                             columnaref.text = atributo.get("idcolumna_ref")
                 else:
-                    return {"dato":"No se pudo crear tabla: Una columna no puede tener mas de dos atributo.","tipo":"ERROR"}
+                    return {"dato":"Una columna no puede tener mas de dos atributo.","tipo":"ERROR"}
                 
             tipo_atributo_element = ET.SubElement(new_columna_element, "inputs")
             
         if primary<1:
-            return {"dato":"No se pudo crear tabla: Debe haber al menos una columna primary key.","tipo":"ERROR"}
+            return {"dato":"Debe haber al menos una columna primary key.","tipo":"ERROR"}
 
         # Guardar los cambios en el archivo
         pretty_xml = self.prettify(root)
@@ -332,7 +333,7 @@ class XMLManejador:
     def drop_column(self, database, instruccion):
         baseDatosEncontrada = self.Existe_basedatos(database)
         if not baseDatosEncontrada[0]:
-            return {"dato":"La base de datos no existe.","tipo":"ERROR"}
+            return {"dato":f"La base de datos {database} no existe.","tipo":"ERROR"}
         root = baseDatosEncontrada[1]
         database_element = baseDatosEncontrada[2]
 
@@ -341,7 +342,7 @@ class XMLManejador:
 
         tablas_element = database_element.find('tablas')
         if tablas_element is None:
-            return {"dato":"No se puede eliminar columna: No existe la tabla.","tipo":"ERROR"}
+            return {"dato":f"No existe la tabla {idtabla}","tipo":"ERROR"}
         
         tablas_element = tablas_element.findall('tabla')
         existe = False
@@ -352,7 +353,7 @@ class XMLManejador:
                 tabla_element = tabla
                 break
         if not existe:
-            return {"dato":"No se puede eliminar columna: No existe la tabla.","tipo":"ERROR"}
+            return {"dato":f"No existe la tabla {idtabla}","tipo":"ERROR"}
             
         # recorrer todas las columnas en la etiqueta columnas de esa tabla
         columnas_todo = tabla_element.find('columnas')
@@ -376,7 +377,7 @@ class XMLManejador:
     def add_column(self, database, instruccion):
         baseDatosEncontrada = self.Existe_basedatos(database)
         if not baseDatosEncontrada[0]:
-            return {"dato":"La base de datos no existe.","tipo":"ERROR"}
+            return {"dato":f"La base de datos {database} no existe.","tipo":"ERROR"}
         root = baseDatosEncontrada[1]
         database_element = baseDatosEncontrada[2]
 
@@ -392,7 +393,7 @@ class XMLManejador:
 
         tablas_element = database_element.find('tablas')
         if tablas_element is None:
-            return {"dato":"No se puede insertar columna: no existe la tabla","tipo":"ERROR"}
+            return {"dato":f"No existe la tabla {idtabla}","tipo":"ERROR"}
         tablas_element = tablas_element.findall('tabla')
         existe = False
         tabla_element = None
@@ -402,18 +403,19 @@ class XMLManejador:
                 tabla_element = tabla
                 break
         if not existe:
-            return {"dato":"No se puede insertar columna: no existe la tabla","tipo":"ERROR"}
+            return {"dato":f"No existe la tabla {idtabla}","tipo":"ERROR"}
         
         # recorrer todas las columnas en la etiqueta columnas de esa tabla
         columnas_element = tabla_element.find('columnas')
 
         # comprobacion de que no exista una columna con el mismo nombre
         listacolumnas = []
+        
         columna_element = columnas_element.findall('columna')
         for columna in columna_element:
             listacolumnas.append(columna.find('id').text)
         if listacolumnas.count(idcolumna) > 0:
-            return {"dato":"No se puede insertar: Ya existe una columna con el mismo nombre.","tipo":"ERROR"}
+            return {"dato":f"Ya existe una columna con el nombre {idcolumna}.","tipo":"ERROR"}
         
         # crear una etiqueta <columna> por cada columna de la tabla
         new_columna_element = ET.SubElement(columnas_element, "columna")
@@ -453,15 +455,15 @@ class XMLManejador:
                         null_d=True
                         atributo_nulo_element.text = str(null_d)
                     if primarykey_d and null_d:
-                        return {"dato":"No se pudo insertar columna: Una columna no puede ser primary key y null.","tipo":"ERROR"}
+                        return {"dato":"Una columna no puede ser primary key y null.","tipo":"ERROR"}
                     if null_d and notnull_d:
-                        return {"dato":"No se pudo insertar columna: Una columna no puede ser null y not null.","tipo":"ERROR"}
+                        return {"dato":"Una columna no puede ser null y not null.","tipo":"ERROR"}
                     if atribevaluar == "2":
                         atributo_foranea_element.text = str(True)
                         tablaref.text = atributo.get("idtabla_ref")
                         columnaref.text = atributo.get("idcolumna_ref")
             else:
-                return {"dato":"No se pudo insertar tabla: Una columna no puede tener mas de dos atributo.","tipo":"ERROR"}
+                return {"dato":"Una columna no puede tener mas de dos atributo.","tipo":"ERROR"}
             
        
         #Ver si las demas columnas tienen input en inputs
@@ -484,7 +486,7 @@ class XMLManejador:
     def drop_table(self, database, instruccion):
         baseDatosEncontrada = self.Existe_basedatos(database)
         if not baseDatosEncontrada[0]:
-            return {"dato":"La base de datos no existe.","tipo":"ERROR"}
+            return {"dato":f"La base de datos {database} no existe.","tipo":"ERROR"}
         root = baseDatosEncontrada[1]
         database_element = baseDatosEncontrada[2]
 
@@ -492,7 +494,7 @@ class XMLManejador:
 
         tablass_element = database_element.find('tablas')
         if tablass_element is None:
-            return {"dato":"No se puede eliminar la tabla: No existe tabla","tipo":"ERROR"}
+            return {"dato":f"No existe la tabla {idtabla}","tipo":"ERROR"}
         
         tablas_element = tablass_element.findall('tabla')
         existe = False
@@ -503,7 +505,7 @@ class XMLManejador:
                 tabla_element = tabla
                 break
         if not existe:
-            return {"dato":"No se puede eliminar la tabla: No existe tabla","tipo":"ERROR"}
+            return {"dato":f"No existe la tabla {idtabla}","tipo":"ERROR"}
 
         tablass_element.remove(tabla_element)
 
@@ -516,7 +518,7 @@ class XMLManejador:
     def truncate_table(self, database, instruccion):
         baseDatosEncontrada = self.Existe_basedatos(database)
         if not baseDatosEncontrada[0]:
-            return {"dato":"La base de datos no existe.","tipo":"ERROR"}
+            return {"dato":f"La base de datos {database} no existe.","tipo":"ERROR"}
         root = baseDatosEncontrada[1]
         database_element = baseDatosEncontrada[2]
 
@@ -524,7 +526,7 @@ class XMLManejador:
 
         tablass_element = database_element.find('tablas')
         if tablass_element is None:
-            return {"dato":"No se pueden borrar registros por que no existe la tabla","tipo":"ERROR"}
+            return {"dato":f"No existe la tabla {idtabla}","tipo":"ERROR"}
         tablas_element = tablass_element.findall('tabla')
         existe = False
         tabla_element = None
@@ -534,7 +536,7 @@ class XMLManejador:
                 tabla_element = tabla
                 break
         if not existe:
-            return {"dato":"No se pueden borrar registros por que no existe la tabla","tipo":"ERROR"}
+            return {"dato":f"No existe la tabla {idtabla}","tipo":"ERROR"}
 
         columnas_element = tabla_element.find('columnas')
         columna_element = columnas_element.findall('columna')
@@ -552,7 +554,7 @@ class XMLManejador:
 
         baseEncontrada = self.Existe_basedatos(database)
         if not baseEncontrada[0]:
-            return {"dato":"La base de datos no existe.","tipo":"ERROR"}
+            return {"dato":f"La base de datos {database} no existe.","tipo":"ERROR"}
         root = baseEncontrada[1]
         database_element = baseEncontrada[2]
 
@@ -573,7 +575,7 @@ class XMLManejador:
         #buscar si existe la tabla con el idtabla, si no existe retorna error
         tablas_element = database_element.find('tablas')
         if tablas_element is None:
-            return {"dato":"Tabla no existe no se puede insertar registro","tipo":"ERROR"}
+            return {"dato":f"Tabla {idtabla} no existe no se puede insertar registro","tipo":"ERROR"}
         tablas_element = tablas_element.findall('tabla')
         existe = False
         tabla_element = None
@@ -583,7 +585,7 @@ class XMLManejador:
                 tabla_element = tabla
                 break
         if not existe:
-            return {"dato":"Tabla no existe no se pueden insertar registros","tipo":"ERROR"}
+            return {"dato":f"Tabla {idtabla} no existe no se pueden insertar registros","tipo":"ERROR"}
         
         # recorrer todas las columnas en la etiqueta columnas de esa tabla
         columnas_element = tabla_element.find('columnas')
@@ -604,7 +606,7 @@ class XMLManejador:
                         existe = True
                         break
             if not existe:
-                return {"dato":"No se puede insertar: No existe la columna " + columna.find('id').text + " en la lista de columnas.","tipo":"ERROR"}
+                return {"dato":" No existe la columna " + columna.find('id').text + " en la lista de columnas.","tipo":"ERROR"}
         # RECOORER TODAS LAS COLUMNAS DE LA TABLA Y LOS INPUTS DE CADA COLUMNA QUE SEA PRIMARY KEY COLOCARLOS EN UNA LISTA
         listacolumnas = 0
         for columna in columnas_element:
@@ -634,10 +636,10 @@ class XMLManejador:
             if columnas is not None:
                 # revisar que la cantidad de columnas sea igual a la cantidad de valores
                 if len(columnas) != len(valores):
-                    return {"dato":"No se puede insertar: La cantidad de columnas no coincide con la cantidad de valores.","tipo":"ERROR"}
+                    return {"dato":" La cantidad de columnas no coincide con la cantidad de valores.","tipo":"ERROR"}
             
                 if columnas.count(columna.find('id').text) > 1:
-                    return {"dato":"No se puede insertar: No se puede insertar dos columnas con el mismo nombre.","tipo":"ERROR"}
+                    return {"dato":" No se puede insertar dos columnas con el mismo nombre.","tipo":"ERROR"}
             
                 for col in columnas:
                     if columna.find('id').text == col:
@@ -650,22 +652,22 @@ class XMLManejador:
                                 # verificamos que el tipo de dato sea el mismo que el valor a insertar
                                 if tipodato == TIPO_DATO.INT.value or tipodato == TIPO_DATO.BIT.value:
                                     if isinstance(valores[columnas.index(col)], str):
-                                        return {"dato":f"No se puede insertar: El tipo de dato no coincide con la columna {col}." ,"tipo":"ERROR"}
+                                        return {"dato":f" El tipo de dato no coincide con la columna {col}." ,"tipo":"ERROR"}
                                     #convertir a int
                                     valores[columnas.index(col)] = int(valores[columnas.index(col)])   
                                     
                                 elif tipodato == TIPO_DATO.DECIMAL.value:
                                     
                                     if isinstance(valores[columnas.index(col)], str):
-                                        return {"dato":f"No se puede insertar: Esta insertando un dato que no es {TIPO_DATO.DECIMAL.name} a la columna {col}","tipo":"ERROR"}
+                                        return {"dato":f" Esta insertando un dato que no es {TIPO_DATO.DECIMAL.name} a la columna {col}","tipo":"ERROR"}
                                     #convertir a float
                                     valores[columnas.index(col)] = round(float(valores[columnas.index(col)]),2)
                                 elif tipodato == TIPO_DATO.CHAR.value or tipodato == TIPO_DATO.VARCHAR.value:
                                     if not isinstance(valores[columnas.index(col)], str):
-                                        return {"dato":f"No se puede insertar: El tipo de dato no coincide con la columna {col}." ,"tipo":"ERROR"}
+                                        return {"dato":f" El tipo de dato no coincide con la columna {col}." ,"tipo":"ERROR"}
                                     else:
                                         if len(valores[columnas.index(col)]) > longitud:
-                                            return {"dato":"No se puede insertar: La logintud del valor a insertar no coincide.","tipo":"ERROR"}
+                                            return {"dato":" La logintud del valor a insertar no coincide.","tipo":"ERROR"}
                                         else:
                                             # si es un char agregar espacios necesarios para que sea del tamaño de la longitud
                                             if tipodato == TIPO_DATO.CHAR.value:
@@ -673,18 +675,18 @@ class XMLManejador:
                                 elif tipodato == TIPO_DATO.DATE.value  :
                                     # verificar que el valor a insertar sea una fecha con formato de dd-mm-yyyy
                                     if not isinstance(valores[columnas.index(col)], str) or not re.match(r'\d{2}-\d{2}-\d{4}', valores[columnas.index(col)]):
-                                        return {"dato":f"No se puede insertar: Esta insertando un dato que no es {TIPO_DATO.DATE.name} a la columna {col}","tipo":"ERROR"}
+                                        return {"dato":f" Esta insertando un dato que no es {TIPO_DATO.DATE.name} a la columna {col}","tipo":"ERROR"}
                                 elif tipodato == TIPO_DATO.DATETIME.value:
                                     if not isinstance(valores[columnas.index(col)], str) or not re.match(r'\d{2}-\d{2}-\d{4} \d{2}:\d{2}:\d{2}', valores[columnas.index(col)]):
-                                        return {"dato":f"No se puede insertar: Esta insertando un dato que no es {TIPO_DATO.DATETIME.name} a la columna {col}","tipo":"ERROR"}
+                                        return {"dato":f" Esta insertando un dato que no es {TIPO_DATO.DATETIME.name} a la columna {col}","tipo":"ERROR"}
                                     
 
              
                             # verificamos si el valor a insertar es null y si el atributo es not null, en este caso es error
                             if valores[columnas.index(col)] == "null" and atributo.find('nonulo').text=="True":  
-                                return {"dato":f"No se puede insertar: La columna {col} no acepta valores null.","tipo":"ERROR"}
+                                return {"dato":f" La columna {col} no acepta valores null.","tipo":"ERROR"}
                             if str(valores[columnas.index(col)]) == "null" and atributo.find('primaria').text=="True":  
-                                return {"dato":"No se puede insertar: una columna primary key no acepta valores null.","tipo":"ERROR"} 
+                                return {"dato":" una columna primary key no acepta valores null.","tipo":"ERROR"} 
                         
                             
                        
@@ -710,7 +712,7 @@ class XMLManejador:
                                 # buscar si existe la tablaref
                                 tablas_element1 = database_element.find('tablas')
                                 if tablas_element1 is None:
-                                    return {"dato":"No se puede insertar: No existe la tabla de referencia.","tipo":"ERROR"}
+                                    return {"dato":f" No existe la tabla de referencia {tablaref}.","tipo":"ERROR"}
                                 tablas_element1 = tablas_element1.findall('tabla')
                                 existe1 = False
                                 columnas_element1=""
@@ -721,7 +723,7 @@ class XMLManejador:
                                         break
                                 if not existe1:
                                     
-                                    return {"dato":"No se puede insertar: No existe la tabla de referencia.","tipo":"ERROR"}
+                                    return {"dato":f" No existe la tabla de referencia {tablaref}.","tipo":"ERROR"}
                                 # buscar si existe la columnaref
                                 
                                 columnas_element1 = columnas_element1.findall('columna')
@@ -740,11 +742,11 @@ class XMLManejador:
                                         inputs_element1 = columna1.find('inputs')
                                         break
                                 if not existe1:
-                                    return {"dato":"No se puede insertar: No existe la columna de referencia.","tipo":"ERROR"}
+                                    return {"dato":" No existe la columna de referencia.","tipo":"ERROR"}
                                 # el atributo de la tabla de referencia debe ser primary key
                                
                                 if atributo_ref1.find('primaria').text!="True"  :
-                                    return  {"dato":"No se puede insertar: La columna de referencia debe ser primary key.","tipo":"ERROR"}
+                                    return  {"dato":" La columna de referencia debe ser primary key.","tipo":"ERROR"}
                                 
                                 
                                 # optener el tipo de dato y longitud de la columna de referencia
@@ -753,7 +755,7 @@ class XMLManejador:
                                     longitud_ref1 = int(longitud_ref1)
                                 # si no  verificar que el tipo de dato y la longitud coincidan
                                 if tipodato != tipodato_ref1 or longitud != longitud_ref1:
-                                    return {"dato":"No se puede insertar: El tipo de dato o la longitud no coinciden con la columna de referencia.","tipo":"ERROR"}
+                                    return {"dato":" El tipo de dato o la longitud no coinciden con la columna de referencia.","tipo":"ERROR"}
                                  
                                 # recorrer los inputs de la columna de referencia
                                 
@@ -767,7 +769,7 @@ class XMLManejador:
                                         break
 
                                 if not existe4:
-                                    return {"dato":"No se puede insertar: No existe el valor en la columna de referencia.","tipo":"ERROR"}  
+                                    return {"dato":" No existe el valor en la columna de referencia.","tipo":"ERROR"}  
                                  
                             # agregar un nuevo elemento 'input' a cada 'input' existente
                             input_element = ET.SubElement(inputs_e, "input")
@@ -782,7 +784,7 @@ class XMLManejador:
                 
                     # verificamos si su atributo es not null, en este caso es error
                     if atributo.find('nonulo').text=="True" or atributo.find('primaria').text=="True" or atributo.find('foranea').text=="True":  
-                        return {"dato":f"No se puede insertar: La columna {columna.find('id').text} no acepta valores null.","tipo":"ERROR"}
+                        return {"dato":f" La columna {columna.find('id').text} no acepta valores null.","tipo":"ERROR"}
                     
                     # agregamos un input con el valor null
                     input_element = ET.SubElement(inputs_e, "input")
@@ -790,7 +792,7 @@ class XMLManejador:
         print(" comprobacion de llave primaria")
         print(contador,listacolumnas)
         if contador == listacolumnas:
-            return {"dato":f"No se puede insertar: el valor a insertar en la columna primaria ya existe.","tipo":"ERROR"}
+            return {"dato":" el valor a insertar en la columna primaria ya existe.","tipo":"ERROR"}
         # agregar datos a xml
         pretty_xml = self.prettify(root)
         with open(self.filepath, 'w') as f:
@@ -802,13 +804,13 @@ class XMLManejador:
 
         baseDatosEncontrada = self.Existe_basedatos(database)
         if not baseDatosEncontrada[0]:
-            return {"dato":"La base de datos no existe.","tipo":"ERROR"}
+            return {"dato":f"La base de datos {database} no existe.","tipo":"ERROR"}
         root = baseDatosEncontrada[1]
         database_element = baseDatosEncontrada[2]
          #buscar si existe la tabla con el idtabla, si no existe retorna error
         tablass_element = database_element.find('tablas')
         if tablass_element is None:
-            return {"dato":"No se puede eliminar registro porque no existe tabla.","tipo":"ERROR"}
+            return {"dato":f"No se puede eliminar registro porque no existe tabla {table}.","tipo":"ERROR"}
         tablas_element = tablass_element.findall('tabla')
         existe = False
         tabla_element = None
@@ -818,13 +820,13 @@ class XMLManejador:
                 tabla_element = tabla
                 break
         if not existe:
-            return {"dato":"No se puede eliminar registro porque no existe tabla.","tipo":"ERROR"}
+            return {"dato":f"No se puede eliminar registro porque no existe tabla {table}.","tipo":"ERROR"}
 
 
 
 
         if eliminar == None:
-            return {"dato":"No se puede eliminar: ningun valor cumple las condiciones.","tipo":"ERROR"}
+            return {"dato":"Ningun valor cumple las condiciones.","tipo":"ERROR"}
         
         columnas_element = tabla_element.find('columnas')
         columna_element = columnas_element.findall('columna')
@@ -851,13 +853,13 @@ class XMLManejador:
     def UpdateTable(self, database, table, sets, listset, where ):
         baseDatosEncontrada = self.Existe_basedatos(database)
         if not baseDatosEncontrada[0]:
-            return "La base de datos no existe."
+            return f"La base de datos {database} no existe."
         root = baseDatosEncontrada[1]
         database_element = baseDatosEncontrada[2]
          #buscar si existe la tabla con el idtabla, si no existe retorna error
         tablas_element = database_element.find('tablas')
         if tablas_element is None:
-            return "No se puede eliminar : No existe la tabla." 
+            return {"dato":f"No existe la tabla {table}.","tipo":"ERROR"}
         
         tabla_element = tablas_element.findall('tabla')
         existe = False
@@ -868,7 +870,7 @@ class XMLManejador:
                 break
         
         if not existe:
-            return "No se puede actualizar la tabla : No existe la tabla."
+            return {"dato":f"No existe la tabla {table}.","tipo":"ERROR"}
 
         columnas_element = tabla_element.find('columnas')
         columna_element = columnas_element.findall('columna')
@@ -906,19 +908,19 @@ class XMLManejador:
                                 # verificamos que el tipo de dato sea el mismo que el valor a insertar
                                 if tipodato == TIPO_DATO.INT.value or tipodato == TIPO_DATO.BIT.value:
                                     if not isinstance(valor, int):
-                                        return {"dato":f"No se puede insertar: El tipo de dato no coincide con la columna {col}." ,"tipo":"ERROR"}
+                                        return {"dato":f" El tipo de dato no coincide con la columna {col}." ,"tipo":"ERROR"}
                                     
                                     
                                 elif tipodato == TIPO_DATO.DECIMAL.value:
                                     if not isinstance(valor, float):
-                                        return {"dato":f"No se puede insertar: Esta insertando un dato que no es {TIPO_DATO.DECIMAL.name} a la columna {col}","tipo":"ERROR"}
+                                        return {"dato":f" Esta insertando un dato que no es {TIPO_DATO.DECIMAL.name} a la columna {col}","tipo":"ERROR"}
                                 elif tipodato == TIPO_DATO.CHAR.value or tipodato == TIPO_DATO.VARCHAR.value:
  
                                     if not isinstance(valor, str):
-                                        return {"dato":f"No se puede insertar: El tipo de dato no coincide con la columna {col}." ,"tipo":"ERROR"}
+                                        return {"dato":f" El tipo de dato no coincide con la columna {col}." ,"tipo":"ERROR"}
                                     else:
                                         if len(valor) > longitud:
-                                            return {"dato":"No se puede insertar: La logintud del valor a insertar no coincide.","tipo":"ERROR"}
+                                            return {"dato":" La logintud del valor a insertar no coincide.","tipo":"ERROR"}
                                         else:
                                             # si es un char agregar espacios necesarios para que sea del tamaño de la longitud
                                             if tipodato == TIPO_DATO.CHAR.value:
@@ -926,10 +928,10 @@ class XMLManejador:
                                 elif tipodato == TIPO_DATO.DATE.value  :
                                     # verificar que el valor a insertar sea una fecha con formato de dd-mm-yyyy
                                     if not isinstance(valor, str) or not re.match(r'\d{2}-\d{2}-\d{4}', valor):
-                                        return {"dato":f"No se puede insertar: Esta insertando un dato que no es {TIPO_DATO.DATE.name} a la columna {col}","tipo":"ERROR"}
+                                        return {"dato":f" Esta insertando un dato que no es {TIPO_DATO.DATE.name} a la columna {col}","tipo":"ERROR"}
                                 elif tipodato == TIPO_DATO.DATETIME.value:
                                     if not isinstance(valor, str) or not re.match(r'\d{2}-\d{2}-\d{4} \d{2}:\d{2}:\d{2}', valor):
-                                        return {"dato":f"No se puede insertar: Esta insertando un dato que no es {TIPO_DATO.DATETIME.name} a la columna {col}","tipo":"ERROR"}
+                                        return {"dato":f" Esta insertando un dato que no es {TIPO_DATO.DATETIME.name} a la columna {col}","tipo":"ERROR"}
                             valor = str(valor).replace("'","").replace('"','')   
                             input.text = valor
                         elif(where[index] == 1):
@@ -944,18 +946,18 @@ class XMLManejador:
                                 # verificamos que el tipo de dato sea el mismo que el valor a insertar
                                     if tipodato == TIPO_DATO.INT.value or tipodato == TIPO_DATO.BIT.value:
                                         if not isinstance(valor, int):
-                                            return {"dato":f"No se puede insertar: El tipo de dato no coincide con la columna {col}." ,"tipo":"ERROR"}
+                                            return {"dato":f" El tipo de dato no coincide con la columna {col}." ,"tipo":"ERROR"}
                                         
                                         
                                     elif tipodato == TIPO_DATO.DECIMAL.value:
                                         if not isinstance(valor, float):
-                                            return {"dato":f"No se puede insertar: Esta insertando un dato que no es {TIPO_DATO.DECIMAL.name} a la columna {col}","tipo":"ERROR"}
+                                            return {"dato":f" Esta insertando un dato que no es {TIPO_DATO.DECIMAL.name} a la columna {col}","tipo":"ERROR"}
                                     elif tipodato == TIPO_DATO.CHAR.value or tipodato == TIPO_DATO.VARCHAR.value:
                                         if not isinstance(valor, str):
-                                            return {"dato":f"No se puede insertar: El tipo de dato no coincide con la columna {col}." ,"tipo":"ERROR"}
+                                            return {"dato":f" El tipo de dato no coincide con la columna {col}." ,"tipo":"ERROR"}
                                         else:
                                             if len(valor) > longitud:
-                                                return {"dato":"No se puede insertar: La logintud del valor a insertar no coincide.","tipo":"ERROR"}
+                                                return {"dato":" La logintud del valor a insertar no coincide.","tipo":"ERROR"}
                                             else:
                                                 # si es un char agregar espacios necesarios para que sea del tamaño de la longitud
                                                 if tipodato == TIPO_DATO.CHAR.value:
@@ -963,10 +965,10 @@ class XMLManejador:
                                     elif tipodato == TIPO_DATO.DATE.value  :
                                         # verificar que el valor a insertar sea una fecha con formato de dd-mm-yyyy
                                         if not isinstance(valor, str) or not re.match(r'\d{2}-\d{2}-\d{4}', valor):
-                                            return {"dato":f"No se puede insertar: Esta insertando un dato que no es {TIPO_DATO.DATE.name} a la columna {col}","tipo":"ERROR"}
+                                            return {"dato":f" Esta insertando un dato que no es {TIPO_DATO.DATE.name} a la columna {col}","tipo":"ERROR"}
                                     elif tipodato == TIPO_DATO.DATETIME.value:
                                         if not isinstance(valor, str) or not re.match(r'\d{2}-\d{2}-\d{4} \d{2}:\d{2}:\d{2}', valor):
-                                            return {"dato":f"No se puede insertar: Esta insertando un dato que no es {TIPO_DATO.DATETIME.name} a la columna {col}","tipo":"ERROR"}
+                                            return {"dato":f" Esta insertando un dato que no es {TIPO_DATO.DATETIME.name} a la columna {col}","tipo":"ERROR"}
                                 valor = str(valor).replace("'","").replace('"','')
                                 input.text = valor
                             else:
@@ -976,18 +978,18 @@ class XMLManejador:
                                     # verificamos que el tipo de dato sea el mismo que el valor a insertar
                                     if tipodato == TIPO_DATO.INT.value or tipodato == TIPO_DATO.BIT.value:
                                         if not isinstance(valor, int):
-                                            return {"dato":f"No se puede insertar: El tipo de dato no coincide con la columna {col}." ,"tipo":"ERROR"}
+                                            return {"dato":f" El tipo de dato no coincide con la columna {col}." ,"tipo":"ERROR"}
                                         
                                         
                                     elif tipodato == TIPO_DATO.DECIMAL.value:
                                         if not isinstance(valor, float):
-                                            return {"dato":f"No se puede insertar: Esta insertando un dato que no es {TIPO_DATO.DECIMAL.name} a la columna {col}","tipo":"ERROR"}
+                                            return {"dato":f" Esta insertando un dato que no es {TIPO_DATO.DECIMAL.name} a la columna {col}","tipo":"ERROR"}
                                     elif tipodato == TIPO_DATO.CHAR.value or tipodato == TIPO_DATO.VARCHAR.value:
                                         if not isinstance(valor, str):
-                                            return {"dato":f"No se puede insertar: El tipo de dato no coincide con la columna {col}." ,"tipo":"ERROR"}
+                                            return {"dato":f" El tipo de dato no coincide con la columna {col}." ,"tipo":"ERROR"}
                                         else:
                                             if len(valor) > longitud:
-                                                return {"dato":"No se puede insertar: La logintud del valor a insertar no coincide.","tipo":"ERROR"}
+                                                return {"dato":" La logintud del valor a insertar no coincide.","tipo":"ERROR"}
                                             else:
                                                 # si es un char agregar espacios necesarios para que sea del tamaño de la longitud
                                                 if tipodato == TIPO_DATO.CHAR.value:
@@ -995,10 +997,10 @@ class XMLManejador:
                                     elif tipodato == TIPO_DATO.DATE.value  :
                                         # verificar que el valor a insertar sea una fecha con formato de dd-mm-yyyy
                                         if not isinstance(valor, str) or not re.match(r'\d{2}-\d{2}-\d{4}', valor):
-                                            return {"dato":f"No se puede insertar: Esta insertando un dato que no es {TIPO_DATO.DATE.name} a la columna {col}","tipo":"ERROR"}
+                                            return {"dato":f" Esta insertando un dato que no es {TIPO_DATO.DATE.name} a la columna {col}","tipo":"ERROR"}
                                     elif tipodato == TIPO_DATO.DATETIME.value:
                                         if not isinstance(valor, str) or not re.match(r'\d{2}-\d{2}-\d{4} \d{2}:\d{2}:\d{2}', valor):
-                                            return {"dato":f"No se puede insertar: Esta insertando un dato que no es {TIPO_DATO.DATETIME.name} a la columna {col}","tipo":"ERROR"}
+                                            return {"dato":f" Esta insertando un dato que no es {TIPO_DATO.DATETIME.name} a la columna {col}","tipo":"ERROR"}
                                 valor = str(valor).replace("'","").replace('"','')
                                 input.text = valor
 
@@ -1015,7 +1017,7 @@ class XMLManejador:
     def AgregarFuncion(self,database, instruccion):
         baseDatosEncontrada = self.Existe_basedatos(database)
         if not baseDatosEncontrada[0]:
-            return {"dato":"La base de datos no existe.","tipo":"ERROR"}
+            return {"dato":f"La base de datos {database} no existe.","tipo":"ERROR"}
         root = baseDatosEncontrada[1]
         database_element = baseDatosEncontrada[2]
         funciones_element = database_element.find('funciones')
@@ -1035,7 +1037,7 @@ class XMLManejador:
     def AgregarPorcedure(self,database, instruccion):
         baseDatosEncontrada = self.Existe_basedatos(database)
         if not baseDatosEncontrada[0]:
-            return {"dato":"La base de datos no existe.","tipo":"ERROR"}
+            return {"dato":f"La base de datos {database} no existe.","tipo":"ERROR"}
         root = baseDatosEncontrada[1]
         database_element = baseDatosEncontrada[2]
         funciones_element = database_element.find('procedimientos')
@@ -1052,7 +1054,103 @@ class XMLManejador:
 
         return {"dato":"Funcion Creada Con Exito.","tipo":"."}
     
+    def crearDump(self):
+        # leer todo el archivo xml
+        tree = ET.parse(self.filepath)
+        root = tree.getroot()
+        dumpbase=""
+        # recorrer cada base de datos y por cada base de datos agregar a dumpbase un create database
+        for database in root:
+            dumpbase += f"CREATE DATA BASE {database.find('nombre').text};\n"
+            # recorrer cada tabla de la base de datos y por cada tabla agregar a dumpbase un create table
+            for tabla in database.find('tablas'):
+                dumpbase += f"CREATE TABLE {tabla.find('nombre').text} (\n"
+                # recorrer cada columna de la tabla y por cada columna agregar a dumpbase un create column
+                for columna in tabla.find('columnas'):
+                    tipo=str(columna.find('tipo').find('tipodato').text)
+                    if tipo == "1":
+                        tipo = "int"
+                    elif tipo == "2":
+                        tipo = "decimal"
+                    elif tipo == "3":
+                        tipo = "nchar"
+                    elif tipo == "4":
+                        tipo = "date"
+                    elif tipo == "5":
+                        tipo = "datetime"
+                    elif tipo == "6":
+                        tipo = "nvarchar"
+                    elif tipo == "7":
+                        tipo = "bit"
+                    
+                    # buscar el name del tipo de dato en TIPO_DATO y poner un 
+                    dumpbase += f"{columna.find('id').text} {tipo}"
+                    if columna.find('tipo').find('longitud').text != "None":
+                        dumpbase += f"({columna.find('tipo').find('longitud').text})"
+                    if columna.find('atributo').find('primaria').text == "True":
+                        dumpbase += " PRIMARY KEY"
+                    if columna.find('atributo').find('foranea').text == "True":
+                        dumpbase += f" REFERENCES {columna.find('atributo').find('tablaref').text}({columna.find('atributo').find('columnaref').text})"
+                    if columna.find('atributo').find('nonulo').text == "True":
+                        dumpbase += " NOT NULL"
+                    if columna.find('atributo').find('nulo').text == "True":
+                        dumpbase += " NULL"
+                    dumpbase += ",\n"
+                dumpbase = dumpbase[:-2]
+                dumpbase += "\n);\n"
+        
+        return dumpbase
     
+    def crearExport(self,base):
+        # leer todo el archivo xml
+        tree = ET.parse(self.filepath)
+        root = tree.getroot()
+        exportbase=""
+       
+        # recorrer cada base de datos y por cada base de datos agregar a dumpbase un create database
+        for database in root:
+            if database.find('nombre').text == base:
+                # si se encuentra se crea un use database
+                useb = f"USE {database.find('nombre').text};\n"
+                # recorrer cada tabla de la base de datos y por cada tabla burscar los input de cada columna para crear el inset into
+                tablas=""
+
+                for tabla in database.find('tablas'):
+                    
+                    cont=0
+                    seguir = True
+                    while seguir:
+                        cantidad =0
+                        tablas1 = f"INSERT INTO {tabla.find('nombre').text} ("
+                        # recorrer cada columna de la tabla y por cada columna agregar a dumpbase un create column
+                        for columna in tabla.find('columnas'):
+                            tablas1 += f"{columna.find('id').text},"
+                            if columna.find('inputs')!=None:
+                                cantidad = len(columna.find('inputs'))
+                        tablas1 = tablas1[:-1]
+                        tablas1 += ") VALUES ("
+                        if cantidad==0:
+                            
+                            break
+                        # recorrer cada columna de la tabla y por cada columna agregar a dumpbase un create column
+                        
+                        tablas+=tablas1
+                        for columna in tabla.find('columnas'):
+                            inputs = columna.find('inputs')
+                            tablas += f"'{inputs[cont].text}',"
+                        cont+=1
+                        if cont == cantidad:
+                            seguir = False
+                        tablas = tablas[:-1]
+                        tablas += ");\n"
+                
+                if tablas!="":
+                    exportbase+=useb+tablas
+                    
+       
+        return exportbase
+
+
 
     
 

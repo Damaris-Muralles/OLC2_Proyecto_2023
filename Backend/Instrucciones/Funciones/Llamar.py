@@ -2,7 +2,7 @@ from Entornos.Entorno import *
 
 from Analizadores.instrucciones import *
 from Instrucciones.Funciones.DeclararParametro import *
-def Llama (instruccion, entorno, lsimbolos, xml, basedatos):
+def Llama (instruccion, entorno, lsimbolos, xml, basedatos,imprimir):
     print("llamr: ", instruccion)
     respuesta={'dato':None,'tipo':None}
     buscar = entorno.getMetodo(instruccion.get('id'))
@@ -25,12 +25,12 @@ def Llama (instruccion, entorno, lsimbolos, xml, basedatos):
                     print("parametrosid: ", buscar.parametros )
 
                     for i in range(len(instruccion.get('parametros'))) :
-                        declarar = Parametro(buscar.parametros[i].get('id'), buscar.parametros[i].get('tipodato'), instruccion.get('parametros')[i])
-                        error = DeclararP(declarar, entornoL, lsimbolos, entornoL.nombre, xml, basedatos)
+                        declarar = Parametro(buscar.parametros[i].get('id'), buscar.parametros[i].get('tipodato'), instruccion.get('parametros')[i],imprimir)
+                        error = DeclararP(declarar, entornoL, lsimbolos, entornoL.nombre, xml, basedatos,imprimir)
 
-                    respuesta  = Local(buscar.instrucciones, entornoL, xml, basedatos, lsimbolos)
+                    respuesta  = Local(buscar.instrucciones, entornoL, xml, basedatos, lsimbolos,imprimir)
             else:
-                respuesta  = Local(buscar.instrucciones, entornoL, xml, basedatos, lsimbolos)    
+                respuesta  = Local(buscar.instrucciones, entornoL, xml, basedatos, lsimbolos,imprimir)    
 
 
                       

@@ -8,9 +8,10 @@ class ComprobarTabla():
             self.tabla.clear()
             self.ciclo=False
         self.tabla.extend(tabla)
-    def comprobar(self,columevaluar,xml,ActualBaseDatos):
+    def comprobar(self,columevaluar,xml,ActualBaseDatos,imp):
         if self.tabla==None:
             print("Error: no se ha especificado una tabla")
+            imp.agregar("ERROR:"+f"\nNo se ha especificado una tabla\n")
             return -1,False,False
         igualcolum=0
         tabref=""
@@ -38,6 +39,7 @@ class ComprobarTabla():
                 comt=(tab1 in self.tabla)
                 if comt==False:
                     print("la tabla ",tab1," no se ha espeficiado en el from")
+                    imp.agregar("ERROR:"+f"\nLa tabla {tab1} no se ha espeficiado en el from\n")
                     print("+++++++++++++++++++++++++++")
                     return -1,False,False
                 if tab1==tab :
@@ -50,6 +52,7 @@ class ComprobarTabla():
                     # buscar en el xml si existe la columna para la tabla actual
                     if com!=True:
                         print("Error: la columna ",col1," no existe en la tabla ",tab1)
+                        imp.agregar("ERROR:"+f"\nLa columna {col1} no existe en la tabla {tab1}\n")
                         print("+++++++++++++++++++++++++++")
                         return -1,False,False
                     columnascomprobadas+=1
@@ -58,5 +61,6 @@ class ComprobarTabla():
         print("+++++++++++++++++++++++++++")
         return igualcolum,tabref,columnascomprobadas
             
-                        
-            
+     #                   
+
+             

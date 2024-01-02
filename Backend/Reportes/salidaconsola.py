@@ -5,7 +5,10 @@ class SalidaConsola:
         self.salida = ""
 
     def agregar(self, texto):
-        self.salida += texto + "\n\n\n"
+        if self.salida == "":
+            self.salida += texto
+        else:
+            self.salida += "\n\n\n"+texto  
 
     def agregarTabla(self, tabla,fil,col):
         valorcolum = []
@@ -28,7 +31,7 @@ class SalidaConsola:
             if rows[i]!=1:
                 for j in range(0,len(rows)):
                     if rows[i]!=rows[j] and rows[j]!=1:
-                        self.agregar("Error:\nConsulta: Select Fila: "+str(fil)+" Columna: "+str(col)+"\nNo se puede imprimir la tabla")
+                        self.agregar("ERROR:\nConsulta: Select Fila: "+str(fil)+" Columna: "+str(col)+"\nNo se puede imprimir la tabla")
         
 
         

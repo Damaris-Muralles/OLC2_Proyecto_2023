@@ -107,11 +107,7 @@
         </columnas>
       </tabla>
     </tablas>
-    <funciones>
-      <funcion>
-        <nombre>valores</nombre>
-      </funcion>
-    </funciones>
+    <funciones/>
     <procedimientos/>
   </basedatos>
 </basesdedatos>
